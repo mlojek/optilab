@@ -1,7 +1,7 @@
 import cma
 import matplotlib.pyplot as plt
 import numpy as np
-from cec2017.functions import f1
+from cec2017.functions import all_functions
 
 
 def run_cmaes_on_cec(cec_function: callable, dims: int):
@@ -16,8 +16,10 @@ def run_cmaes_on_cec(cec_function: callable, dims: int):
         x_start,
         1.0
     )
-    # TODO how to plot the results????
+    # cma.plot()
+    # cma.s.figsave('cmaes_result.png')
 
 
 if __name__ == '__main__':
-    run_cmaes_on_cec(f1, 2)
+    for f in all_functions:
+        run_cmaes_on_cec(f, 10)

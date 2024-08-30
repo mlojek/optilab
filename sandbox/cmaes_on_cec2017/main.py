@@ -82,4 +82,4 @@ if __name__ == "__main__":
         break
 
     with open("results.json", "w") as results_handle:
-        json.dump(results, results_handle)
+        json.dump(results, results_handle, indent=4)

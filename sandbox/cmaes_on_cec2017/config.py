@@ -3,7 +3,7 @@ from cec2017.functions import *
 
 NUM_RUNS = 51
 MAX_FES = 2e5
-HEADERS = ('name', 'function', 'dimenstions', 'constraints')
+HEADERS = ('name', 'function', 'dimensions', 'constraints')
 FUNCTIONS = [
     ('f1', f1, [2, 10, 20, 30, 50, 100], (-100, 100)),
     ('f2', f2, [2, 10, 20, 30, 50, 100], (-100, 100)),

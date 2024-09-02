@@ -58,7 +58,7 @@ def run_cmaes_on_cec(
 # 4 + 3sqrt(dim)
 # 4dim
 if __name__ == "__main__":
-    results = {}
+    results = []
 
     for name, function, dimensions, constraints in FUNCTIONS:
         for dimension in dimensions:
@@ -73,12 +73,16 @@ if __name__ == "__main__":
                 )
                 for _ in tqdm(range(NUM_RUNS))
             ]
-            try:
-                results[name][str(dimension)] = maxes
-            except KeyError:
-                results[name] = {
-                    str(dimension): maxes
-                }
+            
+            results.append({
+                'name': name,
+                'dimensions': dimensions,
+                'results': maxes,
+                'mean': np.mean(maxes),
+                'stdev': np.stdev(maxes),
+                'min': np.min(maxes),
+                'max': np.max(maxes)
+            })
         break
 
     with open("results.json", "w") as results_handle:

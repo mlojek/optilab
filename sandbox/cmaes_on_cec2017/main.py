@@ -5,7 +5,19 @@ import cma
 import numpy as np
 from tqdm import tqdm
 
-from config import MAX_FES, FUNCTIONS, NUM_RUNS
+from cec2017.functions import all_functions
+
+
+functions = [
+    (f'f{i}', func, i * 100)
+    for i, func in zip(range(1, 30), all_functions)
+]
+
+MAX_FES = 1e4
+BOUNDS = [-100, 100]
+DIMS = [10, 30]
+TOLERANCE = 1e-8
+NUM_RUNS = 51
 
 
 def run_cmaes_on_cec(
@@ -14,6 +26,8 @@ def run_cmaes_on_cec(
     population_size: int,
     call_budget: int,
     constraints: Tuple[float, float],
+    tolerance: float,
+    target: float
 ):
     """
     Runs the CMA-ES algorithm on a CEC function.
@@ -26,8 +40,6 @@ def run_cmaes_on_cec(
     :return: The best solution found by the CMA-ES algorithm.
     """
     x0 = np.random.uniform(low=constraints[0], high=constraints[1], size=dims)
-    # print(x0)
-    # exit(0)
     sigma0 = 0.3
     
     es = cma.CMAEvolutionStrategy(
@@ -36,15 +48,15 @@ def run_cmaes_on_cec(
         {
             'popsize': population_size, 
             'bounds': [constraints[0], constraints[1]], 
-            'maxfevals': call_budget
+            'maxfevals': call_budget,
+            'tolfun': tolerance,
+            'ftarget': target,
+            'verbose': -1
         }
     )
-    # TODO does the cmaes stick to bounds and maxfes by itself?
 
     while not es.stop():
         solutions = es.ask()
-        # TODO odbijanie lamarcka
-        # TODO better call budget tracking
         fitness_values = [cec_function([x.tolist()])[0] for x in solutions]
 
         if es.result.evaluations >= call_budget:
@@ -55,31 +67,33 @@ def run_cmaes_on_cec(
     return es.result.fbest
 
 
-# 4 + 3sqrt(dim)
-# 4dim
 if __name__ == "__main__":
     results = []
 
-    for name, function, dimensions, constraints in FUNCTIONS:
-        for dimension in dimensions:
-            print(f"{name} dim {dimensions}")
+    assert len(functions) == 29
+
+    for name, function, target in functions:
+        for dimension in DIMS:
+            print(f"{name} dim {dimension}")
             maxes = [
                 run_cmaes_on_cec(
                     function,
                     dimension,
                     4 * dimension,
                     MAX_FES * dimension,
-                    constraints
+                    BOUNDS,
+                    TOLERANCE,
+                    target
                 )
                 for _ in tqdm(range(NUM_RUNS))
             ]
             
             results.append({
                 'name': name,
-                'dimensions': dimensions,
+                'dimensions': dimension,
                 'results': maxes,
                 'mean': np.mean(maxes),
-                'stdev': np.stdev(maxes),
+                'stdev': np.std(maxes),
                 'min': np.min(maxes),
                 'max': np.max(maxes)
             })

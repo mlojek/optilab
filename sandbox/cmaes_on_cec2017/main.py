@@ -9,13 +9,13 @@ from cec2017.functions import all_functions
 
 
 functions = [
-    (f'f{i}', func, i * 100)
-    for i, func in zip(range(1, 30), all_functions)
+    (f'f{i+1}', func, (i+1) * 100)
+    for i, func in enumerate(all_functions)
 ]
 
 MAX_FES = 1e4
 BOUNDS = [-100, 100]
-DIMS = [10, 30]
+DIMS = [10]
 TOLERANCE = 1e-8
 NUM_RUNS = 51
 
@@ -40,7 +40,7 @@ def run_cmaes_on_cec(
     :return: The best solution found by the CMA-ES algorithm.
     """
     x0 = np.random.uniform(low=constraints[0], high=constraints[1], size=dims)
-    sigma0 = 0.3
+    sigma0 = 1
     
     es = cma.CMAEvolutionStrategy(
         x0, 
@@ -58,10 +58,6 @@ def run_cmaes_on_cec(
     while not es.stop():
         solutions = es.ask()
         fitness_values = [cec_function([x.tolist()])[0] for x in solutions]
-
-        if es.result.evaluations >= call_budget:
-            break
-
         es.tell(solutions, fitness_values)
 
     return es.result.fbest
@@ -69,8 +65,6 @@ def run_cmaes_on_cec(
 
 if __name__ == "__main__":
     results = []
-
-    assert len(functions) == 29
 
     for name, function, target in functions:
         for dimension in DIMS:
@@ -97,7 +91,6 @@ if __name__ == "__main__":
                 'min': np.min(maxes),
                 'max': np.max(maxes)
             })
-        break
 
     with open("results.json", "w") as results_handle:
         json.dump(results, results_handle, indent=4)

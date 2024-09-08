@@ -1,0 +1,3 @@
+[submodule "cec2017"]
+	path = cec2017
+	url = git@github.com:mlojek/cec2017-py.git

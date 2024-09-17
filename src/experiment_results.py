@@ -1,32 +1,53 @@
 '''
-Script docstring
+Classes dedicated to storing and visualizing experiment results.
 '''
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Any
 
 
+# TODO not singular run but rather a group of runs
 class ExperimentResults:
     '''
-    TODO class docstring
+    Class to store results of an experiment.
     '''
-    def __init__(self):
+    def __init__(
+        self,
+        name: str,
+        log: List[List[float]],
+        metadata: Dict[str, Any]=None,
+    ):
+        '''
+        Class constructor
+
+        :param name: name of the experiment
+        :param log: the log of values found in the experiment. list of list of values found in each run of the algorithm
+        :param metadata: optional, the metadata of the experiment, e.g. model parameters
+        '''
+        if not metadata:
+            metadata = {}
+
+        self.name = name
+        self.metadata = metadata
+        self.log = log
+        # TODO stats
+
+    def calculate_stats(self, log) -> Dict[str, float]:
         '''
         TODO
         '''
-        # TODO metadata
-        # TODO log
-        # TODO result
         pass
 
     def plot_ecdf(self):
         '''
         TODO
         '''
+        # TODO modes: average, all on one plot, all on separate plots, only best run
         pass
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         '''
         TODO
         '''
+        # include stats and num_runs in the dict
         pass
 
 
@@ -47,7 +68,12 @@ class ExperimentResultsCollection:
         '''
         pass
 
-    # TODO for the aggregate class
+    def load_from_file(self):
+        '''
+        TODO
+        '''
+        pass
+
     def plot_box_plot(self):
         '''
         TODO

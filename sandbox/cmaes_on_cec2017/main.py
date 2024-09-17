@@ -40,7 +40,6 @@ def run_cmaes_on_cec(
     :return: The best solution found by the CMA-ES algorithm.
     """
     x0 = np.random.uniform(low=bounds[0], high=bounds[1], size=dims)
-    sigma0 = 10
 
     es = cma.CMAEvolutionStrategy(
         x0,

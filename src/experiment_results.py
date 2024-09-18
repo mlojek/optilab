@@ -1,10 +1,10 @@
 '''
 Classes dedicated to storing and visualizing experiment results.
 '''
+import numpy as np
 from typing import Dict, List, Union, Any
 
 
-# TODO not singular run but rather a group of runs
 class ExperimentResults:
     '''
     Class to store results of an experiment.
@@ -12,29 +12,40 @@ class ExperimentResults:
     def __init__(
         self,
         name: str,
-        log: List[List[float]],
+        logs: List[List[float]],
         metadata: Dict[str, Any]=None,
     ):
         '''
         Class constructor
 
-        :param name: name of the experiment
-        :param log: the log of values found in the experiment. list of list of values found in each run of the algorithm
-        :param metadata: optional, the metadata of the experiment, e.g. model parameters
+        TODO
         '''
         if not metadata:
             metadata = {}
 
         self.name = name
         self.metadata = metadata
-        self.log = log
-        # TODO stats
+        self.logs = logs
+        self.num_runs = len(self.logs)
+        self.results = [max(log) for log in self.logs]
+        self.stats = self.calculate_stats(self.results)
 
-    def calculate_stats(self, log) -> Dict[str, float]:
+    def calculate_stats(self, results: List[float]) -> Dict[str, float]:
         '''
-        TODO
+        Calculates the stats of the experiment results (best values from each
+        run). Returns a dict with min and max values, mean and median and
+        standard deviation.
+
+        :param results: list of experiment results - the best values from each run
+        :return: a dictionary with stats of the data
         '''
-        pass
+        return {
+            'min': min(results),
+            'max': max(results),
+            'mean': np.mean(results),
+            'median': np.median(results),
+            'std': np.std(results)
+        }
 
     def plot_ecdf(self):
         '''
@@ -43,12 +54,25 @@ class ExperimentResults:
         # TODO modes: average, all on one plot, all on separate plots, only best run
         pass
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self, include_logs=False) -> Dict[str, Any]:
         '''
-        TODO
+        Serializes the experiment results to a dictionary.
+
+        :param include_logs: wheather to include full result logs, default False
+        :return: the contents of the object saved to a dictionary
         '''
-        # include stats and num_runs in the dict
-        pass
+        result = {
+            'name': self.name,
+            'metadata': self.metadata,
+            'num_runs': self.num_runs,
+            'stats': self.stats,
+            'results': self.results
+        }
+
+        if include_logs:
+            result['logs'] = self.logs
+
+        return result
 
 
 class ExperimentResultsCollection:

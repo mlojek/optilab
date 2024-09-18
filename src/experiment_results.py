@@ -13,16 +13,15 @@ class ExperimentResults:
         self,
         name: str,
         logs: List[List[float]],
-        metadata: Dict[str, Any]=None,
+        metadata: Dict[str, Any],
     ):
         '''
         Class constructor
 
-        TODO
+        :param name: name of the experiment
+        :param logs: lists of objective function values achieved in every run of the algorithm
+        :param metadata: metadata of the experiment, e.g. model parameters 
         '''
-        if not metadata:
-            metadata = {}
-
         self.name = name
         self.metadata = metadata
         self.logs = logs

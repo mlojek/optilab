@@ -59,7 +59,8 @@ def run_cmaes_on_cec(
         fitness_values = [cec_function([x.tolist()])[0] for x in solutions]
         es.tell(solutions, fitness_values)
 
-    return es.result.fbest
+    # TODO return ExperimentResult
+    return es.result.fbest - target
 
 
 if __name__ == "__main__":

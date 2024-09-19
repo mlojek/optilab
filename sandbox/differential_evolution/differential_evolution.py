@@ -26,6 +26,14 @@ class DifferentialEvolution:
         '''
         Perfom optimization of a function
         '''
+        self.population = []
+        self.evaluations = []
+        self.new_population = []
+        self.new_evaluations = []
+
+        self.calls_left = call_budget
+
+        self.best_value = None
         # initialize population
         # in loop while best value not close enough or call budget available
             # mutation

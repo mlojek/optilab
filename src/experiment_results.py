@@ -2,7 +2,7 @@
 Classes dedicated to storing and visualizing experiment results.
 '''
 import numpy as np
-from typing import Dict, List, Union, Any
+from typing import Dict, List, Union, Any, Tuple
 
 
 class ExperimentResults:
@@ -45,6 +45,25 @@ class ExperimentResults:
             'median': np.median(results),
             'std': np.std(results)
         }
+
+    def ecdf_points(self, log: List[float], dimensions: int, target: float) -> Tuple[List[float], List[float]]:
+        '''
+        TODO
+        '''
+        progressive_minimum = [log[0]]
+        for item in log[1:]:
+            if item < progressive_minimum[-1]:
+                progressive_minimum.append(item)
+            else:
+                progressive_minimum.append(progressive_minimum[-1])
+
+        # range is highest first value and target
+        # calculate key levels
+        # calculate ys
+        y = []
+        # calculate xs
+        x = [i / dimensions for i in range(len(log))]
+        return x, y
 
     def plot_ecdf(self):
         '''

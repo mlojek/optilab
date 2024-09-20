@@ -3,6 +3,7 @@ Basic DE/current-to-pbest/1 algorithm
 '''
 import random
 from typing import List, Tuple
+from cec2017.functions import f1
 
 
 class DifferentialEvolution:
@@ -24,6 +25,7 @@ class DifferentialEvolution:
     ) -> float:
         '''
         Perfom optimization of a function
+        TODO parameters
         '''
         # parameters of the DE
         self.dimensions = dimensions
@@ -65,7 +67,12 @@ class DifferentialEvolution:
 
         :return: true if the optimization process should be ended, false otherwise
         '''
-        return self.calls_left == 0 or self.best_value - self.target_value < self.allowed_error
+        if self.calls_left == 0:
+            return True
+        elif self.best_value:
+            return self.best_value - self.target_value < self.allowed_error
+        return False
+            
     
     def evaluate_specimen(self, specimen: List[float]) -> float:
         '''
@@ -76,7 +83,7 @@ class DifferentialEvolution:
         '''
         if self.calls_left > 0:
             self.calls_left -= 1
-            return self.function(specimen)
+            return self.function([specimen])[0]
         else:
             return None
     
@@ -87,9 +94,9 @@ class DifferentialEvolution:
         self.population = [
             [
                 random.uniform(*self.bounds)
-                for _ in self.dimensions
+                for _ in range(self.dimensions)
             ]
-            for _ in self.population_size
+            for _ in range(self.population_size)
         ]
 
     def evaluate_population(self) -> None:
@@ -100,6 +107,10 @@ class DifferentialEvolution:
             self.evaluate_specimen(vec)
             for vec in self.population
         ]
+        if self.best_value:
+            self.best_value = min(self.best_value, min(self.evaluations))
+        else:
+            self.best_value = min(self.evaluations)
 
     def evaluate_new_population(self) -> None:
         '''
@@ -109,32 +120,55 @@ class DifferentialEvolution:
             self.evaluate_specimen(vec)
             for vec in self.new_population
         ]
+        self.best_value = min(self.best_value, min(self.new_evaluations))
 
     def selection(self) -> None:
         '''
         Compares the current population and new population and appends better
         mutants to current population.
         '''
+        final_population = []
         for curr_vec, curr_val, new_vec, new_val in zip(self.population, self.evaluations, self.new_population, self.new_evaluations):
             if new_val:
-                if new_val > curr_val:
-                    curr_vec = new_vec
+                if new_val < curr_val:
+                    final_population.append(new_vec)
+                else:
+                    final_population.append(curr_vec)
+        self.population = final_population
 
-    # TODO OOP, bounds
-    def mutation(self, population: List[List[float]], evaluations: List[float], p: int=1, mutation_factor: float=1.0) -> List[List[float]]:
+    def mutate(self) -> None:
         '''
         TODO
         '''
-        sorted_evaluations, sorted_population = zip(*sorted(zip(evaluations, population)))
-        p_best = sorted_population[:p]
+        _, sorted_population = zip(*sorted(zip(self.evaluations, self.population)))
+        p_best = sorted_population[:self.p]
 
         mutated_population = []
-        for specimen in population:
-            # TODO element-wise operations
-            current_to_best = random.choice(p_best) - specimen
-            random_to_random = random.choice(population) - random.choice(population)
-            new_specimen = specimen + mutated_population * (current_to_best + random_to_random)
+        for specimen in self.population:
+            current_to_best = [a - b for a, b in zip(random.choice(p_best), specimen)]
+            random_to_random = [a - b for a, b in zip(random.choice(self.population), random.choice(self.population))]
+            new_specimen = [a + self.mutation_factor * (b + c) for a, b, c in zip(specimen, current_to_best, random_to_random)]
+            # TODO check for bounds
             mutated_population.append(new_specimen)
 
-        return mutated_population
+        self.new_population = mutated_population
 
+    def crossover(self) -> None:
+        pass
+
+
+if __name__ == '__main__':
+    de = DifferentialEvolution()
+    optimal_solution = de.optimize(
+        f1,
+        10 * 1e4,
+        4 * 10,
+        100,
+        1e-8,
+        10,
+        5,
+        0.001,
+        0.1
+    )
+    print(optimal_solution)
+    print(de.calls_left)

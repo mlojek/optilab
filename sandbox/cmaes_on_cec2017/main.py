@@ -9,13 +9,15 @@ import numpy as np
 from cec2017.functions import all_functions
 from tqdm import tqdm
 
+from visualize import ecdf_curve
+
 MAX_FES = 1e4
 BOUNDS = [-100, 100]
 SIGMA0 = 10
 DIMS = [10, 30]
 POPSIZE_PER_DIM = 4
 TOLERANCE = 1e-8
-NUM_RUNS = 51
+NUM_RUNS = 1
 
 
 def run_cmaes_on_cec(
@@ -41,6 +43,8 @@ def run_cmaes_on_cec(
     """
     x0 = np.random.uniform(low=bounds[0], high=bounds[1], size=dims)
 
+    res_log = []
+
     es = cma.CMAEvolutionStrategy(
         x0,
         sigma0,
@@ -57,10 +61,11 @@ def run_cmaes_on_cec(
     while not es.stop():
         solutions = es.ask()
         fitness_values = [cec_function([x.tolist()])[0] for x in solutions]
+        res_log.extend(fitness_values)
         es.tell(solutions, fitness_values)
+        es.logger.add()
 
-    # TODO return ExperimentResult
-    return es.result.fbest - target
+    return res_log, es.result.fbest - target
 
 
 if __name__ == "__main__":
@@ -86,6 +91,11 @@ if __name__ == "__main__":
                 )
                 for _ in tqdm(range(NUM_RUNS))
             ]
+
+            log = maxes[0][0]
+            print(log)
+            ecdf_curve(log, dimension, 0)
+            maxes = [x[1] for x in maxes]
 
             results.append(
                 {

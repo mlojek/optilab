@@ -40,7 +40,7 @@ def ecdf_points(
     x = [i/dimensions for i in range(1, len(results_log)+1)]
 
     assert len(x) == len(y)
-    return x, targets_reached
+    return x, y
 
 
 def ecdf_curve(

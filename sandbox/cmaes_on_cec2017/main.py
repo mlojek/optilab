@@ -93,7 +93,6 @@ if __name__ == "__main__":
             ]
 
             log = maxes[0][0]
-            print(log)
             ecdf_curve(log, dimension, 0)
             maxes = [x[1] for x in maxes]
 

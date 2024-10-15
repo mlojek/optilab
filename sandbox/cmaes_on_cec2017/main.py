@@ -9,7 +9,7 @@ import numpy as np
 from cec2017.functions import all_functions
 from tqdm import tqdm
 
-from visualize import ecdf_curve
+from visualize import plot_ecdf_curves
 
 MAX_FES = 1e4
 BOUNDS = [-100, 100]
@@ -17,7 +17,7 @@ SIGMA0 = 10
 DIMS = [10, 30]
 POPSIZE_PER_DIM = 4
 TOLERANCE = 1e-8
-NUM_RUNS = 1
+NUM_RUNS = 10
 
 
 def run_cmaes_on_cec(
@@ -65,6 +65,8 @@ def run_cmaes_on_cec(
         es.tell(solutions, fitness_values)
         es.logger.add()
 
+    res_log = [x - target for x in res_log]
+
     return res_log, es.result.fbest - target
 
 
@@ -92,8 +94,9 @@ if __name__ == "__main__":
                 for _ in tqdm(range(NUM_RUNS))
             ]
 
-            log = maxes[0][0]
-            ecdf_curve(log, dimension, 0)
+            log = [x[0] for x in maxes]
+            plot_ecdf_curves({'cmaes': log})
+            exit(0)
             maxes = [x[1] for x in maxes]
 
             results.append(

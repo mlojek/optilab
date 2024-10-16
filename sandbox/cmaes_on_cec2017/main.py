@@ -8,8 +8,10 @@ import cma
 import numpy as np
 from cec2017.functions import all_functions
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 
-from visualize import plot_ecdf_curves
+from plotting.convergence_curve import plot_convergence_curve
+from plotting.ecdf_curve import plot_ecdf_curves
 
 MAX_FES = 1e4
 BOUNDS = [-100, 100]
@@ -17,7 +19,7 @@ SIGMA0 = 10
 DIMS = [10, 30]
 POPSIZE_PER_DIM = 4
 TOLERANCE = 1e-8
-NUM_RUNS = 10
+NUM_RUNS = 3
 
 
 def run_cmaes_on_cec(
@@ -95,9 +97,26 @@ if __name__ == "__main__":
             ]
 
             log = [x[0] for x in maxes]
+
+            data = {
+                f'{i}' : d
+                for i, d
+                in enumerate(log)
+            }
+
+            plot_convergence_curve(data, 'savedfig.png')
+
             plot_ecdf_curves({'cmaes': log})
+
+            # plt.plot(log[0])
+            # plt.xscale('log')
+            # plt.show()
             exit(0)
+
+            plt.clf()
             maxes = [x[1] for x in maxes]
+            plt.boxplot(maxes)
+            plt.show()
 
             results.append(
                 {
@@ -110,6 +129,7 @@ if __name__ == "__main__":
                     "max": np.max(maxes),
                 }
             )
+            break
 
     with open("results.json", "w") as results_handle:
         json.dump(results, results_handle, indent=4)

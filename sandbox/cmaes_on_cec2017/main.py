@@ -10,13 +10,14 @@ from cec2017.functions import all_functions
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
-from plotting.convergence_curve import plot_convergence_curve
-from plotting.ecdf_curve import plot_ecdf_curves
+from sofes.plotting.convergence_curve import plot_convergence_curve
+from sofes.plotting.ecdf_curve import plot_ecdf_curves
+from sofes.plotting.box_plot import plot_box_plot
 
 MAX_FES = 1e4
 BOUNDS = [-100, 100]
 SIGMA0 = 10
-DIMS = [10, 30]
+DIMS = [10]
 POPSIZE_PER_DIM = 4
 TOLERANCE = 1e-8
 NUM_RUNS = 10
@@ -78,8 +79,9 @@ if __name__ == "__main__":
     ]
 
     results = []
+    boxplot = {}
 
-    for name, function, target in functions[-1:]:
+    for name, function, target in functions[:3]:
         for dimension in DIMS:
             print(f"{name} dim {dimension}")
             maxes = [
@@ -96,32 +98,23 @@ if __name__ == "__main__":
                 for _ in tqdm(range(NUM_RUNS))
             ]
 
-            log = [x[0] for x in maxes]
+            boxplot[name] = [x[1] for x in maxes]
 
-            plot_ecdf_curves({'cmaes1': log[:5], 'cmaes2': log[5:]})
-
-            # plt.plot(log[0])
-            # plt.xscale('log')
-            # plt.show()
-            exit(0)
-
-            plt.clf()
-            maxes = [x[1] for x in maxes]
-            plt.boxplot(maxes)
-            plt.show()
+            max_values = [x[1] for x in maxes]
 
             results.append(
                 {
                     "name": name,
                     "dimensions": dimension,
-                    "results": maxes,
-                    "mean": np.mean(maxes),
-                    "stdev": np.std(maxes),
-                    "min": np.min(maxes),
-                    "max": np.max(maxes),
+                    "results": max_values,
+                    "mean": np.mean(max_values),
+                    "stdev": np.std(max_values),
+                    "min": np.min(max_values),
+                    "max": np.max(max_values),
                 }
             )
-            break
+    
+    plot_box_plot(boxplot)
 
     with open("results.json", "w") as results_handle:
         json.dump(results, results_handle, indent=4)

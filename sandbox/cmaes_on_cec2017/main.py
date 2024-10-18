@@ -19,7 +19,7 @@ SIGMA0 = 10
 DIMS = [10, 30]
 POPSIZE_PER_DIM = 4
 TOLERANCE = 1e-8
-NUM_RUNS = 3
+NUM_RUNS = 10
 
 
 def run_cmaes_on_cec(
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     results = []
 
-    for name, function, target in functions:
+    for name, function, target in functions[-1:]:
         for dimension in DIMS:
             print(f"{name} dim {dimension}")
             maxes = [
@@ -98,15 +98,7 @@ if __name__ == "__main__":
 
             log = [x[0] for x in maxes]
 
-            data = {
-                f'{i}' : d
-                for i, d
-                in enumerate(log)
-            }
-
-            plot_convergence_curve(data, 'savedfig.png')
-
-            plot_ecdf_curves({'cmaes': log})
+            plot_ecdf_curves({'cmaes1': log[:5], 'cmaes2': log[5:]})
 
             # plt.plot(log[0])
             # plt.xscale('log')

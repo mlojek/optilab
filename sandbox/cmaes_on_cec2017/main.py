@@ -1,6 +1,7 @@
 """
 Benchmarking CMA-ES algorithm on CEC 2017
 """
+
 import json
 from typing import Tuple
 
@@ -31,7 +32,7 @@ def run_cmaes_on_cec(
     bounds: Tuple[float, float],
     tolerance: float,
     target: float,
-    sigma0: float
+    sigma0: float,
 ):
     """
     Runs the CMA-ES algorithm on a CEC function.
@@ -75,13 +76,13 @@ def run_cmaes_on_cec(
 
 if __name__ == "__main__":
     functions = [
-        (f"f{i+1}", func, (i + 1) * 100) for i, func in enumerate(all_functions)
+        (f"cec2017_f{i+1}", func, (i + 1) * 100) for i, func in enumerate(all_functions)
     ]
 
     results = []
     boxplot = {}
 
-    for name, function, target in functions[:3]:
+    for name, function, target in functions[:10]:
         for dimension in DIMS:
             print(f"{name} dim {dimension}")
             maxes = [
@@ -93,12 +94,12 @@ if __name__ == "__main__":
                     BOUNDS,
                     TOLERANCE,
                     target,
-                    SIGMA0
+                    SIGMA0,
                 )
                 for _ in tqdm(range(NUM_RUNS))
             ]
 
-            boxplot[name] = [x[1] for x in maxes]
+            boxplot[name] = [x[0] for x in maxes]
 
             max_values = [x[1] for x in maxes]
 
@@ -113,8 +114,8 @@ if __name__ == "__main__":
                     "max": np.max(max_values),
                 }
             )
-    
-    plot_box_plot(boxplot)
+
+    plot_ecdf_curves(boxplot, n_dimensions=DIMS[0])
 
     with open("results.json", "w") as results_handle:
         json.dump(results, results_handle, indent=4)

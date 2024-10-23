@@ -6,13 +6,13 @@ import json
 from typing import Any, Dict, List, Union
 
 import jsonschema
+import numpy as np
 import pandas as pd
+from tabulate import tabulate
 
 from ..plotting.box_plot import plot_box_plot
 from ..plotting.ecdf_curve import plot_ecdf_curves
 from .results_json_schema import results_json_schema
-
-DataSeries = Dict[str, Union[str, List[List[float]]]]
 
 
 class ExperimentResults:
@@ -20,7 +20,9 @@ class ExperimentResults:
     Class to easily store and analyze results of an experiment.
     """
 
-    def __init__(self, data: List[DataSeries] = None) -> None:
+    def __init__(
+        self, data: List[Dict[str, Union[str, List[List[float]]]]] = None
+    ) -> None:
         """
         Class constructor.
 
@@ -73,18 +75,44 @@ class ExperimentResults:
             data = json.load(input_file_handle)
         return cls(data)
 
-    # # csv
-    # def stats(self):
-    #     # TODO
-    #     pass
+    def stats(self) -> pd.DataFrame:
+        """
+        Calculate stats of the data and expresses them as a pandas DataFrame.
 
-    # def print_stats(self):
-    #     # TODO tabulate and print
-    #     pass
+        :return: dataframe with stats for each run in the data
+        """
+        stats_data = [
+            {
+                "name": item["name"],
+                "dim": item["dim"],
+                "runs": len(item["logs"]),
+                "min": min([min(log) for log in item["logs"]]),
+                "mean": np.mean([min(log) for log in item["logs"]]),
+                "max": max([min(log) for log in item["logs"]]),
+                "std": np.std([min(log) for log in item["logs"]]),
+            }
+            for item in self.data
+        ]
+        return pd.DataFrame(stats_data)
 
-    # def stats_csv(self):
-    #     # TODO
-    #     pass
+    def print_stats(self) -> str:
+        """
+        Return printable stats of the data.
+
+        :return: tabulated stats of the data.
+        """
+        return tabulate(
+            self.stats(), headers="keys", tablefmt="github", showindex=False
+        )
+
+    def save_stats(self, savepath: str) -> None:
+        """
+        Saves stats to a CSV file.
+
+        :param savepath: path to csv file to save the data in.
+        """
+        df = self.stats()
+        df.to_csv(savepath, index=False)
 
     def plot_ecdf_curve(
         self,

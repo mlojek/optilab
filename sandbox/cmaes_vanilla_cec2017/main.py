@@ -19,7 +19,7 @@ SIGMA0 = 10
 DIMS = [10]
 POPSIZE_PER_DIM = 4
 TOLERANCE = 1e-8
-NUM_RUNS = 10
+NUM_RUNS = 5
 
 
 if __name__ == "__main__":
@@ -48,6 +48,8 @@ if __name__ == "__main__":
 
             results.add_data(name, dimension, maxes)
 
-    results.save_to_json("cmaes_vanilla_cec2017.json")
-    results.plot_ecdf_curve(dim=10, savepath="cmaes_vanilla_cec2017_ecdf_10.png")
-    results.plt_box_plot(savepath="cmaes_vanilla_cec2017_box.png")
+    print(results.print_stats())
+    # results.save_to_json("cmaes_vanilla_cec2017.json")
+    # results.save_stats("cmaes_vanilla_cec2017.csv")
+    # results.plot_ecdf_curve(dim=10, savepath="cmaes_vanilla_cec2017_ecdf_10.png")
+    # results.plt_box_plot(savepath="cmaes_vanilla_cec2017_box.png")

@@ -8,4 +8,4 @@ format:
 	black .
 
 check:
-	pylint .
+	pylint **/*.py

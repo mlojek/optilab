@@ -8,4 +8,4 @@ format:
 	black .
 
 check:
-	echo dupa
+	pylint .

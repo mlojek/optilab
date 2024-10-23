@@ -6,14 +6,14 @@ import json
 from typing import Tuple
 
 import cma
+import matplotlib.pyplot as plt
 import numpy as np
 from cec2017.functions import all_functions
 from tqdm import tqdm
-import matplotlib.pyplot as plt
 
+from sofes.plotting.box_plot import plot_box_plot
 from sofes.plotting.convergence_curve import plot_convergence_curve
 from sofes.plotting.ecdf_curve import plot_ecdf_curves
-from sofes.plotting.box_plot import plot_box_plot
 
 MAX_FES = 1e4
 BOUNDS = [-100, 100]

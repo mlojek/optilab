@@ -1,6 +1,7 @@
 """
 Plotting and calculating ECDF curves.
 """
+
 # pylint: disable=too-many-locals
 
 import math

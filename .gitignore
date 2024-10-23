@@ -3,3 +3,6 @@ outcmaes
 __pycache__
 build
 *.egg-info
+*.json
+*.csv
+*.png

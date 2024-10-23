@@ -1,6 +1,7 @@
 """
 Plotting and calculating ECDF curves.
 """
+
 # pylint: disable=too-many-locals
 
 import math
@@ -100,6 +101,7 @@ def plot_ecdf_curves(
     n_dimensions: int = 1,
     n_thresholds: int = 100,
     allowed_error: float = 1e-8,
+    savepath: str = None,
 ) -> None:
     """
     Calculate and plot ecdf curves.
@@ -108,6 +110,7 @@ def plot_ecdf_curves(
     :param n_dimensions: dimensionality of the solved problem
     :param n_thresholds: number of ecdf thresholds
     :param allowed_error: tolerable error value. This value will be used as the last threshold.
+    :param savepath: optional, path to save the plot
     """
     plt.clf()
 
@@ -123,4 +126,8 @@ def plot_ecdf_curves(
 
     plt.legend()
     plt.grid(True)
+
+    if savepath:
+        plt.savefig(savepath)
+
     plt.show()

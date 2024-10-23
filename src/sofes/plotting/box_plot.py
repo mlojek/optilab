@@ -3,6 +3,7 @@ Plotting optimization results with box plot.
 """
 
 from typing import Dict, List
+
 from matplotlib import pyplot as plt
 
 

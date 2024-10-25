@@ -4,7 +4,6 @@ cma
 typing
 black
 isort
-mypy
 pylint
 pytest
 jsonschema

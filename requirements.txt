@@ -1,0 +1,13 @@
+numpy
+matplotlib
+cma
+typing
+black
+isort
+mypy
+pylint
+pytest
+jsonschema
+tabulate
+pandas
+tqdm

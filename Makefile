@@ -7,5 +7,19 @@ format:
 	isort .
 	black .
 
-check:
-	pylint **/*.py
+check-src:
+	echo mypy
+	echo flake8
+	echo black
+	echo isort
+	pylint src
+
+check-sandbox:
+	echo mypy
+	echo flake8
+	echo black
+	echo isort
+	pylint sandbox
+
+test:
+	echo pytest

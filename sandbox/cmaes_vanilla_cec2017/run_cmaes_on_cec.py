@@ -2,6 +2,8 @@
 Function running CMA-ES algorithm on CEC 2017 functions
 """
 
+# pylint: disable=too-many-arguments, too-many-positional-arguments
+
 from typing import List, Tuple
 
 import cma

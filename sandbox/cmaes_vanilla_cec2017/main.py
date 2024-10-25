@@ -2,6 +2,8 @@
 Benchmarking CMA-ES algorithm on CEC 2017
 """
 
+# pylint: disable=import-error
+
 from cec2017.functions import all_functions
 from run_cmaes_on_cec import run_cmaes_on_cec
 from tqdm import tqdm

@@ -2,18 +2,15 @@
 Benchmarking CMA-ES algorithm on CEC 2017
 """
 
-import json
+# pylint: disable=import-error
 
 from cec2017.functions import all_functions
 from run_cmaes_on_cec import run_cmaes_on_cec
 from tqdm import tqdm
 
 from sofes.data_classes.experiment_results import ExperimentResults
-from sofes.plotting.box_plot import plot_box_plot
-from sofes.plotting.convergence_curve import plot_convergence_curve
-from sofes.plotting.ecdf_curve import plot_ecdf_curves
 
-MAX_FES = 1e4
+MAX_FES = 1e6
 BOUNDS = [-100, 100]
 SIGMA0 = 10
 DIMS = [10]

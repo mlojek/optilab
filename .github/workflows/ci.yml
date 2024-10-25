@@ -28,9 +28,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install .
+          make clean
 
-      - name: src static code analysis
-        run: make check-src
+      - name: static code analysis
+        run: make check
 
       - name: unit tests
         run: make test

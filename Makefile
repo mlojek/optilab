@@ -1,25 +1,18 @@
+all_code = src sandbox tests
+
 clean:
 	rm -rf build
 	rm -rf src/sofes.egg-info
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 
 format:
-	isort .
-	black .
+	isort ${all_code}
+	black ${all_code}
 
-check-src:
-	echo mypy
-	echo flake8
-	echo black
-	echo isort
-	pylint src
-
-check-sandbox:
-	echo mypy
-	echo flake8
-	echo black
-	echo isort
-	pylint sandbox
+check:
+	black ${all_code} --check
+	isort ${all_code} --check
+	pylint ${all_code}
 
 test:
-	echo pytest
+	pytest

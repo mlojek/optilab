@@ -60,7 +60,7 @@ class ExperimentResults:
         :param savepath: path to file to dump the data into
         :param indent: json indent, default is 4
         """
-        with open(savepath, "w") as output_file_handle:
+        with open(savepath, "w", encoding='utf-8') as output_file_handle:
             json.dump(self.data, output_file_handle, indent=indent)
 
     @classmethod
@@ -71,7 +71,7 @@ class ExperimentResults:
         :param filepath: path to file with data
         :return: instance of ExperimentResults
         """
-        with open(filepath, "r") as input_file_handle:
+        with open(filepath, "r", encoding='utf-8') as input_file_handle:
             data = json.load(input_file_handle)
         return cls(data)
 
@@ -86,9 +86,9 @@ class ExperimentResults:
                 "name": item["name"],
                 "dim": item["dim"],
                 "runs": len(item["logs"]),
-                "min": min([min(log) for log in item["logs"]]),
+                "min": min(min(log) for log in item["logs"]),
                 "mean": np.mean([min(log) for log in item["logs"]]),
-                "max": max([min(log) for log in item["logs"]]),
+                "max": max(min(log) for log in item["logs"]),
                 "std": np.std([min(log) for log in item["logs"]]),
             }
             for item in self.data
@@ -124,7 +124,8 @@ class ExperimentResults:
         """
         Plots ecdf curve for the data in this object.
 
-        :param dim: dimensionality of problems to plot, only entries with matching dimensionalities will be plotted
+        :param dim: dimensionality of problems to plot, only entries with matching
+        dimensionalities will be plotted
         :param savepath: optional, path to save the plot to
         :param n_thresholds: optional, number of ecdf value thresholds, default 100
         :param allowed_error: optional, acceptable error value, default 1e-8

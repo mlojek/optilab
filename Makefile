@@ -4,22 +4,15 @@ clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 
 format:
-	isort .
-	black .
+	isort **/*.py
+	black **/*.py
 
-check-src:
-	echo mypy
-	echo flake8
-	echo black
-	echo isort
-	pylint src
-
-check-sandbox:
-	echo mypy
-	echo flake8
-	echo black
-	echo isort
-	pylint sandbox
+check:
+	# mypy src sandbox
+	# flake8
+	black **/*.py --check
+	isort **/*.py --check
+	pylint src sandbox tests
 
 test:
-	echo pytest
+	pytest

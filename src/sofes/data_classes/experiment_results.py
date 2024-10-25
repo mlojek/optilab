@@ -60,7 +60,7 @@ class ExperimentResults:
         :param savepath: path to file to dump the data into
         :param indent: json indent, default is 4
         """
-        with open(savepath, "w", encoding='utf-8') as output_file_handle:
+        with open(savepath, "w", encoding="utf-8") as output_file_handle:
             json.dump(self.data, output_file_handle, indent=indent)
 
     @classmethod
@@ -71,7 +71,7 @@ class ExperimentResults:
         :param filepath: path to file with data
         :return: instance of ExperimentResults
         """
-        with open(filepath, "r", encoding='utf-8') as input_file_handle:
+        with open(filepath, "r", encoding="utf-8") as input_file_handle:
             data = json.load(input_file_handle)
         return cls(data)
 

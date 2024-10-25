@@ -5,7 +5,6 @@ Function running CMA-ES algorithm on CEC 2017 functions
 from typing import List, Tuple
 
 import cma
-import matplotlib.pyplot as plt
 import numpy as np
 
 

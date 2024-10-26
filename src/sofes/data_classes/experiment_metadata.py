@@ -18,17 +18,17 @@ class ExperimentMetadata:
     metamodel_name: str
     metamodel_hyperparameters: dict
     benchmark_name: str
-    time_begin: datetime
-    time_end: datetime
+    time_begin: str
+    time_end: str
 
     def begin_now(self) -> None:
         """
         Set time of the beggining to now.
         """
-        self.time_begin = datetime.now()
+        self.time_begin = datetime.now().isoformat()
 
     def end_now(self) -> None:
         """
         Set time of the ending to now.
         """
-        self.time_end = datetime.now()
+        self.time_end = datetime.now().isoformat()

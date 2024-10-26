@@ -3,6 +3,7 @@ A data class to store experiment results and easily plot and export/import them.
 """
 
 import json
+from dataclasses import asdict
 from typing import Any, Dict, List, Union
 
 import jsonschema
@@ -12,6 +13,7 @@ from tabulate import tabulate
 
 from ..plotting.box_plot import plot_box_plot
 from ..plotting.ecdf_curve import plot_ecdf_curves
+from .experiment_metadata import ExperimentMetadata
 from .results_json_schema import results_json_schema
 
 
@@ -21,13 +23,21 @@ class ExperimentResults:
     """
 
     def __init__(
-        self, data: List[Dict[str, Union[str, List[List[float]]]]] = None
+        self,
+        metadata: ExperimentMetadata,
+        data: List[Dict[str, Union[str, List[List[float]]]]] = None,
     ) -> None:
         """
         Class constructor.
 
+        :param metadata: experiment metadata
         :param data: optional, data to initialize the class with.
         """
+        self.metadata = metadata
+
+        if not self.metadata.time_begin:
+            self.metadata.begin_now()
+
         if data:
             self.validate_data_format(data)
             self.data = data
@@ -60,8 +70,15 @@ class ExperimentResults:
         :param savepath: path to file to dump the data into
         :param indent: json indent, default is 4
         """
+        if not self.metadata.time_end:
+            self.metadata.end_now()
+
         with open(savepath, "w", encoding="utf-8") as output_file_handle:
-            json.dump(self.data, output_file_handle, indent=indent)
+            json.dump(
+                {"metadata": asdict(self.metadata), "data": self.data},
+                output_file_handle,
+                indent=indent,
+            )
 
     @classmethod
     def from_json(cls, filepath: str):
@@ -72,8 +89,8 @@ class ExperimentResults:
         :return: instance of ExperimentResults
         """
         with open(filepath, "r", encoding="utf-8") as input_file_handle:
-            data = json.load(input_file_handle)
-        return cls(data)
+            file_content = json.load(input_file_handle)
+        return cls(ExperimentMetadata(**file_content["metadata"]), file_content["data"])
 
     def stats(self) -> pd.DataFrame:
         """

@@ -35,6 +35,8 @@ class CEC2017ObjectiveFunction(ObjectiveFunction):
         :raises AssertionError: when the point dimensionality doesn't match the function's dimensionality
         :return: function value in given point
         """
-        assert len(x) == self.dim, f'Given point has invalid dimensions, got {len(x)}, expected {self.dim}'
+        assert (
+            len(x) == self.dim
+        ), f"Given point has invalid dimensions, got {len(x)}, expected {self.dim}"
         super().__call__()
         return self.function(x) - self.minimum

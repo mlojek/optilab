@@ -2,7 +2,9 @@
 Objective function from CEC 2017 benchmark.
 """
 
-from typing import List, float
+# pylint: disable=too-few-public-methods
+
+from typing import List
 
 from cec2017.functions import all_functions
 
@@ -19,24 +21,24 @@ class CEC2017ObjectiveFunction(ObjectiveFunction):
         Class constructor.
 
         :param function_num: the number of function from range [1, 30].
-        :raises AssertionError: when the number of function is invalid.
+        :raises ValueError: when the number of function is invalid.
         :param dim: dimensionality of the function.
         """
-        assert function_num in range(1, 31), "Invalid cec2017 function number!"
+        if not function_num in range(1, 31):
+            raise ValueError(f"Invalid cec2017 function number {function_num}.")
+
         super().__init__(f"cec2017_f{function_num}", dim)
+
         self.function = all_functions[function_num - 1]
         self.minimum = function_num * 100
 
     def __call__(self, x: List[float]) -> float:
         """
-        Evaluate a point.
+        Evaluate a single point with the objective function.
 
-        :param x: point to evaluate
-        :raises AssertionError: when the point dimensionality doesn't match the function's dimensionality
-        :return: function value in given point
+        :param x: point to be evaluated
+        :raises ValueError: if dimensionality of x doesn't match self.dim
+        :return: value of the function in the provided point
         """
-        assert (
-            len(x) == self.dim
-        ), f"Given point has invalid dimensions, got {len(x)}, expected {self.dim}"
-        super().__call__()
-        return self.function(x) - self.minimum
+        super().__call__(x)
+        return float(self.function([x])[0]) - self.minimum

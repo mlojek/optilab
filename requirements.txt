@@ -11,3 +11,4 @@ tabulate
 pandas
 tqdm
 git+https://github.com/tilleyd/cec2017-py
+scikit-learn

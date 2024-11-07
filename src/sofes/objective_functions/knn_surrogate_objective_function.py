@@ -18,7 +18,6 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
 
     def __init__(
         self,
-        dim: int,
         train_set: List[Tuple[List[float], float]],
         num_neighbors: int,
     ) -> None:
@@ -29,9 +28,8 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         :param train_set: training data for the model.
         :param num_neighbours: K, the number of closest neighbours to use in regression.
         """
-        super().__init__(f"KNN{num_neighbors}", dim, train_set)
         self.model = KNeighborsRegressor(n_neighbors=num_neighbors, weights="distance")
-        self.train(train_set)
+        super().__init__(f"KNN{num_neighbors}", train_set)
 
     def train(self, train_set: List[Tuple[List[float], float]]) -> None:
         """

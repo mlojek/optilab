@@ -2,6 +2,8 @@
 Approximate ranking metamodel based on lmm-CMA-ES.
 """
 
+from typing import List
+
 
 class ApproximateRankingMetamodel:
     """Approximate ranking metamodel based on lmm-CMA-ES"""
@@ -18,10 +20,7 @@ class ApproximateRankingMetamodel:
         self.objective_function = None
         self.surrogate_function = None
 
+    def __call__(self, x, train_set) -> List[float]:
+        # assert lambda
 
-
-    def placeholder1(self) -> None:
-        """placeholder"""
-
-    def placeholder2(self) -> None:
-        """placeholder"""
+        pass

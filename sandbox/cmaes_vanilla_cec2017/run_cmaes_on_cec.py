@@ -50,7 +50,7 @@ def run_cmaes_on_cec(
 
     while not es.stop():
         solutions = es.ask()
-        fitness_values = [cec_function([x.tolist()])[0] for x in solutions]
+        fitness_values = [cec_function(x) for x in solutions]
         res_log.extend(fitness_values)
         es.tell(solutions, fitness_values)
         es.logger.add()

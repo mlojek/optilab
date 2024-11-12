@@ -19,6 +19,19 @@ from typing import List, Tuple
 import cma
 import numpy as np
 
+NUM_NEIGHBOURS = 5
+EXPERIMENT_NAME = f'cmaes_armknn{NUM_NEIGHBOURS}_cec2017'
+
+
+MAX_FES = 1e6
+BOUNDS = [-100, 100]
+SIGMA0 = 10
+DIMS = [10]
+POPSIZE_PER_DIM = 4
+TOLERANCE = 1e-8
+NUM_RUNS = 3
+F_NUMS = [1]
+
 
 def run_cmaes_on_cec(
     cec_function: CEC2017ObjectiveFunction,
@@ -41,7 +54,7 @@ def run_cmaes_on_cec(
     :param sigma0: The starting value of the sigma parameter.
     :return: The list of error values achieved through the optimization
     """
-    metamodel = ApproximateRankingMetamodel(population_size*2, population_size, cec_function, KNNSurrogateObjectiveFunction(5))
+    metamodel = ApproximateRankingMetamodel(population_size*2, population_size, cec_function, KNNSurrogateObjectiveFunction(NUM_NEIGHBOURS))
 
     x0 = np.random.uniform(low=bounds[0], high=bounds[1], size=dims)
 
@@ -62,39 +75,23 @@ def run_cmaes_on_cec(
 
     while not es.stop():
         solutions = es.ask(population_size*2)
-        # print(np.shape(solutions))
         xy_pairs = metamodel(solutions)
         x, y = zip(*xy_pairs)
         res_log.extend(y)
         es.tell(x, y)
 
-    # TODO return metamodel's train set ys
-    return res_log
-
-
-EXPERIMENT_NAME = 'cmaes_armknn5_cec2017'
-
-
-MAX_FES = 1e6
-BOUNDS = [-100, 100]
-SIGMA0 = 10
-DIMS = [10]
-POPSIZE_PER_DIM = 4
-TOLERANCE = 1e-8
-NUM_RUNS = 5
-F_NUMS = [1, 2, 3, 4, 5]
+    return metamodel.get_log()
 
 
 if __name__ == "__main__":
-    # TODO update metadata
     metadata = ExperimentMetadata(
-        "cmaes",
-        {"sigma0": SIGMA0, "popsize_per_dim": 4},
-        "",
-        {"dummy": 42},
-        "cec2017",
-        "",
-        "",
+        method_name="cmaes",
+        metamodel_hyperparameters={"sigma0": SIGMA0, "popsize_per_dim": 4},
+        metamodel_name="approximate_ranking_metamodel_knn",
+        method_hyperparameters={"num_neighbours": NUM_NEIGHBOURS},
+        benchmark_name="cec2017",
+        time_begin="",
+        time_end="",
     )
     results = ExperimentResults(metadata)
 

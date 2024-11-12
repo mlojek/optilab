@@ -42,8 +42,10 @@ class ApproximateRankingMetamodel:
         elif num_iters < 2:
             self.n_init = max(self.n_step, self.n_init - self.n_step)
 
-    def approximate(self, xs: List[List[float]]) -> List[Tuple[List[float], float]]:
+    def approximate(self, xs: List[List[float]], retrain: bool=False) -> List[Tuple[List[float], float]]:
         """"""
+        if retrain:
+            self.surrogate_function.train(self.train_set)
         return [(x, self.surrogate_function(x)) for x in xs]
     
     def evaluate(self, xs: List[List[float]]) -> List[Tuple[List[float], float]]:
@@ -52,29 +54,28 @@ class ApproximateRankingMetamodel:
         self.train_set.extend(result)
         return result
 
+    def get_log(self) -> List[float]:
+        ''''''
+        return [y for _, y in self.train_set]
+
     def do_call(self, xs: List[List[float]]) -> List[float]:
         """"""
-        temp_train_set = []
 
         # 1 approximate
-        self.surrogate_function.train(self.train_set)
-        items = self.approximate(xs)
+        items = self.approximate(xs, retrain=True)
 
         # 2 rank
         items_ranked = rank_items(items)
-        print(items_ranked)
         items_mu_ranked = items_ranked[: self.popsize]
 
         # 3 evaluate and add to train set
-        for item in items_ranked[: self.n_init]:
-            temp_train_set.append((item[0], self.objective_function(item[0])))
+        items_ranked[:self.n_init] = self.evaluate([x for x, _ in items_ranked[: self.n_init]])
 
         num_iter = 0
-        for i in range((self.input_size - self.n_init) // self.n_step):
+        for _ in range((self.input_size - self.n_init) // self.n_step):
             num_iter += 1
             # 6 retrain and approximate
-            self.surrogate_function.train(self.train_set + temp_train_set)
-            new_items = self.approximate(xs)
+            new_items = self.approximate(xs, retrain=True)
 
             # 7 rank
             new_items_ranked = rank_items(new_items)
@@ -85,21 +86,21 @@ class ApproximateRankingMetamodel:
                 break
             else:
                 counter = 0
+                to_eval = []
                 for x in xs:
-                    for tmp_x, tmp_y in temp_train_set:
+                    for tmp_x, _ in self.train_set:
                         if not x == tmp_x:
                             counter += 1
-                            temp_train_set.append((x, self.objective_function(x)))
+                            to_eval.append(x)
                             break
                     if counter >= self.n_step:
                         break
                 items_mu_ranked = new_items_mu_ranked
+                self.evaluate(to_eval)
 
         self._update_n(num_iter)
-        self.train_set.extend(temp_train_set)
 
-        # TODO return #mu solutions
-        return temp_train_set
+        return items_mu_ranked
 
     def __call__(self, xs: List[List[float]]) -> List[Tuple[List[float], float]]:
         """"""

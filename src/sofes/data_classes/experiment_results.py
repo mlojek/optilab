@@ -162,6 +162,6 @@ class ExperimentResults:
         :param savepath: optional, path to save the plot to
         """
         plot_box_plot(
-            {item["name"]: [max(log) for log in item["logs"]] for item in self.data},
+            {item["name"]: [min(log) for log in item["logs"]] for item in self.data},
             savepath=savepath,
         )

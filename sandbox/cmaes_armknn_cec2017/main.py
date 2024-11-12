@@ -62,12 +62,17 @@ def run_cmaes_on_cec(
 
     while not es.stop():
         solutions = es.ask(population_size*2)
+        # print(np.shape(solutions))
         xy_pairs = metamodel(solutions)
         x, y = zip(*xy_pairs)
         res_log.extend(y)
         es.tell(x, y)
 
+    # TODO return metamodel's train set ys
     return res_log
+
+
+EXPERIMENT_NAME = 'cmaes_armknn5_cec2017'
 
 
 MAX_FES = 1e6
@@ -81,6 +86,7 @@ F_NUMS = [1, 2, 3, 4, 5]
 
 
 if __name__ == "__main__":
+    # TODO update metadata
     metadata = ExperimentMetadata(
         "cmaes",
         {"sigma0": SIGMA0, "popsize_per_dim": 4},
@@ -113,7 +119,7 @@ if __name__ == "__main__":
             results.add_data(func.name, dimension, maxes)
 
     print(results.print_stats())
-    results.save_to_json("cmaes_vanilla_cec2017.json")
-    results.save_stats("cmaes_vanilla_cec2017.csv")
-    results.plot_ecdf_curve(dim=10, savepath="cmaes_vanilla_cec2017_ecdf_10.png")
-    results.plt_box_plot(savepath="cmaes_vanilla_cec2017_box.png")
+    results.save_to_json(f"{EXPERIMENT_NAME}.json")
+    results.save_stats(f"{EXPERIMENT_NAME}cmaes_vanilla_cec2017.csv")
+    results.plot_ecdf_curve(dim=10, savepath=f"{EXPERIMENT_NAME}_ecdf_10.png")
+    results.plt_box_plot(savepath=f"{EXPERIMENT_NAME}_box.png")

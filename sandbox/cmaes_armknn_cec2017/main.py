@@ -2,25 +2,24 @@
 CMA-ES on CEC2017 with metamodel from lmm-CMA-ES also known as Approximate Ranking Metamodel
 """
 
-# pylint: disable=too-many-arguments, too-many-positional-arguments
+# pylint: disable=too-many-arguments
 
-
-from tqdm import tqdm
-
-from sofes.data_classes import ExperimentMetadata, ExperimentResults
-from sofes.objective_functions import (
-    CEC2017ObjectiveFunction,
-    KNNSurrogateObjectiveFunction
-)
-from sofes.metamodels import ApproximateRankingMetamodel
 
 from typing import List, Tuple
 
 import cma
 import numpy as np
+from tqdm import tqdm
+
+from sofes.data_classes import ExperimentMetadata, ExperimentResults
+from sofes.metamodels import ApproximateRankingMetamodel
+from sofes.objective_functions import (
+    CEC2017ObjectiveFunction,
+    KNNSurrogateObjectiveFunction,
+)
 
 NUM_NEIGHBOURS = 5
-EXPERIMENT_NAME = f'cmaes_armknn{NUM_NEIGHBOURS}_cec2017'
+EXPERIMENT_NAME = f"cmaes_armknn{NUM_NEIGHBOURS}_cec2017"
 
 
 MAX_FES = 1e6
@@ -54,7 +53,12 @@ def run_cmaes_on_cec(
     :param sigma0: The starting value of the sigma parameter.
     :return: The list of error values achieved through the optimization
     """
-    metamodel = ApproximateRankingMetamodel(population_size*2, population_size, cec_function, KNNSurrogateObjectiveFunction(NUM_NEIGHBOURS))
+    metamodel = ApproximateRankingMetamodel(
+        population_size * 2,
+        population_size,
+        cec_function,
+        KNNSurrogateObjectiveFunction(NUM_NEIGHBOURS),
+    )
 
     x0 = np.random.uniform(low=bounds[0], high=bounds[1], size=dims)
 
@@ -74,7 +78,7 @@ def run_cmaes_on_cec(
     )
 
     while not es.stop():
-        solutions = es.ask(population_size*2)
+        solutions = es.ask(population_size * 2)
         xy_pairs = metamodel(solutions)
         x, y = zip(*xy_pairs)
         res_log.extend(y)

@@ -1,6 +1,6 @@
 [project]
 name = "sofes"
-version = "0.0.3"
+version = "0.1"
 authors = [
   { name="mlojek", email="marcin.lojek@pw.edu.pl" },
 ]

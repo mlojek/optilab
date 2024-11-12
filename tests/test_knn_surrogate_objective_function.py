@@ -45,16 +45,16 @@ class TestKNNSurrogateObjectiveFunction:
         train_set = [([1, 1], 1), ([1, -1], 3), ([-1, -1], 1), ([-1], 3)]
         with pytest.raises(ValueError):
             KNNSurrogateObjectiveFunction(4, train_set)
-    
+
     def test_not_ready(self):
-        ''''''
+        """"""
         knn_sof = KNNSurrogateObjectiveFunction(4)
         assert not knn_sof.is_ready
         with pytest.raises(NotImplementedError):
             knn_sof([10])
 
     def test_train_later(self):
-        ''''''
+        """"""
         train_set = [([1, 1], 1), ([1, -1], 3), ([-1, -1], 1), ([-1, 1], 3)]
         knn_sof = KNNSurrogateObjectiveFunction(4)
         assert not knn_sof.is_ready

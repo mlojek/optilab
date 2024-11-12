@@ -14,7 +14,9 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
     Abstract base class for surrogate objective functions.
     """
 
-    def __init__(self, name: str, train_set: List[Tuple[List[float], float]]=None) -> None:
+    def __init__(
+        self, name: str, train_set: List[Tuple[List[float], float]] = None
+    ) -> None:
         """
         Class constructor
 
@@ -44,5 +46,5 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
 
     def __call__(self, x: List[float]) -> float:
         if not self.is_ready:
-            raise NotImplementedError('The surrogate function is not trained!')
+            raise NotImplementedError("The surrogate function is not trained!")
         super().__call__(x)

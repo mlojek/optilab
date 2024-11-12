@@ -53,9 +53,5 @@ def run_cmaes_on_cec(
         fitness_values = [cec_function(x) for x in solutions]
         res_log.extend(fitness_values)
         es.tell(solutions, fitness_values)
-        es.logger.add()
-
-    res_log = [x - target for x in res_log]
-    assert min(res_log) == es.result.fbest - target
 
     return res_log

@@ -7,7 +7,7 @@ from typing import List, Tuple, Type
 from sofes.objective_functions import ObjectiveFunction, SurrogateObjectiveFunction
 
 
-def rank_items(items: List[Tuple[List[float], float, bool]]) -> List[Tuple[List[float], float, bool]]:
+def rank_items(items: List[Tuple[List[float], float]]) -> List[Tuple[List[float], float]]:
     return zip(*sorted(items, key=lambda x: x[1]))
 
 
@@ -39,39 +39,60 @@ class ApproximateRankingMetamodel:
             self.n_init = max(self.n_step, self.n_init - self.n_step)
 
     def do_magic(self, xs: List[List[float]]) -> List[float]:
+        temp_train_set = []
+
         # 1 approximate
         self.surrogate_function.train(self.train_set)
 
         items = [
-            (x, self.surrogate_function(x), False)
+            (x, self.surrogate_function(x))
             for x in xs
         ]
 
         # 2 rank
-        all_items = rank_items(items)
-        mu_items = all_items[:self.popsize]
+        items_ranked = rank_items(items)
+        items_mu_ranked = items_ranked[:self.popsize]
 
         # 3 evaluate and add to train set
-        for item in all_items[:self.n_init]:
-            item = (item[0], self.objective_function(item[0]), True)
-            # add to train set
+        for item in items_ranked[:self.n_init]:
+            temp_train_set.append((item[0], self.objective_function(item[0])))
             
 
         for i in range((self.input_size - self.n_init) / self.n_step):
-            # 6 retrain and approximate
+            # 6 retrain
+            self.surrogate_function.train(self.train_set + temp_train_set)
+
+            # 6 approximate
+            new_items = [
+                (x, self.surrogate_function(x))
+                for x in xs
+            ]
+
             # 7 rank
+            new_items_ranked = rank_items(new_items)
+            new_items_mu_ranked = new_items_ranked[:self.popsize]
+    
             # 8 if rank change
-            if pass:
+            if [l[0] == r[0] for l, r in zip(new_items_mu_ranked, items_mu_ranked)]:
                 self._update_n(i + 1)
                 break
             else:
-                # 12 evaluate and add to train set
-                pass
+                counter = 0
+                for x in xs:
+                    for tmp_x, tmp_y in temp_train_set:
+                        if not x == tmp_x:
+                            counter += 1
+                            temp_train_set.append((x, self.objective_function(x)))
+                            break
+                    if counter >= self.n_step:
+                        break
+                items_mu_ranked = new_items_mu_ranked
 
-        # return ys evaluated by real function
-        return pass
+        self.train_set.extend(temp_train_set)
 
-    def __call__(self, xs: List[List[float]]) -> List[float]:
+        return temp_train_set
+
+    def __call__(self, xs: List[List[float]]) -> List[Tuple[List[float], float]]:
         # assert lambda
         if not len(xs) == self.input_size:
             raise ValueError(f'The number of provided points is different than expected. Expected {self.input_size}, got {len(xs)}.')

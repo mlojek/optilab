@@ -2,7 +2,7 @@
 Approximate ranking metamodel based on lmm-CMA-ES.
 """
 
-from typing import List, Tuple, Type
+from typing import List, Tuple
 
 from sofes.objective_functions import ObjectiveFunction, SurrogateObjectiveFunction
 
@@ -21,6 +21,7 @@ class ApproximateRankingMetamodel:
         objective_function: ObjectiveFunction,
         surrogate_function: SurrogateObjectiveFunction,
     ) -> None:
+        ''''''
         self.input_size = input_size
         self.popsize = popsize
 
@@ -33,21 +34,23 @@ class ApproximateRankingMetamodel:
         self.surrogate_function = surrogate_function
 
     def _update_n(self, num_iters: int) -> None:
+        ''''''
         if num_iters > 2:
             self.n_init = min(self.n_init + self.n_step, self.input_size - self.n_step)
         elif num_iters < 2:
             self.n_init = max(self.n_step, self.n_init - self.n_step)
 
+    def approximate(self, xs: List[List[float]]) -> List[Tuple[List[float], float]]:
+        ''''''
+        return [(x, self.surrogate_function(x)) for x in xs]
+
     def do_magic(self, xs: List[List[float]]) -> List[float]:
+        ''''''
         temp_train_set = []
 
         # 1 approximate
         self.surrogate_function.train(self.train_set)
-
-        items = [
-            (x, self.surrogate_function(x))
-            for x in xs
-        ]
+        items = self.approximate(xs)
 
         # 2 rank
         items_ranked = rank_items(items)
@@ -57,24 +60,19 @@ class ApproximateRankingMetamodel:
         for item in items_ranked[:self.n_init]:
             temp_train_set.append((item[0], self.objective_function(item[0])))
             
-
+        num_iter = 0
         for i in range((self.input_size - self.n_init) / self.n_step):
-            # 6 retrain
+            num_iter += 1
+            # 6 retrain and approximate
             self.surrogate_function.train(self.train_set + temp_train_set)
-
-            # 6 approximate
-            new_items = [
-                (x, self.surrogate_function(x))
-                for x in xs
-            ]
+            new_items = self.approximate(xs)
 
             # 7 rank
             new_items_ranked = rank_items(new_items)
             new_items_mu_ranked = new_items_ranked[:self.popsize]
     
             # 8 if rank change
-            if [l[0] == r[0] for l, r in zip(new_items_mu_ranked, items_mu_ranked)]:
-                self._update_n(i + 1)
+            if all([l[0] == r[0] for l, r in zip(new_items_mu_ranked, items_mu_ranked)]):
                 break
             else:
                 counter = 0
@@ -88,11 +86,13 @@ class ApproximateRankingMetamodel:
                         break
                 items_mu_ranked = new_items_mu_ranked
 
+        self._update_n(num_iter)
         self.train_set.extend(temp_train_set)
 
         return temp_train_set
 
     def __call__(self, xs: List[List[float]]) -> List[Tuple[List[float], float]]:
+        ''''''
         # assert lambda
         if not len(xs) == self.input_size:
             raise ValueError(f'The number of provided points is different than expected. Expected {self.input_size}, got {len(xs)}.')

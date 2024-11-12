@@ -10,7 +10,7 @@ from sofes.objective_functions import ObjectiveFunction, SurrogateObjectiveFunct
 def rank_items(
     items: List[Tuple[List[float], float]]
 ) -> List[Tuple[List[float], float]]:
-    return zip(*sorted(items, key=lambda x: x[1]))
+    return list(sorted(items, key=lambda x: x[1]))
 
 
 class ApproximateRankingMetamodel:
@@ -45,8 +45,14 @@ class ApproximateRankingMetamodel:
     def approximate(self, xs: List[List[float]]) -> List[Tuple[List[float], float]]:
         """"""
         return [(x, self.surrogate_function(x)) for x in xs]
+    
+    def evaluate(self, xs: List[List[float]]) -> List[Tuple[List[float], float]]:
+        ''''''
+        result = [(x, self.objective_function(x)) for x in xs]
+        self.train_set.extend(result)
+        return result
 
-    def do_magic(self, xs: List[List[float]]) -> List[float]:
+    def do_call(self, xs: List[List[float]]) -> List[float]:
         """"""
         temp_train_set = []
 
@@ -56,6 +62,7 @@ class ApproximateRankingMetamodel:
 
         # 2 rank
         items_ranked = rank_items(items)
+        print(items_ranked)
         items_mu_ranked = items_ranked[: self.popsize]
 
         # 3 evaluate and add to train set
@@ -63,7 +70,7 @@ class ApproximateRankingMetamodel:
             temp_train_set.append((item[0], self.objective_function(item[0])))
 
         num_iter = 0
-        for i in range((self.input_size - self.n_init) / self.n_step):
+        for i in range((self.input_size - self.n_init) // self.n_step):
             num_iter += 1
             # 6 retrain and approximate
             self.surrogate_function.train(self.train_set + temp_train_set)
@@ -74,9 +81,7 @@ class ApproximateRankingMetamodel:
             new_items_mu_ranked = new_items_ranked[: self.popsize]
 
             # 8 if rank change
-            if all(
-                [l[0] == r[0] for l, r in zip(new_items_mu_ranked, items_mu_ranked)]
-            ):
+            if [l[0] == r[0] for l, r in zip(new_items_mu_ranked, items_mu_ranked)]:
                 break
             else:
                 counter = 0
@@ -93,20 +98,17 @@ class ApproximateRankingMetamodel:
         self._update_n(num_iter)
         self.train_set.extend(temp_train_set)
 
+        # TODO return #mu solutions
         return temp_train_set
 
     def __call__(self, xs: List[List[float]]) -> List[Tuple[List[float], float]]:
         """"""
-        # assert lambda
         if not len(xs) == self.input_size:
             raise ValueError(
                 f"The number of provided points is different than expected. Expected {self.input_size}, got {len(xs)}."
             )
 
         if len(self.train_set) < self.input_size:
-            ys = [self.objective_function(x) for x in xs]
-            self.train_set.extend(list(zip(xs, ys)))
-            return ys
-
+            return self.evaluate(xs)
         else:
-            return self.do_magic(xs)
+            return self.do_call(xs)

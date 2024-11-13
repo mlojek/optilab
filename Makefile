@@ -1,5 +1,9 @@
 all_code = src sandbox tests
 
+install:
+	pip install -r requirements
+	pip install .
+
 clean:
 	rm -rf build
 	rm -rf src/sofes.egg-info

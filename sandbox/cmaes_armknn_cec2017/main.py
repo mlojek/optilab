@@ -16,6 +16,7 @@ from sofes.metamodels import ApproximateRankingMetamodel
 from sofes.objective_functions import (
     CEC2017ObjectiveFunction,
     KNNSurrogateObjectiveFunction,
+    SphereFunction
 )
 
 NUM_NEIGHBOURS = 5
@@ -71,7 +72,6 @@ def run_cmaes_on_cec(
             "popsize": population_size,
             "bounds": [bounds[0], bounds[1]],
             "maxfevals": call_budget,
-            "tolfun": tolerance,
             "ftarget": target,
             "verbose": -1,
         },
@@ -83,6 +83,8 @@ def run_cmaes_on_cec(
         x, y = zip(*xy_pairs)
         res_log.extend(y)
         es.tell(x, y)
+
+    print(es.stop())
 
     return metamodel.get_log()
 
@@ -103,6 +105,7 @@ if __name__ == "__main__":
         for dimension in DIMS:
             print(f"{n} dim {dimension}")
             func = CEC2017ObjectiveFunction(n, dimension)
+            func = SphereFunction(dimension)
             maxes = [
                 run_cmaes_on_cec(
                     func,

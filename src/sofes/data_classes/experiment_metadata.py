@@ -18,8 +18,8 @@ class ExperimentMetadata:
     metamodel_name: str
     metamodel_hyperparameters: dict
     benchmark_name: str
-    time_begin: str
-    time_end: str
+    time_begin: str = None
+    time_end: str = None
 
     def begin_now(self) -> None:
         """

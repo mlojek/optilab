@@ -14,7 +14,9 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
     Abstract base class for surrogate objective functions.
     """
 
-    def __init__(self, name: str, train_set: List[Tuple[List[float], float]]) -> None:
+    def __init__(
+        self, name: str, train_set: List[Tuple[List[float], float]] = None
+    ) -> None:
         """
         Class constructor
 
@@ -22,14 +24,11 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
         :param dim: dimensionality of the function
         :param_train_set: training data for the model
         """
-        dim_set = {len(x) for x, _ in train_set}
-        if not len(dim_set) == 1:
-            raise ValueError(
-                "Provided train set has x-es with different dimensionalities."
-            )
+        self.is_ready = False
+        super().__init__(name, 1)
 
-        super().__init__(name, len(train_set[0][0]))
-        self.train(train_set)
+        if train_set:
+            self.train(train_set)
 
     def train(self, train_set: List[Tuple[List[float], float]]) -> None:
         """
@@ -37,4 +36,15 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
 
         :param train_set: train data expressed as list of tuples of x, y values
         """
-        raise NotImplementedError
+        self.is_ready = True
+        dim_set = {len(x) for x, _ in train_set}
+        if not len(dim_set) == 1:
+            raise ValueError(
+                "Provided train set has x-es with different dimensionalities."
+            )
+        self.dim = list(dim_set)[0]
+
+    def __call__(self, x: List[float]) -> float:
+        if not self.is_ready:
+            raise NotImplementedError("The surrogate function is not trained!")
+        super().__call__(x)

@@ -18,8 +18,8 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
 
     def __init__(
         self,
-        train_set: List[Tuple[List[float], float]],
         num_neighbors: int,
+        train_set: List[Tuple[List[float], float]] = None,
     ) -> None:
         """
         Class constructor.
@@ -37,6 +37,7 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
 
         :param train_set: train data expressed as list of tuples of x, y values
         """
+        super().train(train_set)
         x_train = [x for x, _ in train_set]
         y_train = [y for _, y in train_set]
         self.model.fit(x_train, y_train)

@@ -5,6 +5,5 @@ Surrogate Objective Function for Evolution Strategy
 ```
 conda create -n sofes python=3.11
 conda activate sofes
-pip install -r requirements
-pip install .
+make install
 ```

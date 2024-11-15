@@ -2,7 +2,7 @@
 Function running CMA-ES algorithm on CEC 2017 functions
 """
 
-# pylint: disable=too-many-arguments, too-many-positional-arguments
+# pylint: disable=too-many-arguments
 
 from typing import List, Tuple
 
@@ -50,12 +50,8 @@ def run_cmaes_on_cec(
 
     while not es.stop():
         solutions = es.ask()
-        fitness_values = [cec_function([x.tolist()])[0] for x in solutions]
+        fitness_values = [cec_function(x) for x in solutions]
         res_log.extend(fitness_values)
         es.tell(solutions, fitness_values)
-        es.logger.add()
-
-    res_log = [x - target for x in res_log]
-    assert min(res_log) == es.result.fbest - target
 
     return res_log

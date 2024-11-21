@@ -13,16 +13,16 @@ from tqdm import tqdm
 
 from sofes.data_classes import ExperimentMetadata, ExperimentResults
 from sofes.metamodels import ApproximateRankingMetamodel
-from sofes.plotting import plot_ecdf_curves
 from sofes.objective_functions import (
-    ObjectiveFunction,
     CEC2017ObjectiveFunction,
     KNNSurrogateObjectiveFunction,
+    ObjectiveFunction,
     SphereFunction,
 )
+from sofes.plotting import plot_ecdf_curves
 
 
-def run_cmaes_on_cec(
+def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many-locals
     function: ObjectiveFunction,
     dims: int,
     population_size: int,
@@ -31,6 +31,7 @@ def run_cmaes_on_cec(
     sigma0: float,
     armknn_metamodel: bool = False,
     num_neighbours: int = 5,
+    debug: bool = False,
 ) -> List[float]:
     """
     TODO
@@ -55,7 +56,7 @@ def run_cmaes_on_cec(
             "bounds": [bounds[0], bounds[1]],
             "maxfevals": call_budget,
             "ftarget": 0,
-            "verbose": -1,
+            "verbose": -9,
         },
     )
 
@@ -71,7 +72,9 @@ def run_cmaes_on_cec(
             res_log.extend(y)
             es.tell(solutions, y)
 
-    print(es.stop())
+    if debug:
+        print(es.stop())
+        print(dict(es.result._asdict()))
 
     if armknn_metamodel:
         return metamodel.get_log()
@@ -84,26 +87,31 @@ if __name__ == "__main__":
     POPSIZE = 40
     NUM_RUNS = 5
 
-
     metadata = ExperimentMetadata(
         method_name="cmaes",
-        method_hyperparameters={"sigma0": 10, "popsize": "4*dim", 'call_budget': 1e6, 'bounds': (-100, 100)},
+        method_hyperparameters={
+            "sigma0": 10,
+            "popsize": "4*dim",
+            "call_budget": 1e6,
+            "bounds": (-100, 100),
+        },
         metamodel_name="approximate_ranking_metamodel_knn",
         metamodel_hyperparameters={"num_neighbours": 5},
         benchmark_name="cec2017",
     )
     results = ExperimentResults(metadata)
 
-
     func = SphereFunction(DIM)
+    func = CEC2017ObjectiveFunction(15, DIM)
     logs_vanilla = [
         run_cmaes_on_cec(
             func,
             DIM,
             POPSIZE,
-            metadata.method_hyperparameters['call_budget'],
-            metadata.method_hyperparameters['bounds'],
-            10,
+            metadata.method_hyperparameters["call_budget"],
+            metadata.method_hyperparameters["bounds"],
+            30,
+            debug=True,
         )
         for _ in tqdm(range(NUM_RUNS))
     ]
@@ -113,18 +121,15 @@ if __name__ == "__main__":
             func,
             DIM,
             POPSIZE,
-            metadata.method_hyperparameters['call_budget'],
-            metadata.method_hyperparameters['bounds'],
-            10,
-            armknn_metamodel=True
+            metadata.method_hyperparameters["call_budget"],
+            metadata.method_hyperparameters["bounds"],
+            30,
+            armknn_metamodel=True,
+            debug=True,
         )
         for _ in tqdm(range(NUM_RUNS))
     ]
 
     plot_ecdf_curves(
-        {
-            'vanilla': logs_vanilla,
-            'armknn5': logs_armknn5
-        },
-        n_dimensions=DIM
+        {"vanilla": logs_vanilla, "armknn5": logs_armknn5}, n_dimensions=DIM
     )

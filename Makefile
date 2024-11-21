@@ -1,8 +1,8 @@
 all_code = src sandbox tests
 
 install:
-	pip install -r requirements
-	pip install .
+	pip install -r requirements.txt
+	pip install -e .
 
 clean:
 	rm -rf build

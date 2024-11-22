@@ -68,3 +68,10 @@ class TestKNNSurrogateObjectiveFunction:
         assert knn_sof([0, 0]) == 2
         assert knn_sof.num_calls == 1
         assert knn_sof.dim == 2
+
+    @pytest.mark.skip()
+    def test_knn_point_from_training_set(self):
+        """
+        When fed with item from training set return its Y.
+        """
+        assert False

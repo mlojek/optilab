@@ -65,7 +65,7 @@ def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many
         if armknn_metamodel:
             solutions = es.ask()
             metamodel.adapt(solutions)
-            xy_pairs = metamodel.approximate(solutions)
+            xy_pairs = metamodel(solutions)
             x, y = zip(*xy_pairs)
             es.tell(x, y)
         else:
@@ -75,7 +75,6 @@ def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many
             es.tell(solutions, y)
 
     if debug:
-        print(es.stop())
         print(dict(es.result._asdict()))
 
     if armknn_metamodel:

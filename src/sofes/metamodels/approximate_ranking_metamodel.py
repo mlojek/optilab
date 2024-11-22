@@ -60,7 +60,7 @@ class ApproximateRankingMetamodel:
         elif num_iters < 2:
             self.n_init = max(self.n_step, self.n_init - self.n_step)
 
-    def approximate(self, xs: List[List[float]]) -> List[Tuple[List[float], float]]:
+    def __call__(self, xs: List[List[float]]) -> List[Tuple[List[float], float]]:
         """
         Approximates the values of provided points with surrogate objective function.
 
@@ -111,7 +111,7 @@ class ApproximateRankingMetamodel:
             return
 
         # 1 approximate
-        items = self.approximate(xs)
+        items = self(xs)
 
         # 2 rank
         items_ranked = rank_items(items)
@@ -126,7 +126,7 @@ class ApproximateRankingMetamodel:
         for _ in range((self.input_size - self.n_init) // self.n_step):
             num_iter += 1
             # 6 retrain and approximate
-            new_items = self.approximate(xs)
+            new_items = self(xs)
 
             # 7 rank
             new_items_ranked = rank_items(new_items)

@@ -38,8 +38,8 @@ def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many
     """
     if armknn_metamodel:
         metamodel = ApproximateRankingMetamodel(
-            population_size * 2,
             population_size,
+            population_size // 2,
             function,
             KNNSurrogateObjectiveFunction(num_neighbours),
         )
@@ -57,12 +57,14 @@ def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many
             "maxfevals": call_budget,
             "ftarget": 0,
             "verbose": -9,
+            "tolfun": 1e-8,
         },
     )
 
     while not es.stop():
         if armknn_metamodel:
-            solutions = es.ask(population_size * 2)
+            solutions = [x.tolist() for x in es.ask()]
+            metamodel.adapt(solutions)
             xy_pairs = metamodel(solutions)
             x, y = zip(*xy_pairs)
             es.tell(x, y)
@@ -73,7 +75,6 @@ def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many
             es.tell(solutions, y)
 
     if debug:
-        print(es.stop())
         print(dict(es.result._asdict()))
 
     if armknn_metamodel:
@@ -102,7 +103,7 @@ if __name__ == "__main__":
     results = ExperimentResults(metadata)
 
     func = SphereFunction(DIM)
-    func = CEC2017ObjectiveFunction(15, DIM)
+    func = CEC2017ObjectiveFunction(1, DIM)
     logs_vanilla = [
         run_cmaes_on_cec(
             func,
@@ -110,10 +111,10 @@ if __name__ == "__main__":
             POPSIZE,
             metadata.method_hyperparameters["call_budget"],
             metadata.method_hyperparameters["bounds"],
-            30,
+            10,
             debug=True,
         )
-        for _ in tqdm(range(NUM_RUNS))
+        for _ in tqdm(range(NUM_RUNS), unit="runs")
     ]
 
     logs_armknn5 = [
@@ -123,7 +124,7 @@ if __name__ == "__main__":
             POPSIZE,
             metadata.method_hyperparameters["call_budget"],
             metadata.method_hyperparameters["bounds"],
-            30,
+            10,
             armknn_metamodel=True,
             debug=True,
         )

@@ -63,7 +63,7 @@ def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many
 
     while not es.stop():
         if armknn_metamodel:
-            solutions = es.ask()
+            solutions = [x.tolist() for x in es.ask()]
             metamodel.adapt(solutions)
             xy_pairs = metamodel(solutions)
             x, y = zip(*xy_pairs)
@@ -114,7 +114,7 @@ if __name__ == "__main__":
             10,
             debug=True,
         )
-        for _ in tqdm(range(NUM_RUNS))
+        for _ in tqdm(range(NUM_RUNS), unit="runs")
     ]
 
     logs_armknn5 = [

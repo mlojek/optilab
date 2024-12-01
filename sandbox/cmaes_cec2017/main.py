@@ -9,6 +9,7 @@ from typing import List, Tuple
 
 import cma
 import numpy as np
+from matplotlib import pyplot as plt
 from tqdm import tqdm
 
 from sofes.data_classes import ExperimentMetadata, ExperimentResults
@@ -61,6 +62,8 @@ def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many
         },
     )
 
+    sigma_best_plot_data = []
+
     while not es.stop():
         if armknn_metamodel:
             solutions = [x.tolist() for x in es.ask()]
@@ -74,8 +77,24 @@ def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many
             res_log.extend(y)
             es.tell(solutions, y)
 
+        sigma_best_plot_data.append(
+            (es.countevals, np.log10(es.best.f), np.log10(es.sigma))
+        )
+
     if debug:
         print(dict(es.result._asdict()))
+        plt.clf()
+        _, axes = plt.subplots(2, 1, figsize=(8, 10))  # 2 rows, 1 column
+        axes[0].plot(
+            [x[0] for x in sigma_best_plot_data], [x[1] for x in sigma_best_plot_data]
+        )
+        axes[0].set_title("bext_value")
+        axes[1].plot(
+            [x[0] for x in sigma_best_plot_data], [x[2] for x in sigma_best_plot_data]
+        )
+        axes[1].set_title("sigma")
+        plt.tight_layout()
+        plt.show()
 
     if armknn_metamodel:
         return metamodel.get_log()
@@ -112,7 +131,7 @@ if __name__ == "__main__":
             metadata.method_hyperparameters["call_budget"],
             metadata.method_hyperparameters["bounds"],
             10,
-            debug=True,
+            debug=False,
         )
         for _ in tqdm(range(NUM_RUNS), unit="runs")
     ]

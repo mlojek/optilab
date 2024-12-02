@@ -1,13 +1,13 @@
-# Name of the experiment
+# Experiment 3: Reproduction of LMM-CMA-ES
 
 ## 1. Introduction
+LMM-CMA-ES, which stands for local meta-model covariance matrix adaptation evolution strategy, is a metamodel enhancement proposed by Nikolaus Hansen for his CMA-ES algorithm. One of the most important contributions of this publication is the introduction of Approximate Ranking Metamodel. This metamodel has also been adopted by Konrad Krawczyk during his work on JADE, where he used the same metamodel management algorithm but replaced LWR with KNN.
 
-- brief introduction
-- motivation - why this experiment is done
-- what it contributes to the project
-- what will be done
-- what will be produced as a result of this experiment
-- what would be considered a success
+Reimplementation of this metamodel on CMA-ES has been proposed as the first step in the research process of SOFES project. As in the case of Konrad Krawczyk's JADE with ARM, I'm using KNN metamodel.
+
+Now to check if the implementation is done correctly, the results from lmm-cma-es shall be reproduced.
+
+The experiment will be considered successful if the results of reproduction (number of objective function evaluation and the ratio of such evaluations with and without the metamodel) are close to those reported in the publication.
 
 ## 2. Problem Definition and Algorithm
 
@@ -42,9 +42,9 @@ Answer the following questions for each piece of related work that addresses the
 What are the major shortcomings of your current method? For each shortcoming, propose additions or enhancements that would help overcome it.
 
 ## 6. Conclusion
-
 Briefly summarize the important results and conclusions presented in the paper. What are the most important points illustrated by your work? How will your results improve future research and applications in the area?
 
 ## Bilbiography
-
+- [1] lmm cma-es
+- [2] krawczyk
 Be sure to include a standard, well-formated, comprehensive bibliography with citations from the text referring to previously published papers in the scientific literature that you utilized or are related to your work.

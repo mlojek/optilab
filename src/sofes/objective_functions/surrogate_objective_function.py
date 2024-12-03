@@ -45,6 +45,12 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
         self.dim = list(dim_set)[0]
 
     def __call__(self, x: List[float]) -> float:
+        """
+        Predict the value of x with the surrogate function.
+
+        :param x: point to predict the function value of
+        :return: predicted function value
+        """
         if not self.is_ready:
             raise NotImplementedError("The surrogate function is not trained!")
         super().__call__(x)

@@ -7,6 +7,7 @@ from .cec2017_objective_function import CEC2017ObjectiveFunction
 from .knn_surrogate_objective_function import KNNSurrogateObjectiveFunction
 from .noisy_sphere_function import NoisySphereFunction
 from .objective_function import ObjectiveFunction
+from .polynomial_regression import PolynomialRegression
 from .rastrigin_function import RastriginFunction
 from .rosenbrock_function import RosenbrockFunction
 from .schwefel_function import SchwefelFunction

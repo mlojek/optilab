@@ -6,7 +6,7 @@ Abstract base class for surrogate objective functions.
 
 from typing import List, Tuple
 
-from .objective_function import ObjectiveFunction
+from ..objective_function import ObjectiveFunction
 
 
 class SurrogateObjectiveFunction(ObjectiveFunction):

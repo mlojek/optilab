@@ -6,9 +6,9 @@ Locally weighted regression approximate ranking metamodel based on lmm-CMA-ES.
 
 from typing import List, Tuple
 
-from sofes.objective_functions import (
+from sofes.objective_functions import ObjectiveFunction
+from sofes.objective_functions.surrogate import (
     LocallyWeightedRegression,
-    ObjectiveFunction,
     SurrogateObjectiveFunction,
 )
 

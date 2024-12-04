@@ -4,7 +4,8 @@ Approximate ranking metamodel based on lmm-CMA-ES.
 
 from typing import List, Tuple
 
-from sofes.objective_functions import ObjectiveFunction, SurrogateObjectiveFunction
+from sofes.objective_functions import ObjectiveFunction
+from sofes.objective_functions.surrogate import SurrogateObjectiveFunction
 
 
 def rank_items(

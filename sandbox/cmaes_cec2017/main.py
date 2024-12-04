@@ -16,10 +16,10 @@ from sofes.data_classes import ExperimentMetadata, ExperimentResults
 from sofes.metamodels import ApproximateRankingMetamodel
 from sofes.objective_functions import (
     CEC2017ObjectiveFunction,
-    KNNSurrogateObjectiveFunction,
     ObjectiveFunction,
     SphereFunction,
 )
+from sofes.objective_functions.surrogate import KNNSurrogateObjectiveFunction
 from sofes.plotting import plot_ecdf_curves
 
 

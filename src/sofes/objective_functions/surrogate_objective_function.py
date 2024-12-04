@@ -43,6 +43,7 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
                 "Provided train set has x-es with different dimensionalities."
             )
         self.dim = list(dim_set)[0]
+        self.train_set = train_set
 
     def __call__(self, x: List[float]) -> float:
         """

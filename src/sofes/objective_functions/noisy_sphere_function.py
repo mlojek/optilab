@@ -23,7 +23,7 @@ class NoisySphereFunction(ObjectiveFunction):
         :raises ValueError: when the number of function is invalid.
         :param dim: dimensionality of the function.
         """
-        super().__init__(f"noisy sphere {epsilon}", dim)
+        super().__init__(f"noisy_sphere_{epsilon}", dim)
         self.epsilon = epsilon
 
     def __call__(self, x: List[float]) -> float:

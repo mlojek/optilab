@@ -14,12 +14,12 @@ from tqdm import tqdm
 
 from sofes.data_classes import ExperimentMetadata, ExperimentResults
 from sofes.metamodels import ApproximateRankingMetamodel
-from sofes.objective_functions import (
+from sofes.objective_functions import ObjectiveFunction
+from sofes.objective_functions.benchmarks.cec2017_objective_function import (
     CEC2017ObjectiveFunction,
-    ObjectiveFunction,
-    SphereFunction,
 )
 from sofes.objective_functions.surrogate import KNNSurrogateObjectiveFunction
+from sofes.objective_functions.unimodal.sphere_function import SphereFunction
 from sofes.plotting import plot_ecdf_curves
 
 

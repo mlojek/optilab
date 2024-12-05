@@ -1,5 +1,5 @@
 """
-The noisy sphere function objective function
+The ackley objective function
 """
 
 # pylint: disable=too-few-public-methods
@@ -8,23 +8,22 @@ from typing import List
 
 import numpy as np
 
-from .objective_function import ObjectiveFunction
+from ..objective_function import ObjectiveFunction
 
 
-class NoisySphereFunction(ObjectiveFunction):
+class AckleyFunction(ObjectiveFunction):
     """
-    Noisy sphere objective function.
+    Ackley objective function.
     """
 
-    def __init__(self, epsilon: float, dim: int):
+    def __init__(self, dim: int):
         """
         Class constructor.
 
         :raises ValueError: when the number of function is invalid.
         :param dim: dimensionality of the function.
         """
-        super().__init__(f"noisy_sphere_{epsilon}", dim)
-        self.epsilon = epsilon
+        super().__init__("ackley", dim)
 
     def __call__(self, x: List[float]) -> float:
         """
@@ -35,4 +34,9 @@ class NoisySphereFunction(ObjectiveFunction):
         :return: value of the function in the provided point
         """
         super().__call__(x)
-        return sum(x_i**2 for x_i in x) * (1 + np.random.normal(0, 1))
+        return (
+            20
+            - 20 * np.exp(-0.2 * np.sqrt(sum(x_i**2 for x_i in x) / self.dim))
+            + np.e
+            - np.exp(sum(np.cos(2 * np.pi * x_i) for x_i in x) / self.dim)
+        )

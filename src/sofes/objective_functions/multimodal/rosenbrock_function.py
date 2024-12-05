@@ -6,7 +6,7 @@ The rosenbrock objective function
 
 from typing import List
 
-from .objective_function import ObjectiveFunction
+from ..objective_function import ObjectiveFunction
 
 
 class RosenbrockFunction(ObjectiveFunction):

@@ -1,5 +1,5 @@
 """
-Sphere function. y is the sum of squares of elements of x vector.
+The rastrigin objective function
 """
 
 # pylint: disable=too-few-public-methods
@@ -8,21 +8,22 @@ from typing import List
 
 import numpy as np
 
-from .objective_function import ObjectiveFunction
+from ..objective_function import ObjectiveFunction
 
 
-class SphereFunction(ObjectiveFunction):
+class RastriginFunction(ObjectiveFunction):
     """
-    Objective function from CEC 2017 benchmark.
+    Rastrigin objective function.
     """
 
     def __init__(self, dim: int):
         """
         Class constructor.
 
+        :raises ValueError: when the number of function is invalid.
         :param dim: dimensionality of the function.
         """
-        super().__init__("sphere", dim)
+        super().__init__("rastrigin", dim)
 
     def __call__(self, x: List[float]) -> float:
         """
@@ -33,4 +34,4 @@ class SphereFunction(ObjectiveFunction):
         :return: value of the function in the provided point
         """
         super().__call__(x)
-        return sum(np.asarray(x) ** 2)
+        return sum(x_i**2 - 10 * np.cos(2 * np.pi * x_i) + 10 for x_i in x)

@@ -20,7 +20,6 @@ class RastriginFunction(ObjectiveFunction):
         """
         Class constructor.
 
-        :raises ValueError: when the number of function is invalid.
         :param dim: dimensionality of the function.
         """
         super().__init__("rastrigin", dim)

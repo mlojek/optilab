@@ -5,7 +5,7 @@ Unit tests for KNNSurrogateObjectiveFunction.
 import numpy as np
 import pytest
 
-from sofes.objective_functions.knn_surrogate_objective_function import (
+from sofes.objective_functions.surrogate.knn_surrogate_objective_function import (
     KNNSurrogateObjectiveFunction,
 )
 

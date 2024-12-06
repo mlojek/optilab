@@ -1,22 +1,15 @@
 repos:
   - repo: local
     hooks:
-      - id: make-format
-        name: Make Format
-        entry: make format
-        language: system
-        pass_filenames: false
-        always_run: true
-
-      - id: make-check
-        name: Make Check
+      - id: check
+        name: Static code analysis
         entry: make check
         language: system
         pass_filenames: false
         always_run: true
 
-      - id: make-test
-        name: Make Test
+      - id: test
+        name: Unit tests
         entry: make test
         language: system
         pass_filenames: false

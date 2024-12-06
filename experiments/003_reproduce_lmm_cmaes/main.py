@@ -14,24 +14,25 @@ from tqdm import tqdm
 
 from sofes.data_classes import ExperimentMetadata, ExperimentResults
 from sofes.metamodels import ApproximateRankingMetamodel
-from sofes.objective_functions import ObjectiveFunction
-from sofes.objective_functions.benchmarks.cec2017_objective_function import (
+from sofes.objective_functions import (
     CEC2017ObjectiveFunction,
+    KNNSurrogateObjectiveFunction,
+    ObjectiveFunction,
+    SphereFunction,
+    LocallyWeightedRegression,
+    PolynomialRegression,
+    SchwefelFunction
 )
-from sofes.objective_functions.surrogate import KNNSurrogateObjectiveFunction
-
-# from sofes.objective_functions.unimodal.sphere_function import SphereFunction
 from sofes.plotting import plot_ecdf_curves
 
 
-def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many-locals
+def lmm_cma_es(  # pylint: disable=too-many-positional-arguments, too-many-locals
     function: ObjectiveFunction,
     dims: int,
     population_size: int,
     call_budget: int,
     bounds: Tuple[float, float],
     sigma0: float,
-    armknn_metamodel: bool = False,
     num_neighbours: int = 5,
     debug: bool = False,
 ) -> List[float]:
@@ -43,12 +44,10 @@ def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many
             population_size,
             population_size // 2,
             function,
-            KNNSurrogateObjectiveFunction(num_neighbours),
+            LocallyWeightedRegression(num_neighbours=8)
         )
 
     x0 = np.random.uniform(low=bounds[0], high=bounds[1], size=dims)
-    # x0 = np.random.uniform(-1e-3, 1e-3, size=dims)
-    # x0 = np.zeros((10))
 
     res_log = []
 
@@ -68,17 +67,13 @@ def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many
     sigma_best_plot_data = []
 
     while not es.stop():
-        if armknn_metamodel:
-            solutions = [x.tolist() for x in es.ask()]
-            metamodel.adapt(solutions)
-            xy_pairs = metamodel(solutions)
-            x, y = zip(*xy_pairs)
-            es.tell(x, y)
-        else:
-            solutions = es.ask()
-            y = [function(x) for x in solutions]
-            res_log.extend(y)
-            es.tell(solutions, y)
+        solutions = [x.tolist() for x in es.ask()]
+        metamodel.adapt(solutions)
+
+        # update covariance matrix
+        xy_pairs = metamodel(solutions)
+        x, y = zip(*xy_pairs)
+        es.tell(x, y)
 
         sigma_best_plot_data.append(
             (es.countevals, np.log10(es.best.f), np.log10(es.sigma))
@@ -99,9 +94,7 @@ def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many
         plt.tight_layout()
         plt.show()
 
-    if armknn_metamodel:
-        return metamodel.get_log()
-    return res_log
+    return metamodel.get_log()
 
 
 if __name__ == "__main__":
@@ -124,36 +117,19 @@ if __name__ == "__main__":
     )
     results = ExperimentResults(metadata)
 
-    # func = SphereFunction(DIM)
-    func = CEC2017ObjectiveFunction(1, DIM)
-    # func = BentCigarFunction(DIM)
-    logs_vanilla = [
-        run_cmaes_on_cec(
-            func,
+    logs_lmm_cma_es = [
+        lmm_cma_es(
+            SchwefelFunction(DIM),
             DIM,
             POPSIZE,
             metadata.method_hyperparameters["call_budget"],
             metadata.method_hyperparameters["bounds"],
             10,
-            debug=False,
-        )
-        for _ in tqdm(range(NUM_RUNS), unit="runs")
-    ]
-
-    logs_armknn5 = [
-        run_cmaes_on_cec(
-            func,
-            DIM,
-            POPSIZE,
-            metadata.method_hyperparameters["call_budget"],
-            metadata.method_hyperparameters["bounds"],
-            10,
-            armknn_metamodel=True,
             debug=True,
         )
         for _ in tqdm(range(NUM_RUNS))
     ]
 
     plot_ecdf_curves(
-        {"vanilla": logs_vanilla, "armknn5": logs_armknn5}, n_dimensions=DIM
+        {"lmm": logs_lmm_cma_es}, n_dimensions=DIM
     )

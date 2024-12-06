@@ -6,7 +6,7 @@ Abstract base class for surrogate objective functions.
 
 from typing import List, Tuple
 
-from .objective_function import ObjectiveFunction
+from ..objective_function import ObjectiveFunction
 
 
 class SurrogateObjectiveFunction(ObjectiveFunction):
@@ -43,8 +43,15 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
                 "Provided train set has x-es with different dimensionalities."
             )
         self.dim = list(dim_set)[0]
+        self.train_set = train_set
 
     def __call__(self, x: List[float]) -> float:
+        """
+        Predict the value of x with the surrogate function.
+
+        :param x: point to predict the function value of
+        :return: predicted function value
+        """
         if not self.is_ready:
             raise NotImplementedError("The surrogate function is not trained!")
         super().__call__(x)

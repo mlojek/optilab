@@ -8,7 +8,7 @@ from typing import List
 
 from cec2017.functions import all_functions
 
-from .objective_function import ObjectiveFunction
+from ..objective_function import ObjectiveFunction
 
 
 class CEC2017ObjectiveFunction(ObjectiveFunction):

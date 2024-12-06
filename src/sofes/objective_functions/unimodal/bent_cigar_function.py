@@ -1,30 +1,26 @@
 """
-The noisy sphere function objective function
+Bent Cigar objective function. 
 """
 
 # pylint: disable=too-few-public-methods
 
 from typing import List
 
-import numpy as np
-
 from ..objective_function import ObjectiveFunction
 
 
-class NoisySphereFunction(ObjectiveFunction):
+class BentCigarFunction(ObjectiveFunction):
     """
-    Noisy sphere objective function.
+    Bent Cigar objective function.
     """
 
-    def __init__(self, epsilon: float, dim: int):
+    def __init__(self, dim: int):
         """
         Class constructor.
 
-        :raises ValueError: when the number of function is invalid.
         :param dim: dimensionality of the function.
         """
-        super().__init__(f"noisy_sphere_{epsilon}", dim)
-        self.epsilon = epsilon
+        super().__init__("bent_cigar", dim)
 
     def __call__(self, x: List[float]) -> float:
         """
@@ -35,4 +31,4 @@ class NoisySphereFunction(ObjectiveFunction):
         :return: value of the function in the provided point
         """
         super().__call__(x)
-        return sum(x_i**2 for x_i in x) * (1 + np.random.normal(0, 1))
+        return x[0] ** 2 + sum(x_i**2 for x_i in x) * (10**6)

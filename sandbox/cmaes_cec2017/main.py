@@ -19,7 +19,8 @@ from sofes.objective_functions.benchmarks.cec2017_objective_function import (
     CEC2017ObjectiveFunction,
 )
 from sofes.objective_functions.surrogate import KNNSurrogateObjectiveFunction
-from sofes.objective_functions.unimodal.sphere_function import SphereFunction
+
+# from sofes.objective_functions.unimodal.sphere_function import SphereFunction
 from sofes.plotting import plot_ecdf_curves
 
 
@@ -46,6 +47,8 @@ def run_cmaes_on_cec(  # pylint: disable=too-many-positional-arguments, too-many
         )
 
     x0 = np.random.uniform(low=bounds[0], high=bounds[1], size=dims)
+    # x0 = np.random.uniform(-1e-3, 1e-3, size=dims)
+    # x0 = np.zeros((10))
 
     res_log = []
 
@@ -121,8 +124,9 @@ if __name__ == "__main__":
     )
     results = ExperimentResults(metadata)
 
-    func = SphereFunction(DIM)
+    # func = SphereFunction(DIM)
     func = CEC2017ObjectiveFunction(1, DIM)
+    # func = BentCigarFunction(DIM)
     logs_vanilla = [
         run_cmaes_on_cec(
             func,

@@ -13,7 +13,7 @@ from ..objective_function import ObjectiveFunction
 
 class SphereFunction(ObjectiveFunction):
     """
-    Objective function from CEC 2017 benchmark.
+    Sphere function. y is the sum of squares of elements of x vector.
     """
 
     def __init__(self, dim: int):

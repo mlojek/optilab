@@ -13,3 +13,7 @@ tqdm
 git+https://github.com/tilleyd/cec2017-py
 scikit-learn==1.5.2
 pre-commit
+
+# sphinx documentation
+sphinx
+sphinx-rtd-theme

@@ -6,6 +6,7 @@ from typing import Callable, List, Tuple
 
 import numpy as np
 from scipy.spatial.distance import mahalanobis
+from sklearn.preprocessing import PolynomialFeatures
 
 from .surrogate_objective_function import SurrogateObjectiveFunction
 
@@ -21,24 +22,26 @@ def biquadratic_kernel_function(x: float) -> float:
     return (1 - x**2) ** 2
 
 
-class LocallyWeightedRegression(SurrogateObjectiveFunction):
+class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
     """
     # TODO
     """
 
     def __init__(
         self,
+        degree: int,
         num_neighbours: float,
-        regressor: SurrogateObjectiveFunction,
         train_set: List[Tuple[List[float], float]] = None,
-        covariance_matrix: List[List[float]] = None,  # Have to be validated,
+        covariance_matrix: List[List[float]] = None,
         kernel_function: Callable[[float], float] = biquadratic_kernel_function,
     ) -> None:
         """
         # TODO
         """
         self.is_ready = False
-        super().__init__(f"locally_weighted_{regressor.name}", train_set)
+        super().__init__(
+            f"locally_weighted_polynomial_regression_{degree}_degree", train_set
+        )
 
         if train_set:
             self.train(train_set)
@@ -51,17 +54,14 @@ class LocallyWeightedRegression(SurrogateObjectiveFunction):
             self.set_covariance_matrix(np.eye(self.dim))
 
         self.kernel_function = kernel_function
-        self.regressor = regressor
+        self.degree = degree
+        self.preprocessor = PolynomialFeatures(degree=degree)
+        self.weights = None
 
     def set_covariance_matrix(self, new_covariance_matrix: List[List[float]]) -> None:
         """
         TODO
         """
-        # validate new matrix
-        new_covariance_matrix = np.array(new_covariance_matrix)
-        assert len(new_covariance_matrix.shape) == 2
-        assert new_covariance_matrix.shape[0] == new_covariance_matrix.shape[1]
-
         self.reversed_covariance_matrix = np.linalg.inv(np.array(new_covariance_matrix))
 
     def __call__(self, x: List[float]) -> float:
@@ -70,7 +70,6 @@ class LocallyWeightedRegression(SurrogateObjectiveFunction):
         """
         super().__call__(x)
 
-        # calculate distances to all points
         distance_points = [
             (
                 mahalanobis(x_t, x, self.reversed_covariance_matrix),
@@ -82,15 +81,25 @@ class LocallyWeightedRegression(SurrogateObjectiveFunction):
 
         distance_points.sort(key=lambda i: i[0])
 
-        # select KNN
         knn_points = distance_points[: self.num_neighbours]
 
         bandwidth = knn_points[-1][0]
 
-        weighted_points = [
-            (np.sqrt(self.kernel_function(d / bandwidth)) * x_t, y_t)
-            for d, x_t, y_t in knn_points
+        weights = [
+            (np.sqrt(self.kernel_function(d / bandwidth)), x_i, y_i)
+            for d, x_i, y_i in knn_points
         ]
 
-        self.regressor.train(weighted_points)
-        return self.regressor(x)
+        weighted_x, weighted_y = zip(
+            *[
+                (
+                    w * np.array(self.preprocessor.fit_transform([x_i])[0]),
+                    w * np.array(y_i),
+                )
+                for w, x_i, y_i in weights
+            ]
+        )
+
+        self.weights = np.linalg.lstsq(weighted_x, weighted_y)[0]
+
+        return sum(self.weights * self.preprocessor.fit_transform([x])[0])

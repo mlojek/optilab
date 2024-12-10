@@ -9,7 +9,8 @@ from typing import List, Tuple
 
 import cma
 import numpy as np
-from matplotlib import pyplot as plt
+
+# from matplotlib import pyplot as plt
 from tqdm import tqdm
 
 from sofes.data_classes import ExperimentMetadata, ExperimentResults
@@ -18,10 +19,8 @@ from sofes.objective_functions import ObjectiveFunction
 from sofes.objective_functions.benchmarks.cec2017_objective_function import (
     CEC2017ObjectiveFunction,
 )
-from sofes.objective_functions.surrogate import (
-    LocallyWeightedRegression,
-    PolynomialRegression,
-)
+from sofes.objective_functions.surrogate import LocallyWeightedPolynomialRegression
+from sofes.objective_functions.unimodal import BentCigarFunction, SphereFunction
 
 # from sofes.objective_functions.unimodal.sphere_function import SphereFunction
 from sofes.plotting import plot_ecdf_curves
@@ -44,7 +43,7 @@ def lmm_cma_es(  # pylint: disable=too-many-positional-arguments, too-many-local
         population_size,
         population_size // 2,
         function,
-        LocallyWeightedRegression(num_neighbours, PolynomialRegression(2)),
+        LocallyWeightedPolynomialRegression(num_neighbours, 2),
     )
 
     x0 = np.random.uniform(low=bounds[0], high=bounds[1], size=dims)
@@ -62,7 +61,7 @@ def lmm_cma_es(  # pylint: disable=too-many-positional-arguments, too-many-local
         },
     )
 
-    sigma_best_plot_data = []
+    # sigma_best_plot_data = []
 
     while (
         min(metamodel.get_log(), default=1) > 1e-8
@@ -75,42 +74,46 @@ def lmm_cma_es(  # pylint: disable=too-many-positional-arguments, too-many-local
         x, y = zip(*xy_pairs)
         es.tell(x, y)
 
-        sigma_best_plot_data.append(
-            (es.countevals, np.log10(es.best.f), np.log10(es.sigma))
-        )
+        print(min(metamodel.get_log()), len(metamodel.get_log()))
+
+        # sigma_best_plot_data.append(
+        #     (es.countevals, np.log10(es.best.f), np.log10(es.sigma))
+        # )
 
     print(es.best)
 
     if debug:
         print(dict(es.result._asdict()))
-        plt.clf()
-        _, axes = plt.subplots(2, 1, figsize=(8, 10))  # 2 rows, 1 column
-        axes[0].plot(
-            [x[0] for x in sigma_best_plot_data], [x[1] for x in sigma_best_plot_data]
-        )
-        axes[0].set_title("bext_value")
-        axes[1].plot(
-            [x[0] for x in sigma_best_plot_data], [x[2] for x in sigma_best_plot_data]
-        )
-        axes[1].set_title("sigma")
-        plt.tight_layout()
-        plt.show()
+        # plt.clf()
+        # _, axes = plt.subplots(2, 1, figsize=(8, 10))  # 2 rows, 1 column
+        # axes[0].plot(
+        #     [x[0] for x in sigma_best_plot_data], [x[1] for x in sigma_best_plot_data]
+        # )
+        # axes[0].set_title("bext_value")
+        # axes[1].plot(
+        #     [x[0] for x in sigma_best_plot_data], [x[2] for x in sigma_best_plot_data]
+        # )
+        # axes[1].set_title("sigma")
+        # plt.tight_layout()
+        # plt.show()
 
     return metamodel.get_log()
 
 
 if __name__ == "__main__":
     # hyperparams:
-    DIM = 10
-    POPSIZE = 40
+    DIM = 2
+    POPSIZE = 6
     NUM_RUNS = 5
+
+    CALL_BUDGET = 1e4 * DIM
 
     metadata = ExperimentMetadata(
         method_name="cmaes",
         method_hyperparameters={
             "sigma0": 10,
             "popsize": "4*dim",
-            "call_budget": 1e6,
+            "call_budget": CALL_BUDGET,
             "bounds": (-100, 100),
         },
         metamodel_name="approximate_ranking_metamodel_knn",
@@ -119,9 +122,9 @@ if __name__ == "__main__":
     )
     results = ExperimentResults(metadata)
 
-    # func = SphereFunction(DIM)
+    func = SphereFunction(DIM)
     func = CEC2017ObjectiveFunction(1, DIM)
-    # func = BentCigarFunction(DIM)
+    func = BentCigarFunction(DIM)
 
     logs_armknn5 = [
         lmm_cma_es(

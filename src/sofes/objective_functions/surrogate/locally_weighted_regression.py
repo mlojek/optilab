@@ -5,8 +5,11 @@ TODO
 from typing import Callable, List, Tuple
 
 import numpy as np
+from scipy.spatial.distance import mahalanobis
 
 from .surrogate_objective_function import SurrogateObjectiveFunction
+
+# pylint: disable=too-many-arguments,too-many-positional-arguments
 
 
 def biquadratic_kernel_function(x: float) -> float:
@@ -20,27 +23,22 @@ def biquadratic_kernel_function(x: float) -> float:
 
 class LocallyWeightedRegression(SurrogateObjectiveFunction):
     """
-    TODO
+    # TODO
     """
 
     def __init__(
         self,
         num_neighbours: float,
+        regressor: SurrogateObjectiveFunction,
         train_set: List[Tuple[List[float], float]] = None,
         covariance_matrix: List[List[float]] = None,  # Have to be validated,
         kernel_function: Callable[[float], float] = biquadratic_kernel_function,
     ) -> None:
         """
-        Class constructor
-        TODO
-        TODO always has interactions
-
-        :param name: name of the surrogate function
-        :param dim: dimensionality of the function
-        :param_train_set: training data for the model
+        # TODO
         """
         self.is_ready = False
-        super().__init__("locally_weighted_regression", train_set)
+        super().__init__(f"locally_weighted_{regressor.name}", train_set)
 
         if train_set:
             self.train(train_set)
@@ -53,6 +51,7 @@ class LocallyWeightedRegression(SurrogateObjectiveFunction):
             self.set_covariance_matrix(np.eye(self.dim))
 
         self.kernel_function = kernel_function
+        self.regressor = regressor
 
     def set_covariance_matrix(self, new_covariance_matrix: List[List[float]]) -> None:
         """
@@ -63,33 +62,25 @@ class LocallyWeightedRegression(SurrogateObjectiveFunction):
         assert len(new_covariance_matrix.shape) == 2
         assert new_covariance_matrix.shape[0] == new_covariance_matrix.shape[1]
 
-        self.reversed_covariance_matrix = np.invert(np.array(new_covariance_matrix))
+        self.reversed_covariance_matrix = np.linalg.inv(np.array(new_covariance_matrix))
 
-    def __call__(self, x: List[float], regressor: SurrogateObjectiveFunction) -> float:
+    def __call__(self, x: List[float]) -> float:
         """
-        Predict the value of x with the surrogate function.
-
-        :param x: point to predict the function value of
-        :return: predicted function value
-
-
-        # TODO regressor should have train and __call__ methods implemented
+        TODO
         """
         super().__call__(x)
 
         # calculate distances to all points
         distance_points = [
             (
-                np.sqrt(
-                    np.transpose(np.array(x_t) - np.array(x))
-                    * self.reversed_covariance_matrix
-                    * (np.array(x_t) - np.array(x))
-                ),
+                mahalanobis(x_t, x, self.reversed_covariance_matrix),
                 np.array(x_t),
                 y_t,
             )
             for x_t, y_t in self.train_set
-        ].sort(key=lambda i: i[0])
+        ]
+
+        distance_points.sort(key=lambda i: i[0])
 
         # select KNN
         knn_points = distance_points[: self.num_neighbours]
@@ -101,5 +92,5 @@ class LocallyWeightedRegression(SurrogateObjectiveFunction):
             for d, x_t, y_t in knn_points
         ]
 
-        regressor.train(weighted_points)
-        return regressor(x)
+        self.regressor.train(weighted_points)
+        return self.regressor(x)

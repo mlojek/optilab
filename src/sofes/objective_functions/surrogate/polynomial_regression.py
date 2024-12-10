@@ -49,6 +49,4 @@ class PolynomialRegression(SurrogateObjectiveFunction):
         :return: predicted function value
         """
         super().__call__(x)
-        print(self.weights)
-        print(self.preprocessor.fit_transform([x])[0])
         return sum(self.weights * self.preprocessor.fit_transform([x])[0])

@@ -18,12 +18,7 @@ from sofes.objective_functions import ObjectiveFunction
 from sofes.objective_functions.benchmarks.cec2017_objective_function import (
     CEC2017ObjectiveFunction,
 )
-from sofes.objective_functions.surrogate import (
-    LocallyWeightedRegression,
-    PolynomialRegression,
-)
-
-# from sofes.objective_functions.unimodal.sphere_function import SphereFunction
+from sofes.objective_functions.surrogate import LocallyWeightedPolynomialRegression
 from sofes.plotting import plot_ecdf_curves
 
 
@@ -44,7 +39,7 @@ def lmm_cma_es(  # pylint: disable=too-many-positional-arguments, too-many-local
         population_size,
         population_size // 2,
         function,
-        LocallyWeightedRegression(num_neighbours, PolynomialRegression(2)),
+        LocallyWeightedPolynomialRegression(num_neighbours, 2),
     )
 
     x0 = np.random.uniform(low=bounds[0], high=bounds[1], size=dims)

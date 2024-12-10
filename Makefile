@@ -21,3 +21,6 @@ check:
 
 test:
 	pytest
+
+doc:
+	sphinx-apidoc -o docs src/sofes

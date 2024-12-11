@@ -4,8 +4,8 @@ Approximate ranking metamodel based on lmm-CMA-ES.
 
 from typing import List, Tuple
 
-from optilab.objective_functions import ObjectiveFunction
-from optilab.objective_functions.surrogate import SurrogateObjectiveFunction
+from optilab.functions import ObjectiveFunction
+from optilab.functions.surrogate import SurrogateObjectiveFunction
 
 
 def rank_items(

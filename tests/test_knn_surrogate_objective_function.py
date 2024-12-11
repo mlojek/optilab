@@ -5,7 +5,7 @@ Unit tests for KNNSurrogateObjectiveFunction.
 import numpy as np
 import pytest
 
-from optilab.objective_functions.surrogate.knn_surrogate_objective_function import (
+from optilab.functions.surrogate.knn_surrogate_objective_function import (
     KNNSurrogateObjectiveFunction,
 )
 

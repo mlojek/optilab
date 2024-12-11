@@ -6,10 +6,8 @@ from typing import List
 
 import numpy as np
 
-from optilab.objective_functions.surrogate import PolynomialRegression
-from optilab.objective_functions.surrogate.polynomial_regression import (
-    PolynomialFeatures,
-)
+from optilab.functions.surrogate import PolynomialRegression
+from optilab.functions.surrogate.polynomial_regression import PolynomialFeatures
 
 
 def test_polynomial_regression():

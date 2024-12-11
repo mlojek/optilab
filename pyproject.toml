@@ -1,10 +1,10 @@
 [project]
-name = "sofes"
-version = "4"
+name = "optilab"
+version = "5"
 authors = [
   { name="mlojek", email="marcin.lojek@pw.edu.pl" },
 ]
-description = "Surrogate objective function for evolution strategy utils"
+description = "Simple framework for optimization functions and metamodels"
 readme = "README.md"
 requires-python = ">=3.11.9"
 classifiers = [
@@ -14,4 +14,4 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "github.com/mlojek/sofes"
+Homepage = "github.com/mlojek/optilab"

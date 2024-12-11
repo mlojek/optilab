@@ -1,5 +1,5 @@
 """
-Module sofes.plotting . Contains functions to plot results.
+Module optilab.plotting . Contains functions to plot results.
 """
 
 from .box_plot import plot_box_plot

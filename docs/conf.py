@@ -8,12 +8,12 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../src/sofes'))
+sys.path.insert(0, os.path.abspath('../src/optilab'))
 
 project = 'optilab'
 copyright = '2024, Łojek'
 author = 'Marcin Łojek'
-release = '3'
+release = '5'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

@@ -12,14 +12,14 @@ import numpy as np
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 
-from sofes.data_classes import ExperimentMetadata, ExperimentResults
-from sofes.metamodels import ApproximateRankingMetamodel
-from sofes.objective_functions import ObjectiveFunction
-from sofes.objective_functions.benchmarks.cec2017_objective_function import (
+from optilab.data_classes import ExperimentMetadata, ExperimentResults
+from optilab.metamodels import ApproximateRankingMetamodel
+from optilab.objective_functions import ObjectiveFunction
+from optilab.objective_functions.benchmarks.cec2017_objective_function import (
     CEC2017ObjectiveFunction,
 )
-from sofes.objective_functions.surrogate import LocallyWeightedPolynomialRegression
-from sofes.plotting import plot_ecdf_curves
+from optilab.objective_functions.surrogate import LocallyWeightedPolynomialRegression
+from optilab.plotting import plot_ecdf_curves
 
 
 def lmm_cma_es(  # pylint: disable=too-many-positional-arguments, too-many-locals

@@ -1,5 +1,5 @@
 """
-Module sofes.data_classes . It contains classes used to store data such as experiment data.
+Module optilab.data_classes . It contains classes used to store data such as experiment data.
 """
 
 from .experiment_metadata import ExperimentMetadata

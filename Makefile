@@ -7,7 +7,7 @@ install:
 
 clean:
 	rm -rf build
-	rm -rf src/sofes.egg-info
+	rm -rf src/optilab.egg-info
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 
 format:
@@ -23,4 +23,4 @@ test:
 	pytest
 
 doc:
-	sphinx-apidoc -o docs src/sofes
+	sphinx-apidoc -o docs src/optilab

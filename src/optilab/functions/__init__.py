@@ -1,5 +1,5 @@
 """
-Component objective_functions. It's an object that describes an objective function to be optimized.
+Objective functions to be minimized by the optimizer.
 """
 
 from .noisy_function import NoisyFunction

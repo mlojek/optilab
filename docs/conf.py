@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, os.path.abspath('../src/optilab'))
 
 project = 'optilab'
-copyright = '2024, Łojek'
+copyright = '2024, Marcin Łojek'
 author = 'Marcin Łojek'
 release = '5'
 
@@ -23,10 +23,14 @@ extensions = ["sphinx.ext.todo", "sphinx.ext.viewcode", "sphinx.ext.autodoc",'sp
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+autodoc_member_order = 'bysource'
+add_module_names = False
 
 # Napoleon settings
 napoleon_google_docstring = True
 napoleon_include_init_with_doc = True
+napoleon_include_private_with_doc = True
+napoleon_include_special_with_doc = True
 
 
 # -- Options for HTML output -------------------------------------------------

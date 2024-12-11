@@ -16,8 +16,9 @@ class ObjectiveFunction:
         """
         Class constructor.
 
-        :param name: name of the objective function
-        :param dim: dimensionality of the function
+        Args:
+            name (str): Name of the objective function.
+            dim (int): Dimensionality of the function.
         """
         self.name = name
         self.dim = dim
@@ -27,9 +28,14 @@ class ObjectiveFunction:
         """
         Evaluate a single point with the objective function.
 
-        :param x: point to be evaluated
-        :raises ValueError: if dimensionality of x doesn't match self.dim
-        :return: value of the function in the provided point
+        Args:
+            x (List[float]): Point to evaluate.
+
+        Raises:
+            ValueError: If dimensionality of x doesn't match self.dim
+
+        Returns:
+            float: Value of the function in the provided point.
         """
         if not len(x) == self.dim:
             raise ValueError(

@@ -4,7 +4,7 @@ A data class to store experiment results and easily plot and export/import them.
 
 import json
 from dataclasses import asdict
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 import jsonschema
 import numpy as np
@@ -25,13 +25,14 @@ class ExperimentResults:
     def __init__(
         self,
         metadata: ExperimentMetadata,
-        data: List[Dict[str, Union[str, List[List[float]]]]] = None,
+        data: List[Dict[str, str | List[List[float]]]] = None,
     ) -> None:
         """
         Class constructor.
 
-        :param metadata: experiment metadata
-        :param data: optional, data to initialize the class with.
+        Args:
+            metadata (ExperimentMetadata): Experiment metadata.
+            data: Data to initialize the class with, optional.
         """
         self.metadata = metadata
 
@@ -48,8 +49,11 @@ class ExperimentResults:
         """
         Validate data to check if it matches expected JSON schema.
 
-        :param data: data to be checked
-        :raises jsonschema.exceptions.ValidationError: if data doesn't comply with expected schema
+        Args:
+            data: Data to be checked.
+
+        Raises:
+            jsonschema.exceptions.ValidationError: If data doesn't comply with expected schema.
         """
         jsonschema.validate(instance=data, schema=results_json_schema)
 
@@ -57,9 +61,10 @@ class ExperimentResults:
         """
         Add another series of data.
 
-        :param name: name of the series
-        :param dim: dimensionality of solved problem
-        :param logs: result or error logs from the optimization run
+        Args:
+            name: The name of the series.
+            dim: Dimensionality of optimized function.
+            logs: Result or error logs from the optimization run.
         """
         self.data.append({"name": name, "dim": dim, "logs": logs})
 
@@ -67,8 +72,9 @@ class ExperimentResults:
         """
         Dumps the content of the object to a json file.
 
-        :param savepath: path to file to dump the data into
-        :param indent: json indent, default is 4
+        Args:
+            savepath: Path to file to dump the data into.
+            indent: JSON indent value, default is 4.
         """
         if not self.metadata.time_end:
             self.metadata.end_now()
@@ -83,10 +89,13 @@ class ExperimentResults:
     @classmethod
     def from_json(cls, filepath: str):
         """
-        Alternate constructor that reads the data directly from a JSON file.
+        Alternative constructor that reads the data directly from a JSON file.
 
-        :param filepath: path to file with data
-        :return: instance of ExperimentResults
+        Args:
+            filepath: Path to the JSON file with data.
+
+        Returns:
+            An instance of ExperimentResults.
         """
         with open(filepath, "r", encoding="utf-8") as input_file_handle:
             file_content = json.load(input_file_handle)
@@ -96,7 +105,8 @@ class ExperimentResults:
         """
         Calculate stats of the data and expresses them as a pandas DataFrame.
 
-        :return: dataframe with stats for each run in the data
+        Returns:
+            pd.DataFrame: A pandas dataframe with stats for each run in the data.
         """
         stats_data = [
             {
@@ -116,7 +126,8 @@ class ExperimentResults:
         """
         Return printable stats of the data.
 
-        :return: tabulated stats of the data.
+        Returns:
+            Tabulated stats of the data.
         """
         return tabulate(
             self.stats(), headers="keys", tablefmt="github", showindex=False
@@ -126,7 +137,8 @@ class ExperimentResults:
         """
         Saves stats to a CSV file.
 
-        :param savepath: path to csv file to save the data in.
+        Args:
+            savepath: Path to csv file to save the data in.
         """
         df = self.stats()
         df.to_csv(savepath, index=False)
@@ -141,11 +153,12 @@ class ExperimentResults:
         """
         Plots ecdf curve for the data in this object.
 
-        :param dim: dimensionality of problems to plot, only entries with matching
-        dimensionalities will be plotted
-        :param savepath: optional, path to save the plot to
-        :param n_thresholds: optional, number of ecdf value thresholds, default 100
-        :param allowed_error: optional, acceptable error value, default 1e-8
+        Args:
+            dim: The dimensionality of problems to plot, only entries with
+                matching dimensionalities will be plotted.
+            savepath: Path to save the plot to, optional.
+            n_thresholds: Number of ecdf value thresholds, default 100.
+            allowed_error: Acceptable error value, default 1e-8.
         """
         plot_ecdf_curves(
             {item["name"]: item["logs"] for item in self.data if item["dim"] == dim},

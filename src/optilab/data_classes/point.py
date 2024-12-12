@@ -3,7 +3,7 @@ Point and PointList classes
 """
 
 from dataclasses import dataclass
-from typing import List
+from typing import Any, Dict, List
 
 import numpy as np
 
@@ -63,3 +63,77 @@ class PointList:
             int: Number of points stored in the list.
         """
         return len(self.points)
+
+
+@dataclass
+class Bounds:
+    """
+    Class representing bounds of the search space.
+    """
+
+    lower: float
+    "The lower bound of search space."
+
+    upper: float
+    "The upper bound of search space."
+
+    def to_list(self) -> List[float]:
+        """
+        Return the bounds as a list of two floats.
+
+        Returns:
+            List[float]: List containing the lower and upper bound.
+        """
+        return [self.lower, self.upper]
+
+
+@dataclass
+class ModelMetadata:
+    """
+    Metadata of an optimizer model.
+    """
+
+    name: str
+    "Name of the model."
+
+    population_size: int
+    "Number of points generated in each generation."
+
+    hyperparameters: Dict[str, Any] = None
+    "Other hyperparameters of the model, optional."
+
+
+@dataclass
+class FunctionMetadata:
+    """
+    Metadata of objective function.
+    """
+
+    name: str
+    "Name of the function."
+
+    dim: int
+    "Dimensionality of the function."
+
+    bounds: Bounds
+    "Bounds of the search space."
+
+    hyperparameters: Dict[str, Any] = None
+    "Other hyperparameters of the function, optional."
+
+
+@dataclass
+class OptimizationRun:
+    """
+    Dataclass containing information about an optimization run. Stores metadata of optimization
+    method and objective function as well as point logs for multiple runs.
+    """
+
+    model_metadata: ModelMetadata
+    "Metadata describing the model used in optimization."
+
+    function_metadata: FunctionMetadata
+    "Metadata describing the optimized function."
+
+    logs: List[PointList]
+    "Logs of points from the optimization runs."

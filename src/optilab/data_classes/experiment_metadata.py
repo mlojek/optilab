@@ -14,12 +14,25 @@ class ExperimentMetadata:
     """
 
     method_name: str
+    "Name of the optimizer."
+
     method_hyperparameters: dict
+    "Hyperparameters of the optimizer"
+
     metamodel_name: str
+    "Name of the metamodel used."
+
     metamodel_hyperparameters: dict
+    "Hyperparameters of the metamodel."
+
     benchmark_name: str
+    "Name of the benchmark."
+
     time_begin: str = None
+    "Timestamp of the beginning of the experiment."
+
     time_end: str = None
+    "Timestamp of the end of the experiment."
 
     def begin_now(self) -> None:
         """

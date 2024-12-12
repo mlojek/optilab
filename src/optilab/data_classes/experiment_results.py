@@ -32,7 +32,8 @@ class ExperimentResults:
 
         Args:
             metadata (ExperimentMetadata): Experiment metadata.
-            data: Data to initialize the class with, optional.
+            data (List[Dict[str, str | List[List[float]]]]): Data to initialize the class with,
+                optional.
         """
         self.metadata = metadata
 
@@ -50,7 +51,7 @@ class ExperimentResults:
         Validate data to check if it matches expected JSON schema.
 
         Args:
-            data: Data to be checked.
+            data (Any): Data to be checked.
 
         Raises:
             jsonschema.exceptions.ValidationError: If data doesn't comply with expected schema.
@@ -62,9 +63,9 @@ class ExperimentResults:
         Add another series of data.
 
         Args:
-            name: The name of the series.
-            dim: Dimensionality of optimized function.
-            logs: Result or error logs from the optimization run.
+            name (str): The name of the series.
+            dim (int): Dimensionality of optimized function.
+            logs (List[List[str]]): Result or error logs from the optimization run.
         """
         self.data.append({"name": name, "dim": dim, "logs": logs})
 
@@ -73,8 +74,8 @@ class ExperimentResults:
         Dumps the content of the object to a json file.
 
         Args:
-            savepath: Path to file to dump the data into.
-            indent: JSON indent value, default is 4.
+            savepath (str): Path to file to dump the data into.
+            indent (int): JSON indent value, default is 4.
         """
         if not self.metadata.time_end:
             self.metadata.end_now()
@@ -92,10 +93,7 @@ class ExperimentResults:
         Alternative constructor that reads the data directly from a JSON file.
 
         Args:
-            filepath: Path to the JSON file with data.
-
-        Returns:
-            An instance of ExperimentResults.
+            filepath (str): Path to the JSON file with data.
         """
         with open(filepath, "r", encoding="utf-8") as input_file_handle:
             file_content = json.load(input_file_handle)
@@ -127,7 +125,7 @@ class ExperimentResults:
         Return printable stats of the data.
 
         Returns:
-            Tabulated stats of the data.
+            str: Tabulated stats of the data.
         """
         return tabulate(
             self.stats(), headers="keys", tablefmt="github", showindex=False
@@ -138,7 +136,7 @@ class ExperimentResults:
         Saves stats to a CSV file.
 
         Args:
-            savepath: Path to csv file to save the data in.
+            savepath (str): Path to csv file to save the data in.
         """
         df = self.stats()
         df.to_csv(savepath, index=False)
@@ -154,11 +152,11 @@ class ExperimentResults:
         Plots ecdf curve for the data in this object.
 
         Args:
-            dim: The dimensionality of problems to plot, only entries with
+            dim (int): The dimensionality of problems to plot, only entries with
                 matching dimensionalities will be plotted.
-            savepath: Path to save the plot to, optional.
-            n_thresholds: Number of ecdf value thresholds, default 100.
-            allowed_error: Acceptable error value, default 1e-8.
+            savepath (str): Path to save the plot to, optional.
+            n_thresholds (int): Number of ecdf value thresholds, default 100.
+            allowed_error (float): Acceptable error value, default 1e-8.
         """
         plot_ecdf_curves(
             {item["name"]: item["logs"] for item in self.data if item["dim"] == dim},
@@ -172,7 +170,8 @@ class ExperimentResults:
         """
         Plots a box plot of the results.
 
-        :param savepath: optional, path to save the plot to
+        Args:
+            savepath (str): Path to save the plot to, optional.
         """
         plot_box_plot(
             {item["name"]: [min(log) for log in item["logs"]] for item in self.data},

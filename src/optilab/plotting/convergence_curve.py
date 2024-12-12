@@ -9,11 +9,13 @@ from matplotlib import pyplot as plt
 
 def convergence_curve(log: List[float]) -> List[float]:
     """
-    For a given log return a convergence curve - the lowest value achieved
-    so far.
+    For a given log return a convergence curve - the lowest value achieved so far.
 
-    :param log: results log - the values of errors of the optimized function.
-    :return: y values of the convergence curve.
+    Args:
+        log (List[float]): Results log - the values of errors of the optimized function.
+
+    Returns:
+        List[float]: y values of the convergence curve.
     """
     min_so_far = float("inf")
     new_log = []
@@ -29,9 +31,9 @@ def plot_convergence_curve(data: Dict[str, List[float]], savepath: str = None) -
     """
     Plot the convergence curves of a few methods using pyplot.
 
-    :param data: error logs of a few methods expressed as {method name: log}
-    :param savepath: optional, path to save the plot.
-    :return: None
+    Args:
+        data (Dict[str, List[float]]): Error logs of a few methods expressed as {method name: log}.
+        savepath (str): Path to save the plot, optional.
     """
     plt.clf()
 

@@ -20,6 +20,14 @@ optilab.data\_classes.experiment\_results module
    :undoc-members:
    :show-inheritance:
 
+optilab.data\_classes.point module
+----------------------------------
+
+.. automodule:: optilab.data_classes.point
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 optilab.data\_classes.results\_json\_schema module
 --------------------------------------------------
 

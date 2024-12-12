@@ -23,4 +23,4 @@ test:
 	pytest
 
 doc:
-	sphinx-apidoc -o docs src/optilab
+	sphinx-apidoc -o docs src/optilab -f

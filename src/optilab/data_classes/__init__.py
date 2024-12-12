@@ -1,5 +1,5 @@
 """
-Module optilab.data_classes . It contains classes used to store data such as experiment data.
+Classes used for data exchange.
 """
 
 from .experiment_metadata import ExperimentMetadata

@@ -20,7 +20,8 @@ class SphereFunction(ObjectiveFunction):
         """
         Class constructor.
 
-        :param dim: dimensionality of the function.
+        Args:
+            dim (int): Dimensionality of the function.
         """
         super().__init__("sphere", dim)
 
@@ -28,9 +29,14 @@ class SphereFunction(ObjectiveFunction):
         """
         Evaluate a single point with the objective function.
 
-        :param x: point to be evaluated
-        :raises ValueError: if dimensionality of x doesn't match self.dim
-        :return: value of the function in the provided point
+        Args:
+            x (List[float]): Point to evaluate.
+
+        Raises:
+            ValueError: If dimensionality of x doesn't match self.dim.
+
+        Returns:
+            float: Value of the function in the provided point.
         """
         super().__call__(x)
         return sum(np.asarray(x) ** 2)

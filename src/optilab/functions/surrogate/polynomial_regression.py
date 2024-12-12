@@ -21,21 +21,23 @@ class PolynomialRegression(SurrogateObjectiveFunction):
         self, degree: int, train_set: List[Tuple[List[float], float]] = None
     ) -> None:
         """
-        Class constructor
+        Class constructor.
 
-        :param degree: the degree of the polynomial used for approximation.
-        :param_train_set: training data for the model
+        Args:
+            degree (int): Degree of the polynomial used for approximation.
+            train_set (List[Tuple[List[float], float]]): Training data for the model.
         """
         self.is_ready = False
         self.preprocessor = PolynomialFeatures(degree=degree)
 
-        super().__init__(f"polynomial_regression_of_{degree}_degree", train_set)
+        super().__init__(f"polynomial_regression_{degree}_degree", train_set)
 
     def train(self, train_set: List[Tuple[List[float], float]]) -> None:
         """
         Train the Surrogate function with provided data
 
-        :param train_set: train data expressed as list of tuples of x, y values
+        Args:
+            train_set (List[Tuple[List[float], float]]): Train data for the model.
         """
         super().train(train_set)
         x, y = zip(*train_set)
@@ -43,10 +45,16 @@ class PolynomialRegression(SurrogateObjectiveFunction):
 
     def __call__(self, x: List[float]) -> float:
         """
-        Predict the value of x with the surrogate function.
+        Estimate the value of a single point with the surrogate function.
 
-        :param x: point to predict the function value of
-        :return: predicted function value
+        Args:
+            x (List[float]): Point to estimate.
+
+        Raises:
+            ValueError: If dimensionality of x doesn't match self.dim.
+
+        Return:
+            float: Estimated value of the function in the provided point.
         """
         super().__call__(x)
         return sum(self.weights * self.preprocessor.fit_transform([x])[0])

@@ -23,10 +23,13 @@ def _ecdf_thresholding(
     Perform thresholding of a log with a given list of thresholds.
     The resulting y is the number of thresholds achieved by the log items.
 
-    :param log: error log of a optimization function
-    :param thresholds: ecdf value thresholds
-    :n_dimensions: number of optimized function dimensions
-    :return: x and y values for the curve
+    Args:
+        log (List[float]): Error log of a optimization function.
+        thresholds (List[float]): ECDF value thresholds.
+        n_dimensions (int): Dimensionality of optimized function.
+
+    Returns:
+        Tuple[List[float], List[float]]: x and y values for the curve.
     """
     y = [np.sum(thresholds >= item) / len(thresholds) for item in log]
 
@@ -50,13 +53,16 @@ def ecdf_curve(
     allowed_error: float = 1e-8,
 ) -> Dict[str, Tuple[List[float], List[float]]]:
     """
-    Calculate ecdf curves.
+    Calculate ECDF curves.
 
-    :param data: dictionary containing list of value logs indexed by method name.
-    :param n_dimensions: dimensionality of the solved problem
-    :param n_thresholds: number of ecdf thresholds
-    :param allowed_error: tolerable error value. This value will be used as the last threshold.
-    :return: dictionary indexed with method name and containing x and y values of the curve.
+    Args:
+        data (Dict[str, List[List[float]]]): Lists of value logs indexed by method name.
+        n_dimensions (int): Dimensionality of the solved problem.
+        n_thresholds (int): Number of ECDF thresholds.
+        allowed_error (float): Tolerable error value, used as the last threshold.
+
+    Returns:
+        Dict[str, Tuple[List[float], List[float]]]: x, y plot points for each method.
     """
     processed_logs = {}
     log_lengths = {}
@@ -104,13 +110,14 @@ def plot_ecdf_curves(
     savepath: str = None,
 ) -> None:
     """
-    Calculate and plot ecdf curves.
+    Calculate and plot ECDF curves.
 
-    :param data: dictionary containing list of value logs indexed by method name.
-    :param n_dimensions: dimensionality of the solved problem
-    :param n_thresholds: number of ecdf thresholds
-    :param allowed_error: tolerable error value. This value will be used as the last threshold.
-    :param savepath: optional, path to save the plot
+    Args:
+        data (Dict[str, List[List[float]]]): Lists of value logs for every method.
+        n_dimensions (int): Dimensionality of the optimized function.
+        n_thresholds (int): Number of ECDF thresholds.
+        allowed_error (float): Tolerable error value, used as the last threshold.
+        savepath (str): Path to save the plot, optional.
     """
     plt.clf()
 

@@ -1,6 +1,5 @@
 """
-Component objective_functions.surrogate. It contains surrogate objective function,
-which are regressors used to estimate objective function values.
+Surrogate objective functions, regressors used to estimate objective function values.
 """
 
 from .knn_surrogate_objective_function import KNNSurrogateObjectiveFunction

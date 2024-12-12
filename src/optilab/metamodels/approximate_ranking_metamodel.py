@@ -4,8 +4,8 @@ Approximate ranking metamodel based on lmm-CMA-ES.
 
 from typing import List, Tuple
 
-from optilab.objective_functions import ObjectiveFunction
-from optilab.objective_functions.surrogate import SurrogateObjectiveFunction
+from optilab.functions import ObjectiveFunction
+from optilab.functions.surrogate import SurrogateObjectiveFunction
 
 
 def rank_items(
@@ -14,8 +14,11 @@ def rank_items(
     """
     Given a list of x, y values, rank them in ascending order based on the y value.
 
-    :param items: list of pairs of x, y values. y must be float.
-    :return: the same list but sorted
+    Args:
+        items (List[Tuple[List[float], float]]): List of pairs of x, y values. y must be float.
+
+    Return:
+        List[Tuple[List[float], float]]: The same list but sorted by y value.
     """
     return list(sorted(items, key=lambda x: x[1]))
 
@@ -25,25 +28,26 @@ class ApproximateRankingMetamodel:
 
     def __init__(
         self,
-        input_size: int,
-        popsize: int,
+        population_size: int,
+        mu: int,
         objective_function: ObjectiveFunction,
         surrogate_function: SurrogateObjectiveFunction,
     ) -> None:
         """
         Class constructor.
 
-        :param input_size: the number of input points to be evaluated (lambda).
-        :param popsize: the size of CMA-ES population and number of points returned (mu).
-        :param objective_function: the objective function that's being optimized.
-        :param surrogate_function: surrogate objective function used to estimate
-        the optimized function
+        Args:
+            population_size (int): The population size (lambda).
+            mu (int): The number of points compared in the ranking procedure (mu).
+            objective_function (ObjectiveFunction): The objective function that's being optimized.
+            surrogate_function (SurrogateObjectieFunction): Surrogate function used to estimate
+                the optimized function.
         """
-        self.input_size = input_size
-        self.popsize = popsize
+        self.population_size = population_size
+        self.mu = mu
 
-        self.n_init = input_size
-        self.n_step = max(1, input_size // 10)
+        self.n_init = population_size
+        self.n_step = max(1, population_size // 10)
 
         self.train_set = []
 
@@ -54,10 +58,13 @@ class ApproximateRankingMetamodel:
         """
         Updates n_init and n_step values base on the number of algorithm iterations.
 
-        :param num_iters: the number of iterations done by the algorithm.
+        Args:
+            num_iters (int): The number of iterations done by the algorithm.
         """
         if num_iters > 2:
-            self.n_init = min(self.n_init + self.n_step, self.input_size - self.n_step)
+            self.n_init = min(
+                self.n_init + self.n_step, self.population_size - self.n_step
+            )
         elif num_iters < 2:
             self.n_init = max(self.n_step, self.n_init - self.n_step)
 
@@ -65,9 +72,12 @@ class ApproximateRankingMetamodel:
         """
         Approximates the values of provided points with surrogate objective function.
 
-        :param xs: list of points to be evaluated.
-        :return: list of x, y value pairs where x is the point from xs and y is the estimated
-        function value.
+        Args:
+            xs (List[List[float]]): List of points to be evaluated.
+
+        Returns:
+            List[Tuple[List[float], float]]: List of x, y value pairs where x is the point
+                from xs and y is the estimated function value.
         """
         return [(x, self.surrogate_function(x)) for x in xs]
 
@@ -76,9 +86,11 @@ class ApproximateRankingMetamodel:
         Evaluate provided point with the objective function and append results to the training
         set and retrain the surrogate function on new training data.
 
-        :param xs: list of point to be evaluated with the objective function.
-        :return: list of x, y values, where x are values provided in xs argument and ys are
-        objective function values in these points.
+        Args:
+            xs (List[List[float]]): List of point to evaluate with the objective function.
+
+        Returns:
+            List[Tuple[List[float], float]]: List of x, y values of evaluated points.
         """
         result = [(x, self.objective_function(x)) for x in xs]
         self.train_set.extend(result)
@@ -90,7 +102,8 @@ class ApproximateRankingMetamodel:
         Returns the function values that were acquired from evaluation with the optimized
         function. This can also be treated as getting the results log of the optimization.
 
-        :return: list of y values acquired from optimized function evaluation.
+        Returns:
+            List[float]: List of y values acquired from optimized function evaluation.
         """
         return [y for _, y in self.train_set]
 
@@ -98,16 +111,19 @@ class ApproximateRankingMetamodel:
         """
         Perform another loop of the optimization on new data.
 
-        :param xs: solution candidates generated by optimizer.
-        :raises ValueError: when number of provided points mismatches the expected input size.
+        Args:
+            xs (List[List[float]]): Solution candidates generated by the optimizer.
+
+        Raises:
+            ValueError: When number of provided points mismatches the expected input size.
         """
-        if not len(xs) == self.input_size:
+        if not len(xs) == self.population_size:
             raise ValueError(
                 f"The number of provided points is different than expected."
-                f"Expected {self.input_size}, got {len(xs)}."
+                f"Expected {self.population_size}, got {len(xs)}."
             )
 
-        if len(self.train_set) < self.input_size:
+        if len(self.train_set) < self.population_size:
             self.evaluate(xs)
             return
 
@@ -116,7 +132,7 @@ class ApproximateRankingMetamodel:
 
         # 2 rank
         items_ranked = rank_items(items)
-        items_mu_ranked = items_ranked[: self.popsize]
+        items_mu_ranked = items_ranked[: self.mu]
 
         # 3 evaluate and add to train set
         items_ranked[: self.n_init] = self.evaluate(
@@ -124,14 +140,14 @@ class ApproximateRankingMetamodel:
         )
 
         num_iter = 0
-        for _ in range((self.input_size - self.n_init) // self.n_step):
+        for _ in range((self.population_size - self.n_init) // self.n_step):
             num_iter += 1
             # 6 retrain and approximate
             new_items = self(xs)
 
             # 7 rank
             new_items_ranked = rank_items(new_items)
-            new_items_mu_ranked = new_items_ranked[: self.popsize]
+            new_items_mu_ranked = new_items_ranked[: self.mu]
 
             # 8 if rank change
             if [l[0] == r[0] for l, r in zip(new_items_mu_ranked, items_mu_ranked)]:

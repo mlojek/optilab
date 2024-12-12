@@ -11,10 +11,10 @@ def plot_box_plot(data: Dict[str, List[float]], savepath: str = None) -> None:
     """
     Plot box plots of optimization results.
 
-    :param data: dictionary where keys are optimization method or function
-    name and values are list of best values from each run.
-    :param savepath: optional, path to save the plot
-    :return: None
+    Args:
+        data (Dict[str, List[float]]): dictionary where keys are optimization method or function
+            names and values are list of best values from each run.
+        savepath (str): Path to save the plot, optional.
     """
     plt.clf()
 

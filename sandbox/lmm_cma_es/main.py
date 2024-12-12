@@ -13,12 +13,12 @@ from matplotlib import pyplot as plt
 from tqdm import tqdm
 
 from optilab.data_classes import ExperimentMetadata, ExperimentResults
-from optilab.metamodels import ApproximateRankingMetamodel
-from optilab.objective_functions import ObjectiveFunction
-from optilab.objective_functions.benchmarks.cec2017_objective_function import (
+from optilab.functions import ObjectiveFunction
+from optilab.functions.benchmarks.cec2017_objective_function import (
     CEC2017ObjectiveFunction,
 )
-from optilab.objective_functions.surrogate import LocallyWeightedPolynomialRegression
+from optilab.functions.surrogate import LocallyWeightedPolynomialRegression
+from optilab.metamodels import ApproximateRankingMetamodel
 from optilab.plotting import plot_ecdf_curves
 
 

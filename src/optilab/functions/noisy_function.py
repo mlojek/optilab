@@ -20,9 +20,10 @@ class NoisyFunction(ObjectiveFunction):
         """
         Class constructor.
 
-        :param function: objective function to add noise to.
-        :param noise: float multiplier of noise.
-        :param dim: dimensionality of the function.
+        Args:
+            function (ObjectiveFunction): Objective function to noise.
+            noise (float): Noise value of the function.
+            dim (int): Dimensionality of the function.
         """
         super().__init__(f"noisy_{function.name}_{noise}", dim)
         self.function = function
@@ -32,9 +33,14 @@ class NoisyFunction(ObjectiveFunction):
         """
         Evaluate a single point with the objective function.
 
-        :param x: point to be evaluated
-        :raises ValueError: if dimensionality of x doesn't match self.dim
-        :return: value of the function in the provided point
+        Args:
+            x (List[float]): Point to be evaluated.
+
+        Raises:
+            ValueError: If dimensionality of x doesn't match the dimensionality of the function.
+
+        Returns:
+            float: Value of the function in the provided point.
         """
         super().__call__(x)
         return self.function(x) * (1 + self.noise * np.random.normal(0, 1))

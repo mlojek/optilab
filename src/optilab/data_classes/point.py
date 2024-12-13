@@ -88,19 +88,19 @@ class Bounds:
 
 
 @dataclass
-class ModelMetadata:
+class OptimizerMetadata:
     """
     Metadata of an optimizer model.
     """
 
     name: str
-    "Name of the model."
+    "Name of the optimizer."
 
     population_size: int
     "Number of points generated in each generation."
 
     hyperparameters: Dict[str, Any] = None
-    "Other hyperparameters of the model, optional."
+    "Other hyperparameters of the optimizer, optional."
 
 
 @dataclass
@@ -115,9 +115,6 @@ class FunctionMetadata:
     dim: int
     "Dimensionality of the function."
 
-    bounds: Bounds
-    "Bounds of the search space."
-
     hyperparameters: Dict[str, Any] = None
     "Other hyperparameters of the function, optional."
 
@@ -129,11 +126,14 @@ class OptimizationRun:
     method and objective function as well as point logs for multiple runs.
     """
 
-    model_metadata: ModelMetadata
+    model_metadata: OptimizerMetadata
     "Metadata describing the model used in optimization."
 
     function_metadata: FunctionMetadata
     "Metadata describing the optimized function."
+
+    bounds: Bounds
+    "Bounds of the search space."
 
     logs: List[PointList]
     "Logs of points from the optimization runs."

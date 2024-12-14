@@ -4,8 +4,8 @@ Abstract base class for surrogate objective functions.
 
 # pylint: disable=too-few-public-methods
 
-from typing import List, Tuple
 
+from ...data_classes import Point, PointList
 from ..objective_function import ObjectiveFunction
 
 
@@ -14,15 +14,13 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
     Abstract base class for surrogate objective functions.
     """
 
-    def __init__(
-        self, name: str, train_set: List[Tuple[List[float], float]] = None
-    ) -> None:
+    def __init__(self, name: str, train_set: PointList = None) -> None:
         """
         Class constructor. The dimensionality is deduced from the training points.
 
         Args:
             name (str): Name of the surrogate function.
-            train_set (List[Tuple[List[float], float]]): Training data for the model.
+            train_set (PointList): Training data for the model.
         """
         self.is_ready = False
         super().__init__(name, 1)
@@ -30,15 +28,15 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
         if train_set:
             self.train(train_set)
 
-    def train(self, train_set: List[Tuple[List[float], float]]) -> None:
+    def train(self, train_set: PointList) -> None:
         """
         Train the Surrogate function with provided data.
 
         Args:
-            train_set (List[Tuple[List[float], float]]): Training data for the model.
+            train_set (PointList): Training data for the model.
         """
         self.is_ready = True
-        dim_set = {len(x) for x, _ in train_set}
+        dim_set = {point.dim() for point in train_set.points}
         if not len(dim_set) == 1:
             raise ValueError(
                 "Provided train set has x-es with different dimensionalities."
@@ -46,19 +44,19 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
         self.dim = list(dim_set)[0]
         self.train_set = train_set
 
-    def __call__(self, x: List[float]) -> float:
+    def __call__(self, point: Point) -> Point:
         """
         Estimate the value of a single point with the surrogate function.
 
         Args:
-            x (List[float]): Point to estimate.
+            point (Point): Point to estimate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim.
 
-        Return:
-            float: Estimated value of the function in the provided point.
+        Returns:
+            Point: Estimated value of the function in the provided point.
         """
         if not self.is_ready:
             raise NotImplementedError("The surrogate function is not trained!")
-        super().__call__(x)
+        super().__call__(point)

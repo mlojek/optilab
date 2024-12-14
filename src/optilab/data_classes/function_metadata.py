@@ -18,5 +18,5 @@ class FunctionMetadata:
     dim: int
     "Dimensionality of the function."
 
-    hyperparameters: Dict[str, Any] = None
-    "Other hyperparameters of the function, optional."
+    hyperparameters: Dict[str, Any]
+    "Other hyperparameters of the function."

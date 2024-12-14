@@ -4,8 +4,7 @@ Cumulative squared sums function.
 
 # pylint: disable=too-few-public-methods
 
-from typing import List
-
+from ...data_classes import Point
 from ..objective_function import ObjectiveFunction
 
 
@@ -23,18 +22,22 @@ class CumulativeSquaredSums(ObjectiveFunction):
         """
         super().__init__("cumulative_squared_sums", dim)
 
-    def __call__(self, x: List[float]) -> float:
+    def __call__(self, point: Point) -> Point:
         """
         Evaluate a single point with the objective function.
 
         Args:
-            x (List[float]): Point to be evaluated.
+            point (Point): Point to evaluate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim.
 
         Returns:
-            float: Value of the function in the provided point.
+            Point: Evaluated point.
         """
-        super().__call__(x)
-        return sum(sum(x[:i]) ** 2 for i in range(len(x)))
+        super().__call__(point)
+        return Point(
+            x=point.x,
+            y=sum(sum(point.x[:i]) ** 2 for i in range(point.dim())),
+            is_evaluated=True,
+        )

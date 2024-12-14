@@ -4,10 +4,10 @@ The rastrigin objective function
 
 # pylint: disable=too-few-public-methods
 
-from typing import List
 
 import numpy as np
 
+from ...data_classes import Point
 from ..objective_function import ObjectiveFunction
 
 
@@ -25,18 +25,23 @@ class RastriginFunction(ObjectiveFunction):
         """
         super().__init__("rastrigin", dim)
 
-    def __call__(self, x: List[float]) -> float:
+    def __call__(self, point: Point) -> Point:
         """
         Evaluate a single point with the objective function.
 
         Args:
-            x (List[float]): Point to evaluate.
+            point (Point): Point to evaluate.
 
         Raises:
-            ValueError: If dimensionality of x doesn't match self.dim
+            ValueError: If dimensionality of x doesn't match self.dim.
 
         Returns:
-            float: Value of the function in the provided point.
+            Point: Evaluated point.
         """
-        super().__call__(x)
-        return sum(x_i**2 - 10 * np.cos(2 * np.pi * x_i) + 10 for x_i in x)
+        super().__call__(point)
+
+        return Point(
+            x=point.x,
+            y=sum(x_i**2 - 10 * np.cos(2 * np.pi * x_i) + 10 for x_i in point.x),
+            is_evaluated=True,
+        )

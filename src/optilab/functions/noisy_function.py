@@ -2,12 +2,9 @@
 Class that makes an objective function noisy using random normal distribution. 
 """
 
-# pylint: disable=too-few-public-methods
-
-from typing import List
-
 import numpy as np
 
+from ..data_classes import FunctionMetadata, Point
 from .objective_function import ObjectiveFunction
 
 
@@ -16,7 +13,7 @@ class NoisyFunction(ObjectiveFunction):
     Class that makes an objective function noisy using random normal distribution.
     """
 
-    def __init__(self, function: ObjectiveFunction, noise: float, dim: int):
+    def __init__(self, function: ObjectiveFunction, noise: float, dim: int) -> None:
         """
         Class constructor.
 
@@ -29,18 +26,31 @@ class NoisyFunction(ObjectiveFunction):
         self.function = function
         self.noise = noise
 
-    def __call__(self, x: List[float]) -> float:
+    def get_metadata(self) -> FunctionMetadata:
+        """
+        Get the metadata describing the function.
+
+        Returns:
+            FunctionMetadata: The metadata of the function.
+        """
+        metadata = super().get_metadata()
+        metadata.hyperparameters["noise"] = self.noise
+        return metadata
+
+    def __call__(self, point: Point) -> Point:
         """
         Evaluate a single point with the objective function.
 
         Args:
-            x (List[float]): Point to be evaluated.
+            point (Point): Point to be evaluated.
 
         Raises:
             ValueError: If dimensionality of x doesn't match the dimensionality of the function.
 
         Returns:
-            float: Value of the function in the provided point.
+            Point: Evaluated point.
         """
-        super().__call__(x)
-        return self.function(x) * (1 + self.noise * np.random.normal(0, 1))
+        super().__call__(point)
+        evaluated_point = self.function(point)
+        evaluated_point.x *= 1 + self.noise * np.random.normal(0, 1)
+        return evaluated_point

@@ -3,7 +3,9 @@ Class holding a list of points.
 """
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, Tuple
+
+import numpy as np
 
 from .point import Point
 
@@ -26,6 +28,16 @@ class PointList:
             List[Point]: List containing evaluated points.
         """
         return filter(lambda point: point.is_evaluated, self.points)
+
+    def pairs(self) -> Tuple[List[np.ndarray], List[float]]:
+        """
+        Return the contents of this point list as list of x and list of y values.
+        This is potentially useful for quickly accesing point values for training surrofates.
+
+        Returns:
+            Tuple[List[np.ndarray], List[float]]: Lists of x and y values.
+        """
+        return zip(*[[point.x, point.y] for point in self.points])
 
     def __getitem__(self, index: int) -> Point:
         """

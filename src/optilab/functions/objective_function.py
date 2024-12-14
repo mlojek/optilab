@@ -1,15 +1,13 @@
 """
-Abstract base class representing a callable objective function.
+Base class representing a callable objective function.
 """
 
-# pylint: disable=too-few-public-methods
-
-from typing import List
+from ..data_classes import FunctionMetadata, Point
 
 
 class ObjectiveFunction:
     """
-    Abstract base class representing a callable objective function.
+    Base class representing a callable objective function.
     """
 
     def __init__(self, name: str, dim: int) -> None:
@@ -24,22 +22,31 @@ class ObjectiveFunction:
         self.dim = dim
         self.num_calls = 0
 
-    def __call__(self, x: List[float]) -> float:
+    def get_metadata(self) -> FunctionMetadata:
+        """
+        Get the metadata describing the function.
+
+        Returns:
+            FunctionMetadata: The metadata of the function.
+        """
+        return FunctionMetadata(name=self.name, dim=self.dim, hyperparameters={})
+
+    def __call__(self, point: Point) -> Point:
         """
         Evaluate a single point with the objective function.
 
         Args:
-            x (List[float]): Point to evaluate.
+            point (Point): Point to evaluate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim
 
         Returns:
-            float: Value of the function in the provided point.
+            Point: Evaluated point.
         """
-        if not len(x) == self.dim:
+        if not len(point.x) == self.dim:
             raise ValueError(
                 f"The dimensionality of the provided point is not matching the dimensionality"
-                f"of the function. Expected {self.dim}, got {len(x)}"
+                f"of the function. Expected {self.dim}, got {len(point.x)}"
             )
         self.num_calls += 1

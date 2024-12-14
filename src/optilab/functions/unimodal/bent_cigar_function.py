@@ -4,8 +4,8 @@ Bent Cigar objective function.
 
 # pylint: disable=too-few-public-methods
 
-from typing import List
 
+from ...data_classes import Point
 from ..objective_function import ObjectiveFunction
 
 
@@ -23,18 +23,22 @@ class BentCigarFunction(ObjectiveFunction):
         """
         super().__init__("bent_cigar", dim)
 
-    def __call__(self, x: List[float]) -> float:
+    def __call__(self, point: Point) -> Point:
         """
         Evaluate a single point with the objective function.
 
         Args:
-            x (List[float]): Point to evaluate.
+            point (Point): Point to evaluate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim.
 
         Returns:
-            float: Value of the function in the provided point.
+            Point: Evaluated point.
         """
-        super().__call__(x)
-        return x[0] ** 2 + sum(x_i**2 for x_i in x) * (10**6)
+        super().__call__(point)
+        return Point(
+            x=point.x,
+            y=point.x[0] ** 2 + sum(point.x[1:] ** 2) * (10**6),
+            is_evaluated=True,
+        )

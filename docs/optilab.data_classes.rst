@@ -4,18 +4,34 @@ optilab.data\_classes package
 Submodules
 ----------
 
-optilab.data\_classes.experiment\_metadata module
--------------------------------------------------
+optilab.data\_classes.bounds module
+-----------------------------------
 
-.. automodule:: optilab.data_classes.experiment_metadata
+.. automodule:: optilab.data_classes.bounds
    :members:
    :undoc-members:
    :show-inheritance:
 
-optilab.data\_classes.experiment\_results module
+optilab.data\_classes.function\_metadata module
+-----------------------------------------------
+
+.. automodule:: optilab.data_classes.function_metadata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+optilab.data\_classes.optimization\_run module
+----------------------------------------------
+
+.. automodule:: optilab.data_classes.optimization_run
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+optilab.data\_classes.optimizer\_metadata module
 ------------------------------------------------
 
-.. automodule:: optilab.data_classes.experiment_results
+.. automodule:: optilab.data_classes.optimizer_metadata
    :members:
    :undoc-members:
    :show-inheritance:
@@ -28,10 +44,10 @@ optilab.data\_classes.point module
    :undoc-members:
    :show-inheritance:
 
-optilab.data\_classes.results\_json\_schema module
---------------------------------------------------
+optilab.data\_classes.point\_list module
+----------------------------------------
 
-.. automodule:: optilab.data_classes.results_json_schema
+.. automodule:: optilab.data_classes.point_list
    :members:
    :undoc-members:
    :show-inheritance:

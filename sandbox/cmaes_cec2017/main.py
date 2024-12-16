@@ -6,13 +6,13 @@ Benchmarking CMA-ES algorithm on CEC 2017
 # pylint: disable=import-error
 # pylint: disable=too-many-positional-arguments, too-many-locals
 
-from typing import List, Tuple
+from typing import Tuple
 
 import cma
 import numpy as np
-from matplotlib import pyplot as plt
 from tqdm import tqdm
 
+from optilab.data_classes import PointList
 from optilab.functions import ObjectiveFunction
 from optilab.functions.benchmarks.cec2017_objective_function import (
     CEC2017ObjectiveFunction,
@@ -32,7 +32,7 @@ def run_cmaes_on_cec(
     armknn_metamodel: bool = False,
     num_neighbours: int = 5,
     debug: bool = False,
-) -> List[float]:
+):
     """
     TODO
     """
@@ -45,10 +45,8 @@ def run_cmaes_on_cec(
         )
 
     x0 = np.random.uniform(low=bounds[0], high=bounds[1], size=dims)
-    # x0 = np.random.uniform(-1e-3, 1e-3, size=dims)
-    # x0 = np.zeros((10))
 
-    res_log = []
+    res_log = PointList(points=[])
 
     es = cma.CMAEvolutionStrategy(
         x0,
@@ -67,16 +65,17 @@ def run_cmaes_on_cec(
 
     while not es.stop():
         if armknn_metamodel:
-            solutions = [x.tolist() for x in es.ask()]
+            solutions = PointList.from_list(es.ask())
             metamodel.adapt(solutions)
             xy_pairs = metamodel(solutions)
-            x, y = zip(*xy_pairs)
+            x, y = xy_pairs.pairs()
             es.tell(x, y)
         else:
-            solutions = es.ask()
-            y = [function(x) for x in solutions]
-            res_log.extend(y)
-            es.tell(solutions, y)
+            solutions = PointList.from_list(es.ask())
+            results = PointList(points=[function(x) for x in solutions.points])
+            res_log.extend(results)
+            x, y = results.pairs()
+            es.tell(x, y)
 
         sigma_best_plot_data.append(
             (es.countevals, np.log10(es.best.f), np.log10(es.sigma))
@@ -84,18 +83,18 @@ def run_cmaes_on_cec(
 
     if debug:
         print(dict(es.result._asdict()))
-        plt.clf()
-        _, axes = plt.subplots(2, 1, figsize=(8, 10))  # 2 rows, 1 column
-        axes[0].plot(
-            [x[0] for x in sigma_best_plot_data], [x[1] for x in sigma_best_plot_data]
-        )
-        axes[0].set_title("bext_value")
-        axes[1].plot(
-            [x[0] for x in sigma_best_plot_data], [x[2] for x in sigma_best_plot_data]
-        )
-        axes[1].set_title("sigma")
-        plt.tight_layout()
-        plt.show()
+        # plt.clf()
+        # _, axes = plt.subplots(2, 1, figsize=(8, 10))  # 2 rows, 1 column
+        # axes[0].plot(
+        #     [x[0] for x in sigma_best_plot_data], [x[1] for x in sigma_best_plot_data]
+        # )
+        # axes[0].set_title("bext_value")
+        # axes[1].plot(
+        #     [x[0] for x in sigma_best_plot_data], [x[2] for x in sigma_best_plot_data]
+        # )
+        # axes[1].set_title("sigma")
+        # plt.tight_layout()
+        # plt.show()
 
     if armknn_metamodel:
         return metamodel.get_log()
@@ -140,6 +139,4 @@ if __name__ == "__main__":
         for _ in tqdm(range(NUM_RUNS))
     ]
 
-    plot_ecdf_curves(
-        {"vanilla": logs_vanilla, "armknn5": logs_armknn5}, n_dimensions=DIM
-    )
+    plot_ecdf_curves({"vanilla": logs_vanilla, "knn": logs_armknn5}, n_dimensions=DIM)

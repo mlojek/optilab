@@ -10,6 +10,7 @@ from typing import Dict, List, Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 
+from ..data_classes import PointList
 from .convergence_curve import convergence_curve
 
 
@@ -24,7 +25,7 @@ def _ecdf_thresholding(
     The resulting y is the number of thresholds achieved by the log items.
 
     Args:
-        log (List[float]): Error log of a optimization function.
+        log (PointList): Error log of a optimization function.
         thresholds (List[float]): ECDF value thresholds.
         n_dimensions (int): Dimensionality of optimized function.
 
@@ -47,7 +48,7 @@ def _ecdf_thresholding(
 
 
 def ecdf_curve(
-    data: Dict[str, List[List[float]]],
+    data: Dict[str, List[PointList]],
     n_dimensions: int = 1,
     n_thresholds: int = 100,
     allowed_error: float = 1e-8,
@@ -56,7 +57,7 @@ def ecdf_curve(
     Calculate ECDF curves.
 
     Args:
-        data (Dict[str, List[List[float]]]): Lists of value logs indexed by method name.
+        data (Dict[str, PointList]): Lists of value logs indexed by method name.
         n_dimensions (int): Dimensionality of the solved problem.
         n_thresholds (int): Number of ECDF thresholds.
         allowed_error (float): Tolerable error value, used as the last threshold.
@@ -103,7 +104,7 @@ def ecdf_curve(
 
 
 def plot_ecdf_curves(
-    data: Dict[str, List[List[float]]],
+    data: Dict[str, PointList],
     n_dimensions: int = 1,
     n_thresholds: int = 100,
     allowed_error: float = 1e-8,

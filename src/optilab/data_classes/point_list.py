@@ -29,6 +29,39 @@ class PointList:
         """
         return filter(lambda point: point.is_evaluated, self.points)
 
+    @classmethod
+    def from_list(cls, xs: List[np.ndarray]):
+        """
+        Alternative constructor that takes a list of x values.
+
+        Args:
+            xs (List[np.ndarray]): List of x values.
+
+        Returns:
+            PointList: Object of class PointList containing points with given x.
+        """
+        return PointList(
+            points=[Point(x=point, y=None, is_evaluated=False) for point in xs]
+        )
+
+    def append(self, new_point: Point) -> None:
+        """
+        Add new point to the list.
+
+        Args:
+            new_point (Point): Point to append to this object.
+        """
+        self.points.append(new_point)
+
+    def extend(self, new_points) -> None:
+        """
+        Append a list of points to this PointList.
+
+        Args:
+            new_points (PointList): A list of point to append to this object.
+        """
+        self.points.extend(new_points.points)
+
     def pairs(self) -> Tuple[List[np.ndarray], List[float]]:
         """
         Return the contents of this point list as list of x and list of y values.
@@ -59,3 +92,15 @@ class PointList:
             int: Number of points stored in the list.
         """
         return len(self.points)
+
+    def __eq__(self, other) -> bool:
+        """
+        Compare this PointList with another instance.
+
+        Args:
+            other (PointList): Another PointList to compare to this object.
+
+        Returns:
+            bool: True if the
+        """
+        return self.points == other.points

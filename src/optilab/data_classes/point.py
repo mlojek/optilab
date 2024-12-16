@@ -30,11 +30,3 @@ class Point:
             int: Dimensionality of the point, equal to length of x.
         """
         return len(self.x)
-
-    def __eq__(self, other) -> bool:
-        """ """
-        return (
-            (self.x == other.x).all()
-            and self.y == other.y
-            and self.is_evaluated == other.is_evaluated
-        )

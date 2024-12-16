@@ -92,15 +92,3 @@ class PointList:
             int: Number of points stored in the list.
         """
         return len(self.points)
-
-    def __eq__(self, other) -> bool:
-        """
-        Compare this PointList with another instance.
-
-        Args:
-            other (PointList): Another PointList to compare to this object.
-
-        Returns:
-            bool: True if the
-        """
-        return self.points == other.points

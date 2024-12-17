@@ -148,18 +148,22 @@ class ApproximateRankingMetamodel:
             ):
                 break
 
-            counter = 0
             to_eval = []
             for nx in new_items_ranked:
+                found = False
                 for tmp_x in self.train_set:
-                    if not (nx.x == tmp_x.x).all():
-                        counter += 1
-                        to_eval.append(nx)
-                        break
-                if counter >= self.n_step:
+                    if (nx.x == tmp_x.x).all():
+                        found = True
+                if found:
+                    continue
+
+                to_eval.append(nx)
+
+                if len(to_eval) >= self.n_step:
+                    print(len(to_eval))
                     break
             items_mu_ranked = new_items_mu_ranked
             self.evaluate(PointList(points=to_eval))
 
-        print(num_iter)
+        print(num_iter * self.n_step + self.n_init)
         self._update_n(num_iter)

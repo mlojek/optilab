@@ -29,6 +29,27 @@ class PointList:
         """
         return filter(lambda point: point.is_evaluated, self.points)
 
+    def x_difference(self, other) -> List[Point]:
+        """
+        Return list of points in self that do not appear in other based on their x values.
+
+        Args:
+            other (PointList): Another PointList to compare against.
+
+        Returns:
+            List[Point]: List of points in self that are not in other.
+        """
+        return PointList(
+            points=[
+                point_self
+                for point_self in self.points
+                if not any(
+                    np.array_equal(point_self.x, point_other.x)
+                    for point_other in other.points
+                )
+            ]
+        )
+
     @classmethod
     def from_list(cls, xs: List[np.ndarray]):
         """

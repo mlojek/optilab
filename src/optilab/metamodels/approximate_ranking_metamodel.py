@@ -2,6 +2,8 @@
 Approximate ranking metamodel based on lmm-CMA-ES.
 """
 
+import numpy as np
+
 from ..data_classes import PointList
 from ..functions import ObjectiveFunction
 from ..functions.surrogate import SurrogateObjectiveFunction
@@ -43,7 +45,7 @@ class ApproximateRankingMetamodel:
         self.population_size = population_size
         self.mu = mu
 
-        self.n_init = population_size
+        self.n_init = population_size // 2
         self.n_step = max(1, population_size // 10)
 
         self.train_set = PointList(points=[])
@@ -102,6 +104,10 @@ class ApproximateRankingMetamodel:
         Returns:
             PointList: List of points evaluated by the objective function.
         """
+        for point in self.train_set:
+            if point.y <= 0:
+                print(point)
+                print("below zero!!!")
         return self.train_set
 
     def adapt(self, xs: PointList) -> None:
@@ -124,46 +130,41 @@ class ApproximateRankingMetamodel:
             self.evaluate(xs)
             return
 
-        items = self(xs)
+        # points evaluated in this run
+        evaluated_this_run = PointList(points=[])
 
-        items_ranked = rank_items(items)
-        items_mu_ranked = PointList(points=items_ranked[: self.mu])
+        # ranked points from current and previous loop
+        items_previous = None
+        items_current = rank_items(self(xs))
 
-        self.evaluate(PointList(points=items_ranked.points[: self.n_init]))
+        # evaluate first n_init items
+        to_evaluate_n_init = PointList(points=items_current[: self.n_init])
+        evaluated_this_run.extend(to_evaluate_n_init)
+        self.evaluate(PointList(points=to_evaluate_n_init))
 
         num_iter = 0
         for _ in range((self.population_size - self.n_init) // self.n_step):
+            # start new loop
             num_iter += 1
+            items_previous = items_current
+            items_current = rank_items(self(xs))
 
-            new_items = self(xs)
-
-            new_items_ranked = rank_items(new_items)
-            new_items_mu_ranked = PointList(points=new_items_ranked[: self.mu])
-
+            # check if the mu ranking changed
             if all(
                 (
-                    (new_pt.x == pt.x).all()
-                    for new_pt, pt in zip(new_items_mu_ranked, items_mu_ranked)
+                    np.array_equal(new_pt.x, pt.x)
+                    for new_pt, pt in zip(
+                        items_previous[: self.mu], items_current[: self.mu]
+                    )
                 )
             ):
                 break
 
-            to_eval = []
-            for nx in new_items_ranked:
-                found = False
-                for tmp_x in self.train_set:
-                    if (nx.x == tmp_x.x).all():
-                        found = True
-                if found:
-                    continue
+            # else evaluate n_step next items
+            to_evaluate_n_step = PointList(
+                points=items_current.x_difference(evaluated_this_run)[: self.n_step]
+            )
+            evaluated_this_run.extend(to_evaluate_n_step)
+            self.evaluate(PointList(points=to_evaluate_n_step))
 
-                to_eval.append(nx)
-
-                if len(to_eval) >= self.n_step:
-                    print(len(to_eval))
-                    break
-            items_mu_ranked = new_items_mu_ranked
-            self.evaluate(PointList(points=to_eval))
-
-        print(num_iter * self.n_step + self.n_init)
         self._update_n(num_iter)

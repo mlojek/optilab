@@ -34,14 +34,22 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
 
         Args:
             train_set (PointList): Training data for the model.
+
+        Raises:
+            ValueError: If not all points are evaluated.
         """
+        if not all((train_point.is_evaluated for train_point in train_set)):
+            raise ValueError("Not all points in the training set are evaluated!")
+
         self.is_ready = True
+
         dim_set = {point.dim() for point in train_set.points}
         if not len(dim_set) == 1:
             raise ValueError(
                 "Provided train set has x-es with different dimensionalities."
             )
         self.dim = list(dim_set)[0]
+
         self.train_set = train_set
 
     def __call__(self, point: Point) -> Point:

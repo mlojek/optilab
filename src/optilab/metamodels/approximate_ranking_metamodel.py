@@ -7,19 +7,6 @@ from ..functions import ObjectiveFunction
 from ..functions.surrogate import SurrogateObjectiveFunction
 
 
-def rank_items(items: PointList) -> PointList:
-    """
-    Given a list of points, rank them in ascending order based on the y value.
-
-    Args:
-        items (PointList): List of points to rank.
-
-    Return:
-        PointList: The same PointList ranked by y value.
-    """
-    return PointList(points=list(sorted(items.points, key=lambda point: point.y)))
-
-
 class ApproximateRankingMetamodel:
     """Approximate ranking metamodel based on lmm-CMA-ES"""
 
@@ -131,9 +118,12 @@ class ApproximateRankingMetamodel:
         # points evaluated in this run
         evaluated_this_run = PointList(points=[])
 
-        # ranked points from current and previous loop
+        # points from current and previous loop
         items_previous = None
-        items_current = rank_items(self(xs))
+        items_current = self(xs)
+
+        # rank items
+        items_current.rank()
 
         # evaluate first n_init items
         to_evaluate_n_init = PointList(points=items_current[: self.n_init])
@@ -145,7 +135,10 @@ class ApproximateRankingMetamodel:
             # start new loop
             num_iter += 1
             items_previous = items_current
-            items_current = rank_items(self(xs))
+            items_current = self(xs)
+
+            # rank items
+            items_current.rank()
 
             # check if the mu ranking changed
             if all(

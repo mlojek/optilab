@@ -113,3 +113,9 @@ class PointList:
             int: Number of points stored in the list.
         """
         return len(self.points)
+
+    def rank(self) -> None:
+        """
+        Sort the point in this list by y, ascending.
+        """
+        self.points = list(sorted(self.points, key=lambda point: point.y))

@@ -4,10 +4,9 @@ The ackley objective function
 
 # pylint: disable=too-few-public-methods
 
-from typing import List
-
 import numpy as np
 
+from ...data_classes import Point
 from ..objective_function import ObjectiveFunction
 
 
@@ -25,23 +24,24 @@ class AckleyFunction(ObjectiveFunction):
         """
         super().__init__("ackley", dim)
 
-    def __call__(self, x: List[float]) -> float:
+    def __call__(self, point: Point) -> Point:
         """
         Evaluate a single point with the objective function.
 
         Args:
-            x (List[float]): Point to evaluate.
+            point (Point): Point to evaluate.
 
         Raises:
-            ValueError: If dimensionality of x doesn't match self.dim
+            ValueError: If dimensionality of x doesn't match self.dim.
 
         Returns:
-            float: Value of the function in the provided point.
+            Point: Evaluated point.
         """
-        super().__call__(x)
-        return (
+        super().__call__(point)
+        function_value = (
             20
-            - 20 * np.exp(-0.2 * np.sqrt(sum(x_i**2 for x_i in x) / self.dim))
+            - 20 * np.exp(-0.2 * np.sqrt(sum(x_i**2 for x_i in point.x) / self.dim))
             + np.e
-            - np.exp(sum(np.cos(2 * np.pi * x_i) for x_i in x) / self.dim)
+            - np.exp(sum(np.cos(2 * np.pi * x_i) for x_i in point.x) / self.dim)
         )
+        return Point(x=point.x, y=function_value, is_evaluated=True)

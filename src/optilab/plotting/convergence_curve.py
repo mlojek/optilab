@@ -6,8 +6,10 @@ from typing import Dict, List
 
 from matplotlib import pyplot as plt
 
+from ..data_classes import PointList
 
-def convergence_curve(log: List[float]) -> List[float]:
+
+def convergence_curve(log: PointList) -> List[float]:
     """
     For a given log return a convergence curve - the lowest value achieved so far.
 
@@ -21,13 +23,13 @@ def convergence_curve(log: List[float]) -> List[float]:
     new_log = []
 
     for value in log:
-        min_so_far = min(min_so_far, value)
+        min_so_far = min(min_so_far, value.y)
         new_log.append(min_so_far)
 
     return new_log
 
 
-def plot_convergence_curve(data: Dict[str, List[float]], savepath: str = None) -> None:
+def plot_convergence_curve(data: Dict[str, PointList], savepath: str = None) -> None:
     """
     Plot the convergence curves of a few methods using pyplot.
 

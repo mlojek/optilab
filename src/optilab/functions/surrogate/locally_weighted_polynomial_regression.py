@@ -3,12 +3,13 @@ Surrogate function which estimates the objective function with polynomial regres
 Points are weighted based on mahalanobis distance from query points.
 """
 
-from typing import Callable, List, Tuple
+from typing import Callable
 
 import numpy as np
 from scipy.spatial.distance import mahalanobis
 from sklearn.preprocessing import PolynomialFeatures
 
+from ...data_classes import FunctionMetadata, Point, PointList
 from .surrogate_objective_function import SurrogateObjectiveFunction
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments
@@ -39,9 +40,9 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
     def __init__(
         self,
         degree: int,
-        num_neighbors: float,
-        train_set: List[Tuple[List[float], float]] = None,
-        covariance_matrix: List[List[float]] = None,
+        num_neighbors: int,
+        train_set: PointList = None,
+        covariance_matrix: np.ndarray = None,
         kernel_function: Callable[[float], float] = biquadratic_kernel_function,
     ) -> None:
         """
@@ -50,8 +51,8 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         Args:
             degree (int): Degree of the polynomial used to approximate function.
             num_neighbors (float): Number of closest points to use in function approximation.
-            train_set (List[Tuple[List[float], float]]): Training set for the regressor, optional.
-            covariance_matrix (List[List[float]]): Covariance class used in mahalanobis distance,
+            train_set (PointList): Training set for the regressor, optional.
+            covariance_matrix (np.ndarray): Covariance class used in mahalanobis distance,
                 optional. When no such matrix is provided an identity matrix is used.
             kernel_function (Callable[[float], float]): Function used to assign weights to points.
         """
@@ -75,39 +76,51 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         self.preprocessor = PolynomialFeatures(degree=degree)
         self.weights = None
 
-    def set_covariance_matrix(self, new_covariance_matrix: List[List[float]]) -> None:
+    def get_metadata(self) -> FunctionMetadata:
+        """
+        Get the metadata describing the function.
+
+        Returns:
+            FunctionMetadata: The metadata of the function.
+        """
+        metadata = super().get_metadata()
+        metadata.hyperparameters["degree"] = self.degree
+        metadata.hyperparameters["num_neighbours"] = self.num_neighbours
+        return metadata
+
+    def set_covariance_matrix(self, new_covariance_matrix: np.ndarray) -> None:
         """
         Setter for the covariance matrix.
 
         Args:
-            new_covariance_matrix (List[List[float]]): New covariance matrix to use for mahalanobis
+            new_covariance_matrix (np.ndarray): New covariance matrix to use for mahalanobis
                 distance.
         """
-        self.reversed_covariance_matrix = np.linalg.inv(np.array(new_covariance_matrix))
+        self.reversed_covariance_matrix = np.linalg.inv(new_covariance_matrix)
 
-    def __call__(self, x: List[float]) -> float:
+    def __call__(self, point: Point) -> Point:
         """
         Estimate the value of a single point with the surrogate function. Since the surrogate model
         is built for each point independently, this is where the regressor is trained.
 
         Args:
-            x (List[float]): Point to estimate.
+            x (Point): Point to estimate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim.
 
         Return:
-            float: Estimated value of the function in the provided point.
+            Point: Estimated point.
         """
-        super().__call__(x)
+        super().__call__(point)
 
         distance_points = [
             (
-                mahalanobis(x_t, x, self.reversed_covariance_matrix),
+                mahalanobis(x_t, point.x, self.reversed_covariance_matrix),
                 np.array(x_t),
                 y_t,
             )
-            for x_t, y_t in self.train_set
+            for x_t, y_t in self.train_set.pairs()
         ]
 
         distance_points.sort(key=lambda i: i[0])
@@ -133,4 +146,8 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
 
         self.weights = np.linalg.lstsq(weighted_x, weighted_y)[0]
 
-        return sum(self.weights * self.preprocessor.fit_transform([x])[0])
+        return Point(
+            x=point.x,
+            y=sum(self.weights * self.preprocessor.fit_transform([point.x])[0]),
+            is_evaluated=False,
+        )

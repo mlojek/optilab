@@ -12,7 +12,6 @@ import numpy as np
 from matplotlib import pyplot as plt
 from tqdm import tqdm
 
-from optilab.data_classes import ExperimentMetadata, ExperimentResults
 from optilab.functions import ObjectiveFunction
 from optilab.functions.benchmarks.cec2017_objective_function import (
     CEC2017ObjectiveFunction,
@@ -99,20 +98,8 @@ if __name__ == "__main__":
     DIM = 10
     POPSIZE = 40
     NUM_RUNS = 5
-
-    metadata = ExperimentMetadata(
-        method_name="cmaes",
-        method_hyperparameters={
-            "sigma0": 10,
-            "popsize": "4*dim",
-            "call_budget": 1e6,
-            "bounds": (-100, 100),
-        },
-        metamodel_name="approximate_ranking_metamodel_knn",
-        metamodel_hyperparameters={"num_neighbours": 5},
-        benchmark_name="cec2017",
-    )
-    results = ExperimentResults(metadata)
+    CALL_BUDGET = 1e6
+    BOUNDS = (-100, 100)
 
     # func = SphereFunction(DIM)
     func = CEC2017ObjectiveFunction(1, DIM)
@@ -123,8 +110,8 @@ if __name__ == "__main__":
             func,
             DIM,
             POPSIZE,
-            metadata.method_hyperparameters["call_budget"],
-            metadata.method_hyperparameters["bounds"],
+            CALL_BUDGET,
+            BOUNDS,
             10,
             debug=True,
         )

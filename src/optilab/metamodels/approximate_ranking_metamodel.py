@@ -30,7 +30,7 @@ class ApproximateRankingMetamodel:
         self.population_size = population_size
         self.mu = mu
 
-        self.n_init = population_size // 2
+        self.n_init = population_size
         self.n_step = max(1, population_size // 10)
 
         self.train_set = PointList(points=[])

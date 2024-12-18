@@ -51,26 +51,32 @@ class TestKNNSurrogateObjectiveFunction:
         with pytest.raises(ValueError):
             KNNSurrogateObjectiveFunction(3, train_set)
 
-    # def test_simple_1d_case(self):
-    #     """
-    #     Test if the KNN surrogate function calculates the result as expected. The provided case
-    #     has been calculated by hand and checked here if the KNN returns the expected result.
-    #     """
-    #     train_set = [([-5], 2), ([0], -3), ([5], 3)]
-    #     knn_sof = KNNSurrogateObjectiveFunction(3, train_set)
-    #     assert np.isclose(-1.353, knn_sof([1]), atol=1e-3)
+    def test_simple_1d_case(self):
+        """
+        Test if the KNN surrogate function calculates the result as expected. The provided case
+        has been calculated by hand and checked here if the KNN returns the expected result.
+        """
+        train_set = PointList(
+            [
+                Point(np.array([-5]), 2, True),
+                Point(np.array([0]), -3, True),
+                Point(np.array([5]), 3, True),
+            ]
+        )
+        knn_sof = KNNSurrogateObjectiveFunction(3, train_set)
+        assert np.isclose(-1.353, knn_sof(Point(np.array([1]))).y, atol=1e-3)
 
-    # def test_all_same(self):
-    #     """
-    #     Simple test case. All points have the same x and y and the result is expected to be
-    #     the same y.
-    #     """
-    #     train_set = [([0], 1)] * 100
-    #     knn_sof = KNNSurrogateObjectiveFunction(5, train_set)
-    #     y = knn_sof([100])
-    #     assert y == 1
-    #     assert knn_sof.num_calls == 1
-    #     assert knn_sof.dim == 1
+    def test_all_same(self):
+        """
+        Simple test case. All points have the same x and y and the result is expected to be
+        the same y.
+        """
+        train_set = PointList([Point(np.array([0]), 1, True)] * 100)
+        knn_sof = KNNSurrogateObjectiveFunction(5, train_set)
+        y = knn_sof(Point(np.array([100]))).y
+        assert y == 1
+        assert knn_sof.num_calls == 1
+        assert knn_sof.dim == 1
 
     def test_square(self, train_set_2d_square):
         """
@@ -85,23 +91,30 @@ class TestKNNSurrogateObjectiveFunction:
         assert knn_sof.num_calls == 1
         assert knn_sof.dim == 2
 
-    # def test_dim_not_constant(self):
-    #     """
-    #     Check if the initalization fails when x-s in train set have different dimensionality.
-    #     """
-    #     train_set = [([1, 1], 1), ([1, -1], 3), ([-1, -1], 1), ([-1], 3)]
-    #     with pytest.raises(ValueError):
-    #         KNNSurrogateObjectiveFunction(4, train_set)
+    def test_dim_not_constant(self):
+        """
+        Check if the initalization fails when x-s in train set have different dimensionality.
+        """
+        train_set = PointList(
+            [
+                Point(np.array([1, 1]), 1, True),
+                Point(np.array([1, -1]), 3, True),
+                Point(np.array([-1, -1]), 1, True),
+                Point(np.array([-1]), 3, True),
+            ]
+        )
+        with pytest.raises(ValueError):
+            KNNSurrogateObjectiveFunction(4, train_set)
 
-    # def test_not_ready(self):
-    #     """
-    #     Check if when a KNNSurrogateObjectiveFunction model is created without providing training
-    #     data it's labeled as not ready, and raises an error when called as expected.
-    #     """
-    #     knn_sof = KNNSurrogateObjectiveFunction(4)
-    #     assert not knn_sof.is_ready
-    #     with pytest.raises(NotImplementedError):
-    #         knn_sof([10])
+    def test_not_ready(self):
+        """
+        Check if when a KNNSurrogateObjectiveFunction model is created without providing training
+        data it's labeled as not ready, and raises an error when called as expected.
+        """
+        knn_sof = KNNSurrogateObjectiveFunction(4)
+        assert not knn_sof.is_ready
+        with pytest.raises(NotImplementedError):
+            knn_sof(Point(np.array([10])))
 
     def test_train_later(self, train_set_2d_square):
         """

@@ -89,10 +89,6 @@ class ApproximateRankingMetamodel:
         Returns:
             PointList: List of points evaluated by the objective function.
         """
-        for point in self.train_set:
-            if point.y <= 0:
-                print(point)
-                print("below zero!!!")
         return self.train_set
 
     def adapt(self, xs: PointList) -> None:

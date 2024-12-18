@@ -2,8 +2,6 @@
 Approximate ranking metamodel based on lmm-CMA-ES.
 """
 
-import numpy as np
-
 from ..data_classes import PointList
 from ..functions import ObjectiveFunction
 from ..functions.surrogate import SurrogateObjectiveFunction
@@ -152,7 +150,7 @@ class ApproximateRankingMetamodel:
             # check if the mu ranking changed
             if all(
                 (
-                    np.array_equal(new_pt.x, pt.x)
+                    new_pt == pt
                     for new_pt, pt in zip(
                         items_previous[: self.mu], items_current[: self.mu]
                     )

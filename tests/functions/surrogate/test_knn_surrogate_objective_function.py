@@ -151,3 +151,22 @@ class TestKNNSurrogateObjectiveFunction:
         )
         knn_sof = KNNSurrogateObjectiveFunction(3, train_set)
         assert knn_sof(Point(np.array([3, -3]))).y == 2.75
+
+    def test_retrain_on_new_train_set(self, train_set_2d_square):
+        """
+        Check if when KNN is trained on new data, the model forgets the old data.
+        """
+        train_set = PointList(
+            [
+                Point(np.array([1, 1]), 1, True),
+                Point(np.array([1, -1]), 2, True),
+                Point(np.array([1, -1]), 2, True),
+                Point(np.array([-1, -1]), 3, True),
+                Point(np.array([-1, 1]), 4, True),
+                Point(np.array([0, 0]), 5, True),
+            ]
+        )
+        knn_sof = KNNSurrogateObjectiveFunction(4, train_set)
+        knn_sof.train(train_set_2d_square)
+        assert knn_sof(Point(np.array([0, 0]))).y == 0
+        assert len(knn_sof.train_set) == len(train_set_2d_square)

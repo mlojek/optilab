@@ -48,7 +48,7 @@ class Bounds:
         Returns:
             bool: True if point lies in the bounds.
         """
-        return np.all((point.x > self.lower) & (point.x < self.upper))
+        return np.all((point.x >= self.lower) & (point.x <= self.upper))
 
     def random_point(self, dim: int) -> Point:
         """

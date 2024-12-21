@@ -48,7 +48,7 @@ class PolynomialRegression(SurrogateObjectiveFunction):
             train_set (PointList): Train data for the model.
         """
         super().train(train_set)
-        x, y = train_set.pairs()
+        x, y = self.train_set.pairs()
         self.weights = np.linalg.lstsq(self.preprocessor.fit_transform(x), y)[0]
 
     def __call__(self, point: Point) -> Point:

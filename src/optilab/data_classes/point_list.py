@@ -91,7 +91,7 @@ class PointList:
         Returns:
             Tuple[List[np.ndarray], List[float]]: Lists of x and y values.
         """
-        return zip(*[[point.x, point.y] for point in self.points])
+        return [point.x for point in self.points], [point.y for point in self.points]
 
     def __getitem__(self, index: int) -> Point:
         """
@@ -119,3 +119,12 @@ class PointList:
         Sort the point in this list by y, ascending.
         """
         self.points = list(sorted(self.points, key=lambda point: point.y))
+
+    def best_y(self) -> float:
+        """
+        Get the best y value found. If list is empty, infinity is returned.
+
+        Returns:
+            float: The best y value found.
+        """
+        return min((point.y for point in self.points), default=np.inf)

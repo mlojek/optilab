@@ -116,11 +116,11 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
 
         distance_points = [
             (
-                mahalanobis(x_t, point.x, self.reversed_covariance_matrix),
-                np.array(x_t),
-                y_t,
+                mahalanobis(train_point.x, point.x, self.reversed_covariance_matrix),
+                np.array(train_point.x),
+                train_point.y,
             )
-            for x_t, y_t in self.train_set.pairs()
+            for train_point in self.train_set
         ]
 
         distance_points.sort(key=lambda i: i[0])

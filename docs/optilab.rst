@@ -10,6 +10,7 @@ Subpackages
    optilab.data_classes
    optilab.functions
    optilab.metamodels
+   optilab.optimizers
    optilab.plotting
 
 Module contents

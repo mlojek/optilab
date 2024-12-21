@@ -75,7 +75,7 @@ def ecdf_curve(
         for log in logs:
             new_log = convergence_curve(log)
             max_len = max(max_len, len(new_log))
-            processed_log = [math.log10(v) for v in new_log]
+            processed_log = [math.log10(v + 1e-10) for v in new_log]
             processed_logs[method].append(processed_log)
             all_last_items.append(processed_log[-1])
             log_lengths[method] = max_len

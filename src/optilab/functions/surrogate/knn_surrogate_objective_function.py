@@ -39,7 +39,8 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
             train_set (PointList): Training data for the model.
         """
         super().train(train_set)
-        self.model.fit(*train_set.pairs())
+        self.model.fit(*self.train_set.pairs())
+        # print(len(self.train_set))
 
     def get_metadata(self) -> FunctionMetadata:
         """

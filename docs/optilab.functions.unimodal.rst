@@ -20,6 +20,14 @@ optilab.functions.unimodal.cumulative\_squared\_sums module
    :undoc-members:
    :show-inheritance:
 
+optilab.functions.unimodal.linear\_function module
+--------------------------------------------------
+
+.. automodule:: optilab.functions.unimodal.linear_function
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 optilab.functions.unimodal.sphere\_function module
 --------------------------------------------------
 

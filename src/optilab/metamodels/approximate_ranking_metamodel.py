@@ -154,4 +154,5 @@ class ApproximateRankingMetamodel:
             evaluated_this_run.extend(to_evaluate_n_step)
             self.evaluate(PointList(points=to_evaluate_n_step))
 
+        # print(len(evaluated_this_run) / len(xs))
         self._update_n(num_iter)

@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath('../src/optilab'))
 project = 'optilab'
 copyright = '2024, Marcin Łojek'
 author = 'Marcin Łojek'
-release = '7'
+release = '8'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

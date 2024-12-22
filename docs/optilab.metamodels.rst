@@ -12,6 +12,14 @@ optilab.metamodels.approximate\_ranking\_metamodel module
    :undoc-members:
    :show-inheritance:
 
+optilab.metamodels.iepolation\_surrogate module
+-----------------------------------------------
+
+.. automodule:: optilab.metamodels.iepolation_surrogate
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

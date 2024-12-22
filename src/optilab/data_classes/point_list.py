@@ -83,6 +83,24 @@ class PointList:
         """
         self.points.extend(new_points.points)
 
+    def x(self) -> List[np.ndarray]:
+        """
+        Get all x values of points in this list.
+
+        Returns:
+            List[np.ndarray]: List containing x values of all points.
+        """
+        return [point.x for point in self.points]
+
+    def y(self) -> List[float]:
+        """
+        Get all y values of points in this list.
+
+        Returns:
+            List[float]: List of y values of all points.
+        """
+        return [point.y for point in self.points]
+
     def pairs(self) -> Tuple[List[np.ndarray], List[float]]:
         """
         Return the contents of this point list as list of x and list of y values.
@@ -91,7 +109,7 @@ class PointList:
         Returns:
             Tuple[List[np.ndarray], List[float]]: Lists of x and y values.
         """
-        return [point.x for point in self.points], [point.y for point in self.points]
+        return self.x(), self.y()
 
     def __getitem__(self, index: int) -> Point:
         """

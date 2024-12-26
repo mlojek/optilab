@@ -1,5 +1,5 @@
 """
-Unit tests for Point dataclass
+Unit tests for Point dataclass.
 """
 
 import numpy as np

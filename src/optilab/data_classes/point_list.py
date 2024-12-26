@@ -20,36 +20,7 @@ class PointList:
     points: List[Point]
     "The list of points"
 
-    def only_evaluated(self) -> List[Point]:
-        """
-        Return list of only those points that have been evaluated.
-
-        Returns:
-            List[Point]: List containing evaluated points.
-        """
-        return filter(lambda point: point.is_evaluated, self.points)
-
-    def x_difference(self, other) -> List[Point]:
-        """
-        Return list of points in self that do not appear in other based on their x values.
-
-        Args:
-            other (PointList): Another PointList to compare against.
-
-        Returns:
-            List[Point]: List of points in self that are not in other.
-        """
-        return PointList(
-            points=[
-                point_self
-                for point_self in self.points
-                if not any(
-                    np.array_equal(point_self.x, point_other.x)
-                    for point_other in other.points
-                )
-            ]
-        )
-
+    # alternative constructors
     @classmethod
     def from_list(cls, xs: List[np.ndarray]):
         """
@@ -65,6 +36,7 @@ class PointList:
             points=[Point(x=point, y=None, is_evaluated=False) for point in xs]
         )
 
+    # adding points to the list
     def append(self, new_point: Point) -> None:
         """
         Add new point to the list.
@@ -83,6 +55,7 @@ class PointList:
         """
         self.points.extend(new_points.points)
 
+    # getting point values
     def x(self) -> List[np.ndarray]:
         """
         Get all x values of points in this list.
@@ -111,6 +84,16 @@ class PointList:
         """
         return self.x(), self.y()
 
+    def only_evaluated(self):
+        """
+        Return list of only those points that have been evaluated.
+
+        Returns:
+            PointList: List containing evaluated points.
+        """
+        return PointList(list(filter(lambda point: point.is_evaluated, self.points)))
+
+    # magic methods for list abstraction
     def __getitem__(self, index: int) -> Point:
         """
         Allows to index this object like a list.
@@ -132,11 +115,54 @@ class PointList:
         """
         return len(self.points)
 
-    def rank(self) -> None:
+    # fancy methods
+    def rank(self, *, reverse: bool = False) -> None:
         """
-        Sort the point in this list by y, ascending.
+        Sort points by y value in place ascending.
+
+        Args:
+            reverse (bool): If true, sorting is done descending. Default False.
         """
-        self.points = list(sorted(self.points, key=lambda point: point.y))
+        self.points = list(
+            sorted(self.points, key=lambda point: point.y, reverse=reverse)
+        )
+
+    def x_difference(self, other):
+        """
+        Return list of points in self that do not appear in other based on their x values.
+
+        Args:
+            other (PointList): Another PointList to compare against.
+
+        Returns:
+            PointList: List of points in self that are not in other.
+        """
+        return PointList(
+            points=[
+                point_self
+                for point_self in self.points
+                if not point_self in other.points
+            ]
+        )
+
+    # best value getters and similar methods
+    def best(self) -> Point:
+        """
+        Get the best point by y value from the PointList.
+
+        Returns:
+            Point: The Point with the lowest y value in the list.
+        """
+        return min(self.points, key=lambda point: point.y)
+
+    def best_index(self) -> int:
+        """
+        Get the index of the best point by y value in the PointList.
+
+        Returns:
+            int: The index of the point with the lowest y value.
+        """
+        return min(range(len(self.points)), key=lambda i: self.points[i].y)
 
     def best_y(self) -> float:
         """
@@ -146,3 +172,12 @@ class PointList:
             float: The best y value found.
         """
         return min((point.y for point in self.points), default=np.inf)
+
+    def slice_to_best(self):
+        """
+        Return a list of all points up to the best in the list, including the best.
+
+        Returns:
+            PointList: List of points up to the best point.
+        """
+        return PointList(self[: self.best_index() + 1])

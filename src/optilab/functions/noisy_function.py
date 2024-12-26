@@ -13,16 +13,15 @@ class NoisyFunction(ObjectiveFunction):
     Class that makes an objective function noisy using random normal distribution.
     """
 
-    def __init__(self, function: ObjectiveFunction, noise: float, dim: int) -> None:
+    def __init__(self, function: ObjectiveFunction, noise: float) -> None:
         """
         Class constructor.
 
         Args:
             function (ObjectiveFunction): Objective function to noise.
             noise (float): Noise value of the function.
-            dim (int): Dimensionality of the function.
         """
-        super().__init__(f"noisy_{function.name}_{noise}", dim)
+        super().__init__(f"noisy_{function.name}_{noise}", function.dim)
         self.function = function
         self.noise = noise
 

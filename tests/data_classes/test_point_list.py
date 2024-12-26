@@ -222,24 +222,51 @@ class TestPointList:
         empty_point_list.rank()
         assert len(empty_point_list) == 0
 
-    # # x_difference
-    # def test_x_difference(self, example_2d_pointlist, overlapping_2d_pointlist):
-    #     assert False
+    # x_difference
+    def test_x_difference(self, example_2d_pointlist, overlapping_2d_pointlist):
+        """
+        Test if x_difference() method works correctly with two overlapping pointlists.
+        """
+        difference = example_2d_pointlist.x_difference(overlapping_2d_pointlist)
+        assert len(difference) == 2
 
-    # def test_x_difference_same(self, example_2d_pointlist):
-    #     assert False
+    def test_x_difference_same(self, example_2d_pointlist):
+        """
+        Test if x_difference() method works correctly with two copies of the same pointlist.
+        """
+        difference = example_2d_pointlist.x_difference(example_2d_pointlist)
+        assert len(difference) == 0
 
-    # def test_x_difference_empty(self, example_2d_pointlist):
-    #     assert False
+    def test_x_difference_empty(self, example_2d_pointlist):
+        """
+        Test if x_difference() method works correctly on an empty pointlist.
+        """
+        difference = PointList([]).x_difference(example_2d_pointlist)
+        assert len(difference) == 0
 
-    # def test_x_difference_with_empty(self, example_2d_pointlist):
-    #     assert False
+    def test_x_difference_with_empty(self, example_2d_pointlist):
+        """
+        Test if x_difference() method works correctly when provided with an empty pointlist.
+        """
+        difference = example_2d_pointlist.x_difference(PointList([]))
+        assert len(difference) == len(example_2d_pointlist)
 
-    # def test_x_difference_both_empty(self):
-    #     assert False
+    def test_x_difference_both_empty(self):
+        """
+        Test if x_difference() method works correctly with two empty pointlists.
+        """
+        difference = PointList([]).x_difference(PointList([]))
+        assert len(difference) == 0
 
-    # def test_x_difference_different_dim(self, example_2d_pointlist, example_3d_pointlist):
-    #     assert False
+    def test_x_difference_different_dim(
+        self, example_2d_pointlist, example_3d_pointlist
+    ):
+        """
+        Test if x_difference() method works correctly with two pointlists
+        of different dimensionalities.
+        """
+        difference = example_2d_pointlist.x_difference(example_3d_pointlist)
+        assert len(difference) == len(example_2d_pointlist)
 
     # best
     def test_best(self, example_2d_pointlist):

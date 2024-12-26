@@ -90,6 +90,7 @@ if __name__ == "__main__":
         },
         n_dimensions=DIM,
         savepath="ecdf.png",
+        allowed_error=TOL
     )
 
     dump_to_pickle([cmaes_run, lmm_cmaes_run], f'lmm_reproduction_{FUNC.name}_{DIM}.pkl')

@@ -96,7 +96,7 @@ def lmm_cma_es(
     )
 
     while (
-        metamodel.get_log().best_y() > 1e-8 and len(metamodel.get_log()) <= call_budget
+        metamodel.get_log().best_y() > tolerance and len(metamodel.get_log()) <= call_budget
     ):
         solutions = PointList.from_list(es.ask())
         metamodel.surrogate_function.set_covariance_matrix(es.C)

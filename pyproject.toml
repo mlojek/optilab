@@ -1,6 +1,6 @@
 [project]
 name = "optilab"
-version = "8"
+version = "9"
 authors = [
   { name="mlojek", email="marcin.lojek@pw.edu.pl" },
 ]

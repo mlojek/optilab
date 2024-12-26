@@ -26,5 +26,14 @@ class OptimizationRun:
     bounds: Bounds
     "Bounds of the search space."
 
+    tolerance: float
+    "Tolerated error value to stop the search."
+
     logs: List[PointList]
     "Logs of points from the optimization runs."
+
+    def bests_y(self) -> List[float]:
+        """
+        Get a list of best y values from each log.
+        """
+        return [log.best_y() for log in self.logs]

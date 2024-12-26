@@ -124,7 +124,7 @@ def lmm_cma_es(
         population_size,
         population_size // 2,
         function,
-        LocallyWeightedPolynomialRegression(num_neighbors, polynomial_dim),
+        LocallyWeightedPolynomialRegression(polynomial_dim, num_neighbors),
     )
 
     x0 = bounds.random_point(function.dim).x

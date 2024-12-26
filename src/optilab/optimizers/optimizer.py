@@ -86,5 +86,6 @@ class Optimizer:
             model_metadata=self.metadata,
             function_metadata=function.get_metadata(),
             bounds=bounds,
+            tolerance=tolerance,
             logs=logs,
         )

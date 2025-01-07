@@ -72,6 +72,7 @@ if __name__ == "__main__":
             "lmm-cma-es": lmm,
             "ie": ie,
         },
+        allowed_error=1e-8,
         n_dimensions=DIM,
         savepath="final_ecdf.png",
     )

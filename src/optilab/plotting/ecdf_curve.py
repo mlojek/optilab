@@ -49,9 +49,9 @@ def _ecdf_thresholding(
 
 def ecdf_curve(
     data: Dict[str, List[PointList]],
-    n_dimensions: int = 1,
+    n_dimensions: int,
+    allowed_error: float,
     n_thresholds: int = 100,
-    allowed_error: float = 1e-8,
 ) -> Dict[str, Tuple[List[float], List[float]]]:
     """
     Calculate ECDF curves.
@@ -59,8 +59,8 @@ def ecdf_curve(
     Args:
         data (Dict[str, PointList]): Lists of value logs indexed by method name.
         n_dimensions (int): Dimensionality of the solved problem.
-        n_thresholds (int): Number of ECDF thresholds.
         allowed_error (float): Tolerable error value, used as the last threshold.
+        n_thresholds (int): Number of ECDF thresholds.
 
     Returns:
         Dict[str, Tuple[List[float], List[float]]]: x, y plot points for each method.
@@ -75,7 +75,7 @@ def ecdf_curve(
         for log in logs:
             new_log = convergence_curve(log)
             max_len = max(max_len, len(new_log))
-            processed_log = [math.log10(v + 1e-10) for v in new_log]
+            processed_log = [math.log10(max(v, allowed_error)) for v in new_log]
             processed_logs[method].append(processed_log)
             all_last_items.append(processed_log[-1])
             log_lengths[method] = max_len
@@ -105,9 +105,9 @@ def ecdf_curve(
 
 def plot_ecdf_curves(
     data: Dict[str, PointList],
-    n_dimensions: int = 1,
+    n_dimensions: int,
+    allowed_error: float,
     n_thresholds: int = 100,
-    allowed_error: float = 1e-8,
     savepath: str = None,
 ) -> None:
     """
@@ -116,13 +116,13 @@ def plot_ecdf_curves(
     Args:
         data (Dict[str, List[List[float]]]): Lists of value logs for every method.
         n_dimensions (int): Dimensionality of the optimized function.
-        n_thresholds (int): Number of ECDF thresholds.
         allowed_error (float): Tolerable error value, used as the last threshold.
+        n_thresholds (int): Number of ECDF thresholds.
         savepath (str): Path to save the plot, optional.
     """
     plt.clf()
 
-    ecdf_data = ecdf_curve(data, n_dimensions, n_thresholds, allowed_error)
+    ecdf_data = ecdf_curve(data, n_dimensions, allowed_error, n_thresholds)
 
     for method, (x, y) in ecdf_data.items():
         plt.plot(x, y, label=method)

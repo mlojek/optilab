@@ -4,6 +4,8 @@ Entrypoint for CLI functionality of optilab.
 
 import argparse
 
+import pandas as pd
+
 from .data_classes import OptimizationRun
 from .plotting import plot_box_plot, plot_ecdf_curves
 from .utils.pickle_utils import load_from_pickle
@@ -33,3 +35,7 @@ if __name__ == "__main__":
         data={run.model_metadata.name: run.bests_y() for run in data},
         savepath="box_plot.png",
     )
+
+    stats = pd.concat([run.stats() for run in data], ignore_index=True)
+    stats.to_csv("stats.csv")
+    print(stats)

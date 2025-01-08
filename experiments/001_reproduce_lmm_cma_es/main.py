@@ -9,14 +9,8 @@ from tqdm import tqdm
 import numpy as np
 
 from optilab.data_classes import Bounds
-from optilab.functions.surrogate import (
-    KNNSurrogateObjectiveFunction,
-    PolynomialRegression,
-)
-from optilab.functions.unimodal import CumulativeSquaredSums, SphereFunction
+from optilab.functions.unimodal import CumulativeSquaredSums
 from optilab.functions.multimodal import RosenbrockFunction
-from optilab.functions import NoisyFunction
-from optilab.metamodels import IEPolationSurrogate
 from optilab.plotting import plot_ecdf_curves
 from optilab.data_classes import OptimizationRun, OptimizerMetadata
 from optilab.utils import dump_to_pickle
@@ -76,8 +70,8 @@ if __name__ == "__main__":
     )
 
     # print stats
-    vanilla_times = [len(log.slice_to_best()) for log in cmaes_logs]
-    lmm_times = [len(log.slice_to_best()) for log in lmm_cmaes_logs]
+    vanilla_times = [len(log) for log in cmaes_logs]
+    lmm_times = [len(log) for log in lmm_cmaes_logs]
 
     print(f'vanilla {np.average(vanilla_times)} {np.std(vanilla_times)}')
     print(f'lmm {np.average(lmm_times)} {np.std(lmm_times)}')
@@ -89,7 +83,7 @@ if __name__ == "__main__":
             "lmm-cma-es": lmm_cmaes_logs,
         },
         n_dimensions=DIM,
-        savepath="ecdf.png",
+        savepath=f"ecdf_{FUNC.name}_{DIM}.png",
         allowed_error=TOL
     )
 

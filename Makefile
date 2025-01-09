@@ -1,4 +1,4 @@
-all_code = src sandbox tests
+all_code = src tests
 
 install:
 	pip install -r requirements.txt
@@ -14,7 +14,7 @@ format:
 	isort ${all_code} --profile black
 	black ${all_code}
 
-check:
+check: format
 	black ${all_code} --check
 	isort ${all_code} --check --profile black
 	pylint ${all_code}

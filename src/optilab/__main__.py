@@ -5,6 +5,7 @@ Entrypoint for CLI functionality of optilab.
 import argparse
 
 import pandas as pd
+from tabulate import tabulate
 
 from .data_classes import OptimizationRun
 from .plotting import plot_box_plot, plot_ecdf_curves
@@ -38,4 +39,4 @@ if __name__ == "__main__":
 
     stats = pd.concat([run.stats() for run in data], ignore_index=True)
     stats.to_csv("stats.csv")
-    print(stats)
+    print(tabulate(stats, headers="keys", tablefmt="github"))

@@ -1,30 +1,37 @@
 """
-CMA-ES optimizer: Covariance Matrix Adaptation Evolution Strategy.
+LMM-CMA-ES optimizer: CMA-ES with local polynomial regression metamodel.
 """
 
-# pylint: disable=too-many-arguments, too-many-positional-arguments
+# pylint: disable=too-many-arguments, too-many-positional-arguments, duplicate-code
 
 import cma
 
 from ..data_classes import Bounds, PointList
 from ..functions import ObjectiveFunction
+from ..functions.surrogate import LocallyWeightedPolynomialRegression
+from ..metamodels import ApproximateRankingMetamodel
 from .optimizer import Optimizer
 
 
-class CmaEs(Optimizer):
+class LmmCmaEs(Optimizer):
     """
-    CMA-ES optimizer: Covariance Matrix Adaptation Evolution Strategy.
+    LMM-CMA-ES optimizer: CMA-ES with local polynomial regression metamodel.
     """
 
-    def __init__(self, population_size: int, sigma0: float):
+    def __init__(self, population_size: int, sigma0: float, polynomial_dim: int):
         """
         Class constructor.
 
         Args:
             population_size (int): Size of the population.
             sigma0 (float): Starting value of the sigma,
+            polynomial_dim (int): Dimension of the polynomial regression.
         """
-        super().__init__("cma-es", population_size, {"sigma0": sigma0})
+        super().__init__(
+            "lmm-cma-es",
+            population_size,
+            {"sigma0": sigma0, "polynomial_dim": polynomial_dim},
+        )
 
     def optimize(
         self,
@@ -47,9 +54,18 @@ class CmaEs(Optimizer):
         Returns:
             PointList: Results log from the optimization.
         """
-        x0 = bounds.random_point(function.dim).x
+        num_neighbors = function.dim * (function.dim + 3) + 2
 
-        res_log = PointList(points=[])
+        metamodel = ApproximateRankingMetamodel(
+            self.metadata.population_size,
+            self.metadata.population_size // 2,
+            function,
+            LocallyWeightedPolynomialRegression(
+                self.metadata.hyperparameters["polynomial_dim"], num_neighbors
+            ),
+        )
+
+        x0 = bounds.random_point(function.dim).x
 
         es = cma.CMAEvolutionStrategy(
             x0,
@@ -65,14 +81,14 @@ class CmaEs(Optimizer):
         )
 
         while (
-            not es.stop()
-            and len(res_log) < call_budget
-            and res_log.best_y() > target + tolerance
+            metamodel.get_log().best_y() > target + tolerance
+            and len(metamodel.get_log()) < call_budget
         ):
             solutions = PointList.from_list(es.ask())
-            results = PointList(points=[function(x) for x in solutions.points])
-            res_log.extend(results)
-            x, y = results.pairs()
+            metamodel.surrogate_function.set_covariance_matrix(es.C)
+            metamodel.adapt(solutions)
+            xy_pairs = metamodel(solutions)
+            x, y = xy_pairs.pairs()
             es.tell(x, y)
 
-        return res_log
+        return metamodel.get_log()

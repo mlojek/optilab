@@ -1,14 +1,9 @@
 """
-Benchmarking CMA-ES algorithm on CEC 2017
+Benchmarking of CMA-ES with KNN metamodel
 """
-
-# pylint: disable=import-error
-
-import numpy as np
 
 from optilab.data_classes import Bounds
 from optilab.functions.unimodal import SphereFunction
-from optilab.plotting import plot_ecdf_curves
 from optilab.utils import dump_to_pickle
 from optilab.optimizers import CmaEs, KnnCmaEs
 
@@ -25,29 +20,14 @@ if __name__ == "__main__":
     # optimized problem
     BOUNDS = Bounds(-100, 100)
     FUNC = SphereFunction(DIM)
+    TARGET = 0.0
 
+    # optimize using CMA-ES
     cmaes_optimizer = CmaEs(POPSIZE, SIGMA0)
     cmaes_results = cmaes_optimizer.run_optimization(NUM_RUNS, FUNC, BOUNDS, CALL_BUDGET, TOL)
 
+    # optimize using KNN-CMA-ES
     knn_optimizer = KnnCmaEs(POPSIZE, SIGMA0, NUM_NEIGHBORS)
     knn_results = knn_optimizer.run_optimization(NUM_RUNS, FUNC, BOUNDS, CALL_BUDGET, TOL)
 
-    # print stats
-    vanilla_times = [len(log) for log in cmaes_results.logs]
-    knn_times = [len(log) for log in knn_results.logs]
-
-    print(f'vanilla {np.average(vanilla_times)} {np.std(vanilla_times)}')
-    print(f'knn {np.average(knn_times)} {np.std(knn_times)}')
-    
-    # plot results
-    plot_ecdf_curves(
-        {
-            "cma-es": cmaes_results.logs,
-            "knn-cma-es": knn_results.logs,
-        },
-        n_dimensions=DIM,
-        savepath=f"ecdf_{FUNC.name}_{DIM}.png",
-        allowed_error=TOL
-    )
-
-    dump_to_pickle([cmaes_results, knn_results], f'knn_reproduction_{FUNC.name}_{DIM}.pkl')
+    dump_to_pickle([cmaes_results, knn_results], f'002_knn_cma_es_{FUNC.name}_{DIM}.pkl')

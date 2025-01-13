@@ -26,6 +26,27 @@ class CmaEs(Optimizer):
         """
         super().__init__("cma-es", population_size, {"sigma0": sigma0})
 
+    def _spawn_cmaes(self, bounds: Bounds, dim: int) -> cma.CMAEvolutionStrategy:
+        """
+        Create a new instance of cma optimizer.
+
+        Args:
+            bounds (Bounds): The bounds of the search area.
+            dim (int): The dimensionality of the search area.
+
+        Returns:
+            cma.CMAEvolutionStrategy: A new cma optimizer instance.
+        """
+        return cma.CMAEvolutionStrategy(
+            bounds.random_point(dim).x,
+            self.metadata.hyperparameters["sigma0"],
+            {
+                "popsize": self.metadata.population_size,
+                "bounds": bounds.to_list(),
+                "verbose": -9,
+            },
+        )
+
     def optimize(
         self,
         function: ObjectiveFunction,
@@ -47,22 +68,9 @@ class CmaEs(Optimizer):
         Returns:
             PointList: Results log from the optimization.
         """
-        x0 = bounds.random_point(function.dim).x
+        es = self._spawn_cmaes(bounds, function.dim)
 
         res_log = PointList(points=[])
-
-        es = cma.CMAEvolutionStrategy(
-            x0,
-            self.metadata.hyperparameters["sigma0"],
-            {
-                "popsize": self.metadata.population_size,
-                "bounds": bounds.to_list(),
-                "maxfevals": call_budget,
-                "ftarget": target,
-                "verbose": -9,
-                "tolfun": tolerance,
-            },
-        )
 
         while (
             not es.stop()

@@ -4,16 +4,15 @@ LMM-CMA-ES optimizer: CMA-ES with local polynomial regression metamodel.
 
 # pylint: disable=too-many-arguments, too-many-positional-arguments, duplicate-code
 
-import cma
-
 from ..data_classes import Bounds, PointList
 from ..functions import ObjectiveFunction
 from ..functions.surrogate import LocallyWeightedPolynomialRegression
 from ..metamodels import ApproximateRankingMetamodel
+from .cma_es import CmaEs
 from .optimizer import Optimizer
 
 
-class LmmCmaEs(Optimizer):
+class LmmCmaEs(CmaEs):
     """
     LMM-CMA-ES optimizer: CMA-ES with local polynomial regression metamodel.
     """
@@ -27,7 +26,10 @@ class LmmCmaEs(Optimizer):
             sigma0 (float): Starting value of the sigma,
             polynomial_dim (int): Dimension of the polynomial regression.
         """
-        super().__init__(
+        # Skipping super().__init__ and calling grandparent init instead.
+        # pylint: disable=super-init-not-called, non-parent-init-called
+        Optimizer.__init__(
+            self,
             "lmm-cma-es",
             population_size,
             {"sigma0": sigma0, "polynomial_dim": polynomial_dim},
@@ -65,20 +67,7 @@ class LmmCmaEs(Optimizer):
             ),
         )
 
-        x0 = bounds.random_point(function.dim).x
-
-        es = cma.CMAEvolutionStrategy(
-            x0,
-            self.metadata.hyperparameters["sigma0"],
-            {
-                "popsize": self.metadata.population_size,
-                "bounds": bounds.to_list(),
-                "maxfevals": call_budget,
-                "ftarget": target,
-                "verbose": -9,
-                "tolfun": tolerance,
-            },
-        )
+        es = self._spawn_cmaes(bounds, function.dim)
 
         while (
             metamodel.get_log().best_y() > target + tolerance

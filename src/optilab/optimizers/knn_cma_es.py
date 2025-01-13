@@ -4,16 +4,15 @@ KNN-CMA-ES optimizer. CMA-ES is enhanced with a KNN metamodel similar to the one
 
 # pylint: disable=too-many-arguments, too-many-positional-arguments, duplicate-code
 
-import cma
-
 from ..data_classes import Bounds, PointList
 from ..functions import ObjectiveFunction
 from ..functions.surrogate import KNNSurrogateObjectiveFunction
 from ..metamodels import ApproximateRankingMetamodel
+from .cma_es import CmaEs
 from .optimizer import Optimizer
 
 
-class KnnCmaEs(Optimizer):
+class KnnCmaEs(CmaEs):
     """
     KNN-CMA-ES optimizer. CMA-ES is enhanced with a KNN metamodel similar
     to the one from LMM-CMA-ES.
@@ -28,7 +27,10 @@ class KnnCmaEs(Optimizer):
             sigma0 (float): Starting value of the sigma,
             num_neighbors (int): Number of neighbors used by KNN metamodel.
         """
-        super().__init__(
+        # Skipping super().__init__ and calling grandparent init instead.
+        # pylint: disable=super-init-not-called, non-parent-init-called
+        Optimizer.__init__(
+            self,
             "knn-cma-es",
             population_size,
             {"sigma0": sigma0, "num_neighbors": num_neighbors},
@@ -64,20 +66,7 @@ class KnnCmaEs(Optimizer):
             ),
         )
 
-        x0 = bounds.random_point(function.dim).x
-
-        es = cma.CMAEvolutionStrategy(
-            x0,
-            self.metadata.hyperparameters["sigma0"],
-            {
-                "popsize": self.metadata.population_size,
-                "bounds": bounds.to_list(),
-                "maxfevals": call_budget,
-                "ftarget": target,
-                "verbose": -9,
-                "tolfun": tolerance,
-            },
-        )
+        es = self._spawn_cmaes(bounds, function.dim)
 
         while (
             metamodel.get_log().best_y() > tolerance

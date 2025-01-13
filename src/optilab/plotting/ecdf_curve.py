@@ -39,8 +39,7 @@ def _ecdf_thresholding(
             raise ValueError(
                 "extend_to_len parameter is lower than lenght of the provided log"
             )
-        while len(y) < extend_to_len:
-            y.append(y[-1])
+        y.extend([y[-1]] * (extend_to_len - len(y)))
 
     x = [(i + 1) / n_dimensions for i in range(len(y))]
 

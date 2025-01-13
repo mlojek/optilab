@@ -18,8 +18,8 @@ from optilab.utils import dump_to_pickle
 if __name__ == "__main__":
     # hyperparams:
     DIM = 10
-    POPSIZE = DIM * 2
-    NUM_NEIGHBORS = POPSIZE * 10
+    POPSIZE = DIM * 4
+    NUM_NEIGHBORS = POPSIZE * 5
     NUM_RUNS = 51
     CALL_BUDGET = 1e4 * DIM
     TOL = 1e-8

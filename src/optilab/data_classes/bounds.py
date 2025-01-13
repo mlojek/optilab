@@ -32,6 +32,15 @@ class Bounds:
         """
         return [self.lower, self.upper]
 
+    def __str__(self) -> str:
+        """
+        Express the bounds as a string.
+
+        Returns:
+            str: Simple, printable string representation of this object.
+        """
+        return f"{self.lower} {self.upper}"
+
     def is_valid(self) -> bool:
         """
         Check if the bounds are valid, i.e. if lower bound is below upper bound.

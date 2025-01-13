@@ -7,11 +7,13 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   optilab.cli
    optilab.data_classes
    optilab.functions
    optilab.metamodels
    optilab.optimizers
    optilab.plotting
+   optilab.utils
 
 Module contents
 ---------------

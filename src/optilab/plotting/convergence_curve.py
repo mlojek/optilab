@@ -36,22 +36,21 @@ def plot_convergence_curve(
     Plot the convergence curves of a few methods using pyplot.
 
     Args:
-        data (Dict[str, List[float]]): Error logs of a few methods expressed as {method name: log}.
+        data (Dict[str, List[Pointlist]]): Lists of error logs of a few methods
+            expressed as {method name: [log]}.
         savepath (str): Path to save the plot, optional.
     """
     plt.clf()
 
-    def average_lists(lists):
-        max_length = max(len(lst) for lst in lists)
-        padded_lists = [lst + [0] * (max_length - len(lst)) for lst in lists]
-        averaged_list = [sum(values) / len(values) for values in zip(*padded_lists)]
-
-        return averaged_list
-
     for name, loglist in data.items():
         ys = [convergence_curve(log) for log in loglist]
-        averaged_ys = average_lists(ys)
-        plt.plot(averaged_ys, label=name)
+        max_len = max((len(log) for log in ys))
+
+        for log in ys:
+            log.extend([log[-1]] * (max_len - len(log)))
+
+        averaged_y = [sum(values) / len(values) for values in zip(*ys)]
+        plt.plot(averaged_y, label=name)
 
     plt.yscale("log")
     plt.xlabel("evaluations")

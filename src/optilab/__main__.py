@@ -3,6 +3,7 @@ Entrypoint for CLI functionality of optilab.
 """
 
 import argparse
+from pathlib import Path
 
 import pandas as pd
 
@@ -13,9 +14,11 @@ from .utils.pickle_utils import load_from_pickle
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Optilab CLI utility.")
     parser.add_argument(
-        "pickle_path", help="Path to pickle file with optimization runs."
+        "pickle_path", type=Path, help="Path to pickle file with optimization runs."
     )
     args = parser.parse_args()
+
+    filename_stem = args.pickle_path.stem
 
     data = load_from_pickle(args.pickle_path)
 
@@ -25,7 +28,7 @@ if __name__ == "__main__":
 
     plot_convergence_curve(
         data={run.model_metadata.name: run.logs for run in data},
-        savepath="ecdf.png",
+        savepath=f"{filename_stem}.convergence.png",
     )
 
     plot_ecdf_curves(
@@ -33,14 +36,14 @@ if __name__ == "__main__":
         n_dimensions=data[0].function_metadata.dim,
         n_thresholds=100,
         allowed_error=data[0].tolerance,
-        savepath="ecdf.png",
+        savepath=f"{filename_stem}.ecdf.png",
     )
 
     plot_box_plot(
         data={run.model_metadata.name: run.bests_y() for run in data},
-        savepath="box_plot.png",
+        savepath=f"{filename_stem}.box_plot.png",
     )
 
     stats = pd.concat([run.stats() for run in data], ignore_index=True)
-    stats.to_csv("stats.csv")
+    stats.to_csv(f"{filename_stem}.stats.csv")
     print(stats)

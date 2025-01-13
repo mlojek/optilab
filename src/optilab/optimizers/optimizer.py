@@ -2,7 +2,7 @@
 Base class for optimizers.
 """
 
-# pylint: disable=too-few-public-methods, too-many-arguments, too-many-positional-arguments
+# pylint: disable=too-many-arguments, too-many-positional-arguments
 
 
 from typing import Any, Dict
@@ -26,8 +26,8 @@ class Optimizer:
 
         Args:
             name (str): Name of this optimizer.
-            population_size(int): Size of the population.
-            hyperparameters(Dict[str, Any]): Dictionary with the metadata of the optimizer.
+            population_size (int): Size of the population.
+            hyperparameters (Dict[str, Any]): Dictionary with the metadata of the optimizer.
         """
         self.metadata = OptimizerMetadata(name, population_size, hyperparameters)
 
@@ -36,8 +36,8 @@ class Optimizer:
         function: ObjectiveFunction,
         bounds: Bounds,
         call_budget: int,
+        tolerance: float,
         target: float = 0.0,
-        tolerance: float = 1e-8,
     ) -> PointList:
         """
         Run a single optimization of provided objective function.
@@ -46,8 +46,8 @@ class Optimizer:
             function (ObjectiveFunction): Objective function to optimize.
             bounds (Bounds): Search space of the function.
             call_budget (int): Max number of calls to the objective function.
-            target (float): Objective function value target, default 0.
             tolerance (float): Tolerance of y value to count a solution as acceptable.
+            target (float): Objective function value target, default 0.
 
         Returns:
             PointList: Results log from the optimization.
@@ -56,30 +56,30 @@ class Optimizer:
 
     def run_optimization(
         self,
+        num_runs: int,
         function: ObjectiveFunction,
         bounds: Bounds,
-        num_runs: int,
         call_budget: int,
+        tolerance: float,
         target: float = 0.0,
-        tolerance: float = 1e-8,
     ) -> OptimizationRun:
         """
         Optimize a provided objective function.
 
         Args:
+            num_runs (int): Number of optimization runs to perform.
             function (ObjectiveFunction): Objective function to optimize.
             bounds (Bounds): Search space of the function.
-            num_runs (int): Number of optimization runs to perform.
             call_budget (int): Max number of calls to the objective function.
-            target (float): Objective function value target, default 0.
             tolerance (float): Tolerance of y value to count a solution as acceptable.
+            target (float): Objective function value target, default 0.
 
         Returns:
             OptimizationRun: Metadata of optimization run.
         """
         logs = [
-            self.optimize(function, bounds, call_budget, target, tolerance)
-            for _ in tqdm(range(num_runs), desc="Optimizing", unit="run")
+            self.optimize(function, bounds, call_budget, tolerance, target)
+            for _ in tqdm(range(num_runs), desc="Optimizing...", unit="run")
         ]
 
         return OptimizationRun(

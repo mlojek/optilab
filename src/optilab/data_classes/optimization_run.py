@@ -64,6 +64,7 @@ class OptimizationRun:
             {
                 "model": [self.model_metadata.name],
                 "function": [self.function_metadata.name],
+                "runs": [len(self.logs)],
                 "dim": [self.function_metadata.dim],
                 "popsize": [self.model_metadata.population_size],
                 "bounds": [str(self.bounds)],

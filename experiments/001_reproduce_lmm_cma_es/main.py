@@ -1,90 +1,33 @@
 """
-Benchmarking CMA-ES algorithm on CEC 2017
+Reproducing LMM-CMA-ES optimizer results.
 """
-
-# pylint: disable=import-error
-
-from cmaes_variations import cma_es, lmm_cma_es
-from tqdm import tqdm
-import numpy as np
 
 from optilab.data_classes import Bounds
 from optilab.functions.unimodal import CumulativeSquaredSums
-from optilab.functions.multimodal import RosenbrockFunction
-from optilab.plotting import plot_ecdf_curves
-from optilab.data_classes import OptimizationRun, OptimizerMetadata
 from optilab.utils import dump_to_pickle
+from optilab.optimizers import CmaEs, LmmCmaEs
 
 if __name__ == "__main__":
     # hyperparams:
     DIM = 2
     POPSIZE = 6
-    NUM_RUNS = 20
+    NUM_RUNS = 51
     CALL_BUDGET = 1e4 * DIM
     TOL = 1e-10
+    SIGMA0 = 1
 
     # optimized problem
     BOUNDS = Bounds(-10, 10)
     FUNC = CumulativeSquaredSums(DIM)
+    TARGET = 0.0
 
-    # perform optimization with vanilla cmaes
-    cmaes_logs = [
-        cma_es(FUNC, POPSIZE, CALL_BUDGET, BOUNDS, tolerance=TOL)
-        for _ in tqdm(range(NUM_RUNS), unit="run")
-    ]
+    # optimize using CMA-ES
+    cmaes_optimizer = CmaEs(POPSIZE, SIGMA0)
+    cmaes_runs = cmaes_optimizer.run_optimization(NUM_RUNS, FUNC, BOUNDS, CALL_BUDGET, TOL, TARGET)
 
-    cmaes_run = OptimizationRun(
-        model_metadata=OptimizerMetadata(
-            name='CMA_ES',
-            population_size=POPSIZE,
-            hyperparameters={
-                'sigma0': 1
-            }
-        ),
-        function_metadata=FUNC.get_metadata(),
-        bounds=BOUNDS,
-        tolerance=TOL,
-        logs=cmaes_logs
-    )
+    # optimize using LMM-CMA-ES
+    lmm_optimizer = LmmCmaEs(POPSIZE, SIGMA0, 2)
+    lmm_runs = lmm_optimizer.run_optimization(NUM_RUNS, FUNC, BOUNDS, CALL_BUDGET, TOL, TARGET)
 
-    # perform optimization with lmm cmaes
-    lmm_cmaes_logs = [
-        lmm_cma_es(FUNC, POPSIZE, CALL_BUDGET, BOUNDS, tolerance=TOL)
-        for _ in tqdm(range(NUM_RUNS), unit="run")
-    ]
-
-    lmm_cmaes_run = OptimizationRun(
-        model_metadata=OptimizerMetadata(
-            name='LMM_CMA_ES',
-            population_size=POPSIZE,
-            hyperparameters={
-                'sigma0': 1,
-                'degree': 2,
-                'num_neighbor': DIM * (DIM + 3) + 2
-            }
-        ),
-        function_metadata=FUNC.get_metadata(),
-        bounds=BOUNDS,
-        tolerance=TOL,
-        logs=lmm_cmaes_logs
-    )
-
-    # print stats
-    vanilla_times = [len(log) for log in cmaes_logs]
-    lmm_times = [len(log) for log in lmm_cmaes_logs]
-
-    print(f'vanilla {np.average(vanilla_times)} {np.std(vanilla_times)}')
-    print(f'lmm {np.average(lmm_times)} {np.std(lmm_times)}')
-    
-    # plot results
-    plot_ecdf_curves(
-        {
-            "cma-es": cmaes_logs,
-            "lmm-cma-es": lmm_cmaes_logs,
-        },
-        n_dimensions=DIM,
-        savepath=f"ecdf_{FUNC.name}_{DIM}.png",
-        allowed_error=TOL
-    )
-
-    dump_to_pickle([cmaes_run, lmm_cmaes_run], f'lmm_reproduction_{FUNC.name}_{DIM}.pkl')
+    # save results to pickle
+    dump_to_pickle([cmaes_runs, lmm_runs], f'001_reproduce_lmm_cma_es_{FUNC.name}_{DIM}.pkl')

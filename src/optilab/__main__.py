@@ -7,7 +7,7 @@ import argparse
 import pandas as pd
 
 from .data_classes import OptimizationRun
-from .plotting import plot_box_plot, plot_ecdf_curves
+from .plotting import plot_box_plot, plot_convergence_curve, plot_ecdf_curves
 from .utils.pickle_utils import load_from_pickle
 
 if __name__ == "__main__":
@@ -22,6 +22,11 @@ if __name__ == "__main__":
     assert isinstance(data, list)
     for run in data:
         assert isinstance(run, OptimizationRun)
+
+    plot_convergence_curve(
+        data={run.model_metadata.name: run.logs for run in data},
+        savepath="ecdf.png",
+    )
 
     plot_ecdf_curves(
         data={run.model_metadata.name: run.logs for run in data},

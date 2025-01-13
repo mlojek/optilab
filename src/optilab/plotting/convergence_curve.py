@@ -29,7 +29,9 @@ def convergence_curve(log: PointList) -> List[float]:
     return new_log
 
 
-def plot_convergence_curve(data: Dict[str, PointList], savepath: str = None) -> None:
+def plot_convergence_curve(
+    data: Dict[str, List[PointList]], savepath: str = None
+) -> None:
     """
     Plot the convergence curves of a few methods using pyplot.
 
@@ -39,9 +41,17 @@ def plot_convergence_curve(data: Dict[str, PointList], savepath: str = None) -> 
     """
     plt.clf()
 
-    for name, log in data.items():
-        y = convergence_curve(log)
-        plt.plot(y, label=name)
+    def average_lists(lists):
+        max_length = max(len(lst) for lst in lists)
+        padded_lists = [lst + [0] * (max_length - len(lst)) for lst in lists]
+        averaged_list = [sum(values) / len(values) for values in zip(*padded_lists)]
+
+        return averaged_list
+
+    for name, loglist in data.items():
+        ys = [convergence_curve(log) for log in loglist]
+        averaged_ys = average_lists(ys)
+        plt.plot(averaged_ys, label=name)
 
     plt.yscale("log")
     plt.xlabel("evaluations")

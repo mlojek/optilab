@@ -97,8 +97,13 @@ def knn_cma_es(
         metamodel.get_log().best_y() > tolerance and len(metamodel.get_log()) <= call_budget
     ):
         solutions = PointList.from_list(es.ask())
-        metamodel.adapt(solutions)
-        xy_pairs = metamodel(solutions)
+
+        if len(metamodel.train_set) < num_neighbors:
+            xy_pairs = metamodel.evaluate(solutions)
+        else:
+            metamodel.adapt(solutions)
+            xy_pairs = metamodel(solutions)
+
         x, y = xy_pairs.pairs()
         es.tell(x, y)
 

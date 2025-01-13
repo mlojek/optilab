@@ -2,7 +2,7 @@
 LMM-CMA-ES optimizer: CMA-ES with local polynomial regression metamodel.
 """
 
-# pylint: disable=too-many-arguments, too-many-positional-arguments, duplicate-code
+# pylint: disable=too-many-arguments, too-many-positional-arguments
 
 from ..data_classes import Bounds, PointList
 from ..functions import ObjectiveFunction
@@ -69,10 +69,7 @@ class LmmCmaEs(CmaEs):
 
         es = self._spawn_cmaes(bounds, function.dim)
 
-        while (
-            metamodel.get_log().best_y() > target + tolerance
-            and len(metamodel.get_log()) < call_budget
-        ):
+        while not self._stop(es, metamodel.get_log(), call_budget, target, tolerance):
             solutions = PointList.from_list(es.ask())
             metamodel.surrogate_function.set_covariance_matrix(es.C)
             metamodel.adapt(solutions)

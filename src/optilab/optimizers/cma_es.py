@@ -47,6 +47,29 @@ class CmaEs(Optimizer):
             },
         )
 
+    def _stop(
+        self,
+        es: cma.CMAEvolutionStrategy,
+        log: PointList,
+        call_budget: int,
+        target: float,
+        tolerance: float,
+    ) -> bool:
+        """
+        Decide if the optimization should be stopped.
+
+        Args:
+            es (cma.CMAEvolutionStrategy): CMA-ES instance.
+            log (PointList): Results log.
+            call_budget (int): Maximum number of optimized function calls.
+            target (float): Global minimum value of the optimized function.
+            tolerance (float): Tolerated error value of the optimization.
+
+        Returns:
+            bool: True if the optimization should be stopped.
+        """
+        return es.stop() or len(log) >= call_budget or log.best_y() < target + tolerance
+
     def optimize(
         self,
         function: ObjectiveFunction,
@@ -72,11 +95,7 @@ class CmaEs(Optimizer):
 
         res_log = PointList(points=[])
 
-        while (
-            not es.stop()
-            and len(res_log) < call_budget
-            and res_log.best_y() > target + tolerance
-        ):
+        while not self._stop(es, res_log, call_budget, target, tolerance):
             solutions = PointList.from_list(es.ask())
             results = PointList(points=[function(x) for x in solutions.points])
             res_log.extend(results)

@@ -68,10 +68,7 @@ class KnnCmaEs(CmaEs):
 
         es = self._spawn_cmaes(bounds, function.dim)
 
-        while (
-            metamodel.get_log().best_y() > tolerance
-            and len(metamodel.get_log()) <= call_budget
-        ):
+        while not self._stop(es, metamodel.get_log(), call_budget, target, tolerance):
             solutions = PointList.from_list(es.ask())
 
             if (

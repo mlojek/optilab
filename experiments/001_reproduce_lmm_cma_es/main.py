@@ -14,7 +14,7 @@ from optilab.functions.multimodal import RosenbrockFunction
 from optilab.plotting import plot_ecdf_curves
 from optilab.data_classes import OptimizationRun, OptimizerMetadata
 from optilab.utils import dump_to_pickle
-from optilab.optimizers import CMAES
+from optilab.optimizers import CmaEs
 
 if __name__ == "__main__":
     # hyperparams:
@@ -28,8 +28,8 @@ if __name__ == "__main__":
     BOUNDS = Bounds(-10, 10)
     FUNC = CumulativeSquaredSums(DIM)
 
-    precooked = CMAES(POPSIZE, 1)
-    precooked_cmaes_run = precooked.run_optimization(NUM_RUNS, FUNC, BOUNDS, CALL_BUDGET, 0.0, TOL)
+    precooked = CmaEs(POPSIZE, 1)
+    precooked_cmaes_run = precooked.run_optimization(NUM_RUNS, FUNC, BOUNDS, CALL_BUDGET, TOL, 0.0)
 
     # perform optimization with vanilla cmaes
     cmaes_logs = [

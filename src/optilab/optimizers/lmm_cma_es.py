@@ -38,8 +38,8 @@ class LmmCmaEs(Optimizer):
         function: ObjectiveFunction,
         bounds: Bounds,
         call_budget: int,
+        tolerance: float,
         target: float = 0.0,
-        tolerance: float = 1e-8,
     ) -> PointList:
         """
         Run a single optimization of provided objective function.
@@ -48,8 +48,8 @@ class LmmCmaEs(Optimizer):
             function (ObjectiveFunction): Objective function to optimize.
             bounds (Bounds): Search space of the function.
             call_budget (int): Max number of calls to the objective function.
-            target (float): Objective function value target, default 0.
             tolerance (float): Tolerance of y value to count a solution as acceptable.
+            target (float): Objective function value target, default 0.
 
         Returns:
             PointList: Results log from the optimization.

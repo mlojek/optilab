@@ -7,7 +7,9 @@ from typing import Dict, List
 from matplotlib import pyplot as plt
 
 
-def plot_box_plot(data: Dict[str, List[float]], savepath: str = None) -> None:
+def plot_box_plot(
+    data: Dict[str, List[float]], savepath: str = None, *, show: bool = True
+) -> None:
     """
     Plot box plots of optimization results.
 
@@ -15,6 +17,7 @@ def plot_box_plot(data: Dict[str, List[float]], savepath: str = None) -> None:
         data (Dict[str, List[float]]): dictionary where keys are optimization method or function
             names and values are list of best values from each run.
         savepath (str): Path to save the plot, optional.
+        show (bool): Wheather to show the plot, default True.
     """
     plt.clf()
 
@@ -31,4 +34,5 @@ def plot_box_plot(data: Dict[str, List[float]], savepath: str = None) -> None:
     if savepath:
         plt.savefig(savepath)
 
-    plt.show()
+    if show:
+        plt.show()

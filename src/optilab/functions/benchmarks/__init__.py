@@ -2,4 +2,4 @@
 Optimization benchmarks functions.
 """
 
-from .cec2017_objective_function import CEC2017ObjectiveFunction
+from .cec_objective_function import CECObjectiveFunction

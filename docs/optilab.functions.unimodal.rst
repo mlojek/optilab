@@ -20,6 +20,14 @@ optilab.functions.unimodal.cumulative\_squared\_sums module
    :undoc-members:
    :show-inheritance:
 
+optilab.functions.unimodal.increasing\_weight\_cigar module
+-----------------------------------------------------------
+
+.. automodule:: optilab.functions.unimodal.increasing_weight_cigar
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 optilab.functions.unimodal.linear\_function module
 --------------------------------------------------
 

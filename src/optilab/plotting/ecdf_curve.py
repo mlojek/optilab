@@ -2,7 +2,7 @@
 Plotting and calculating ECDF curves.
 """
 
-# pylint: disable=too-many-locals
+# pylint: disable=too-many-locals, too-many-arguments
 
 import math
 from typing import Dict, List, Tuple
@@ -108,6 +108,8 @@ def plot_ecdf_curves(
     allowed_error: float,
     n_thresholds: int = 100,
     savepath: str = None,
+    *,
+    show: bool = True,
 ) -> None:
     """
     Calculate and plot ECDF curves.
@@ -118,6 +120,7 @@ def plot_ecdf_curves(
         allowed_error (float): Tolerable error value, used as the last threshold.
         n_thresholds (int): Number of ECDF thresholds.
         savepath (str): Path to save the plot, optional.
+        show (bool): Wheather to show the plot, default True.
     """
     plt.clf()
 
@@ -137,4 +140,5 @@ def plot_ecdf_curves(
     if savepath:
         plt.savefig(savepath)
 
-    plt.show()
+    if show:
+        plt.show()

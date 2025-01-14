@@ -1,34 +1,33 @@
 """
-Objective function from CEC 2017 benchmark.
+Objective functions from CEC benchmarks.
 """
 
-from cec2017.functions import all_functions
+import opfunu
 
 from ...data_classes import FunctionMetadata, Point
 from ..objective_function import ObjectiveFunction
 
 
-class CEC2017ObjectiveFunction(ObjectiveFunction):
+class CECObjectiveFunction(ObjectiveFunction):
     """
-    Objective function from CEC 2017 benchmark.
+    Objective functions from CEC benchmarks.
     """
 
-    def __init__(self, function_num: int, dim: int) -> None:
+    def __init__(self, year: int, function_num: int, dim: int) -> None:
         """
         Class constructor.
 
         Args:
-            function_num (int): The number of CEC2017 function, The range is 1 to 30.
+            year (int): Year of the CEC competition.
+            function_num (int): The number of benchmark function.
             dim (int): Dimensionality of the function.
         """
-        if not function_num in range(1, 31):
-            raise ValueError(f"Invalid cec2017 function number {function_num}.")
-
-        super().__init__(f"cec2017_f{function_num}", dim)
+        super().__init__(f"cec{year}_f{function_num}", dim)
 
         self.function_num = function_num
-        self.function = all_functions[function_num - 1]
-        self.minimum = function_num * 100
+        self.function = opfunu.get_functions_by_classname(f"F{function_num}{year}")[0](
+            ndim=dim
+        )
 
     def get_metadata(self) -> FunctionMetadata:
         """
@@ -57,6 +56,6 @@ class CEC2017ObjectiveFunction(ObjectiveFunction):
         super().__call__(point)
         return Point(
             x=point.x,
-            y=float(self.function([point.x])[0]) - self.minimum,
+            y=self.function.evaluate(point.x) - self.function.f_global,
             is_evaluated=True,
         )

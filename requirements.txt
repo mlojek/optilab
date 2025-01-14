@@ -4,13 +4,13 @@ cma==4.0.0
 typing
 black
 isort
+opfunu==1.0.1
 pylint
 pytest
 jsonschema
 tabulate
 pandas==2.2.3
 tqdm
-git+https://github.com/tilleyd/cec2017-py
 scikit-learn==1.5.2
 shapely==2.0.6
 pre-commit

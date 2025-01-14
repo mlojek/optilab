@@ -17,6 +17,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "pickle_path", type=Path, help="Path to pickle file with optimization runs."
     )
+    parser.add_argument(
+        "--hide_plots", action="store_true", help="Hide plots when running the script."
+    )
     args = parser.parse_args()
 
     filename_stem = args.pickle_path.stem
@@ -30,6 +33,7 @@ if __name__ == "__main__":
     plot_convergence_curve(
         data={run.model_metadata.name: run.logs for run in data},
         savepath=f"{filename_stem}.convergence.png",
+        show=not args.hide_plots,
     )
 
     plot_ecdf_curves(
@@ -38,11 +42,13 @@ if __name__ == "__main__":
         n_thresholds=100,
         allowed_error=data[0].tolerance,
         savepath=f"{filename_stem}.ecdf.png",
+        show=not args.hide_plots,
     )
 
     plot_box_plot(
         data={run.model_metadata.name: run.bests_y() for run in data},
         savepath=f"{filename_stem}.box_plot.png",
+        show=not args.hide_plots,
     )
 
     stats = pd.concat([run.stats() for run in data], ignore_index=True)

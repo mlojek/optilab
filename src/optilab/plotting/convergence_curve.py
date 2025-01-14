@@ -30,7 +30,7 @@ def convergence_curve(log: PointList) -> List[float]:
 
 
 def plot_convergence_curve(
-    data: Dict[str, List[PointList]], savepath: str = None
+    data: Dict[str, List[PointList]], savepath: str = None, *, show: bool = True
 ) -> None:
     """
     Plot the convergence curves of a few methods using pyplot.
@@ -39,6 +39,7 @@ def plot_convergence_curve(
         data (Dict[str, List[Pointlist]]): Lists of error logs of a few methods
             expressed as {method name: [log]}.
         savepath (str): Path to save the plot, optional.
+        show (bool): Wheather to show the plot, default True.
     """
     plt.clf()
 
@@ -61,4 +62,5 @@ def plot_convergence_curve(
     if savepath:
         plt.savefig(savepath)
 
-    plt.show()
+    if show:
+        plt.show()

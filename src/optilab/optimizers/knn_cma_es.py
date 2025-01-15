@@ -31,7 +31,7 @@ class KnnCmaEs(CmaEs):
         # pylint: disable=super-init-not-called, non-parent-init-called
         Optimizer.__init__(
             self,
-            "knn-cma-es",
+            f"knn{num_neighbors}-cma-es",
             population_size,
             {"sigma0": sigma0, "num_neighbors": num_neighbors},
         )

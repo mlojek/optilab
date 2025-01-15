@@ -7,6 +7,7 @@ from typing import List
 
 import numpy as np
 import pandas as pd
+import scipy
 
 from .bounds import Bounds
 from .function_metadata import FunctionMetadata
@@ -77,5 +78,7 @@ class OptimizationRun:
                 "y_max": [max(self.bests_y())],
                 "y_mean": [np.mean(self.bests_y())],
                 "y_std": [np.std(self.bests_y())],
+                "y_median": [np.median(self.bests_y())],
+                "y_iqr": [scipy.stats.iqr(self.bests_y())],
             }
         )

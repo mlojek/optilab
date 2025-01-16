@@ -7,11 +7,11 @@ isort
 opfunu==1.0.1
 pylint
 pytest
-jsonschema
 tabulate
 pandas==2.2.3
 tqdm
 scikit-learn==1.5.2
+setuptools
 shapely==2.0.6
 pre-commit
 

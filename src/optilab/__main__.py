@@ -6,6 +6,7 @@ import argparse
 from pathlib import Path
 
 import pandas as pd
+from scipy.stats import mannwhitneyu
 from tabulate import tabulate
 
 from .data_classes import OptimizationRun
@@ -68,3 +69,22 @@ if __name__ == "__main__":
 
         stats.to_csv(f"{filename_stem}.stats.csv")
         print(tabulate(stats, headers="keys", tablefmt="github"))
+
+        print()
+        print("Mann Whitney U test p-values for alternative hypothesis row < column")
+        best_data = [run.bests_y() for run in data]
+        n = len(best_data)
+        results_table = [["-" if i == j else None for j in range(n)] for i in range(n)]
+
+        for i in range(n):
+            for j in range(n):
+                if i != j:
+                    p_value = mannwhitneyu(
+                        best_data[i], best_data[j], alternative="less"
+                    )[1]
+                    results_table[i][j] = f"{p_value:.4f}"
+
+        header = list(range(n))
+        print(
+            tabulate(results_table, headers=header, showindex="always", tablefmt="grid")
+        )

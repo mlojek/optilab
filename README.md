@@ -6,6 +6,7 @@ Optilab is a lightweight and flexible python framework for testing black-box opt
 - High quality documentation.
 - Objective functions, optimizers, plotting and data handling.
 - CLI functionality to easily summarize results of previous experiments.
+- Multiprocessing for faster computation.
 
 ## How to run
 Optilab has been tested to work on the latest python versions. To install it, just run `make install`.

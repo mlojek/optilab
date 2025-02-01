@@ -5,6 +5,9 @@ install:
 	pip install -e .
 	pre-commit install
 
+docker:
+	docker build . -t mlojek/optilab
+
 clean:
 	rm -rf build
 	rm -rf src/optilab.egg-info

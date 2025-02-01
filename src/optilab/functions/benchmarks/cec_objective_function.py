@@ -22,7 +22,7 @@ class CECObjectiveFunction(ObjectiveFunction):
             function_num (int): The number of benchmark function.
             dim (int): Dimensionality of the function.
         """
-        super().__init__(f"cec{year}_f{function_num}", dim)
+        super().__init__(f"cec{year}_f{function_num:02}", dim)
 
         self.function_num = function_num
         self.function = opfunu.get_functions_by_classname(f"F{function_num}{year}")[0](

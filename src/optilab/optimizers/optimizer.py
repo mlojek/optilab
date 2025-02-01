@@ -5,6 +5,7 @@ Base class for optimizers.
 # pylint: disable=too-many-arguments, too-many-positional-arguments
 
 
+from multiprocessing.pool import Pool
 from typing import Any, Dict
 
 from tqdm import tqdm
@@ -62,6 +63,8 @@ class Optimizer:
         call_budget: int,
         tolerance: float,
         target: float = 0.0,
+        *,
+        num_processes: int = 1,
     ) -> OptimizationRun:
         """
         Optimize a provided objective function.
@@ -73,14 +76,23 @@ class Optimizer:
             call_budget (int): Max number of calls to the objective function.
             tolerance (float): Tolerance of y value to count a solution as acceptable.
             target (float): Objective function value target, default 0.
+            num_processes(int): Number of concurrent processes to use to speed up the
+                optimization. By default only one is used.
 
         Returns:
             OptimizationRun: Metadata of optimization run.
         """
-        logs = [
-            self.optimize(function, bounds, call_budget, tolerance, target)
-            for _ in tqdm(range(num_runs), desc="Optimizing...", unit="run")
-        ]
+        with Pool(num_processes) as pool:
+            tasks = [
+                pool.apply_async(
+                    self.optimize, (function, bounds, call_budget, tolerance, target)
+                )
+                for _ in range(num_runs)
+            ]
+
+            logs = [
+                task.get() for task in tqdm(tasks, desc="Optimizing...", unit="run")
+            ]
 
         return OptimizationRun(
             model_metadata=self.metadata,

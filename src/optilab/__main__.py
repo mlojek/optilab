@@ -4,6 +4,7 @@ Entrypoint for CLI functionality of optilab.
 
 import argparse
 from pathlib import Path
+from typing import List
 
 import pandas as pd
 from scipy.stats import mannwhitneyu
@@ -12,6 +13,26 @@ from tabulate import tabulate
 from .data_classes import OptimizationRun
 from .plotting import plot_box_plot, plot_convergence_curve, plot_ecdf_curves
 from .utils.pickle_utils import load_from_pickle
+
+
+def mann_whitney_u_test_grid(data_lists: List[List[float]]) -> str:
+    """
+    TODO
+    """
+    n = len(data_lists)
+    results_table = [["-" for _ in range(n)] for _ in range(n)]
+
+    for i in range(n):
+        for j in range(n):
+            if i != j:
+                p_value = mannwhitneyu(
+                    data_lists[i], data_lists[j], alternative="less"
+                )[1]
+                results_table[i][j] = f"{p_value:.4f}"
+
+    header = list(range(n))
+    return tabulate(results_table, headers=header, showindex="always", tablefmt="grid")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Optilab CLI utility.")
@@ -71,20 +92,7 @@ if __name__ == "__main__":
         print(tabulate(stats, headers="keys", tablefmt="github"))
 
         print()
-        print("Mann Whitney U test p-values for alternative hypothesis row < column")
+        print("Mann Whitney U test of optimization results (y).")
+        print("p-values for alternative hypothesis row < column")
         best_data = [run.bests_y() for run in data]
-        n = len(best_data)
-        results_table = [["-" if i == j else None for j in range(n)] for i in range(n)]
-
-        for i in range(n):
-            for j in range(n):
-                if i != j:
-                    p_value = mannwhitneyu(
-                        best_data[i], best_data[j], alternative="less"
-                    )[1]
-                    results_table[i][j] = f"{p_value:.4f}"
-
-        header = list(range(n))
-        print(
-            tabulate(results_table, headers=header, showindex="always", tablefmt="grid")
-        )
+        print(mann_whitney_u_test_grid(best_data))

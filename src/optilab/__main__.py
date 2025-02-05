@@ -38,7 +38,9 @@ def mann_whitney_u_test_grid(data_lists: List[List[float]]) -> str:
                 results_table[i][j] = f"{p_value:.4f}"
 
     header = list(range(n))
-    return tabulate(results_table, headers=header, showindex="always", tablefmt="grid")
+    return tabulate(
+        results_table, headers=header, showindex="always", tablefmt="github"
+    )
 
 
 if __name__ == "__main__":
@@ -71,7 +73,7 @@ if __name__ == "__main__":
                 file_path_list.append(file_path)
 
     for file_path in file_path_list:
-        print(f"file {file_path}")
+        print(f"# File {file_path}")
         filename_stem = file_path.stem
 
         data = load_from_pickle(file_path)
@@ -115,11 +117,11 @@ if __name__ == "__main__":
 
         # stat tests
         if args.test_y:
-            print("Mann Whitney U test on optimization results (y).")
+            print("## Mann Whitney U test on optimization results (y).")
             print("p-values for alternative hypothesis row < column")
             print(mann_whitney_u_test_grid([run.bests_y() for run in data]), "\n")
 
         if args.test_evals:
-            print("Mann Whitney U test on number of objective function evaluations.")
+            print("## Mann Whitney U test on number of objective function evaluations.")
             print("p-values for alternative hypothesis row < column")
             print(mann_whitney_u_test_grid([run.log_lengths() for run in data]), "\n")

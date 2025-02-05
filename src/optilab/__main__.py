@@ -44,6 +44,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--hide_plots", action="store_true", help="Hide plots when running the script."
     )
+    parser.add_argument(
+        "--test_y", action="store_true", help="Perform Mann-Whitney U test on y values."
+    )
+    parser.add_argument(
+        "--test_evals",
+        action="store_true",
+        help="Perform Mann-Whitney U test on eval values.",
+    )
     args = parser.parse_args()
 
     file_path_list = []
@@ -91,8 +99,12 @@ if __name__ == "__main__":
         stats.to_csv(f"{filename_stem}.stats.csv")
         print(tabulate(stats, headers="keys", tablefmt="github"))
 
-        print()
-        print("Mann Whitney U test of optimization results (y).")
-        print("p-values for alternative hypothesis row < column")
-        best_data = [run.bests_y() for run in data]
-        print(mann_whitney_u_test_grid(best_data))
+        if args.test_y:
+            print("Mann Whitney U test on optimization results (y).")
+            print("p-values for alternative hypothesis row < column")
+            print(mann_whitney_u_test_grid([run.bests_y() for run in data]))
+
+        if args.test_evals:
+            print("Mann Whitney U test on number of objective function evaluations.")
+            print("p-values for alternative hypothesis row < column")
+            print(mann_whitney_u_test_grid([run.log_lengths() for run in data]))

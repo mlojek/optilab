@@ -4,10 +4,10 @@ install_dependencies:
 	pip install -r requirements.txt
 	pip install -e .
 
-install:
+install: install_dependencies
 	pre-commit install
 
-docker:
+docker: clean
 	docker build . -t mlojek/optilab:15
 
 clean:

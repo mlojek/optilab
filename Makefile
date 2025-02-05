@@ -8,7 +8,7 @@ install: install_dependencies
 	pre-commit install
 
 docker: clean
-	docker build . -t mlojek/optilab:15
+	docker build . -t mlojek/optilab:16
 
 clean:
 	git clean -fdx

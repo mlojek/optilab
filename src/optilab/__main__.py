@@ -80,6 +80,7 @@ if __name__ == "__main__":
         for run in data:
             assert isinstance(run, OptimizationRun)
 
+        # plots
         plot_convergence_curve(
             data={run.model_metadata.name: run.logs for run in data},
             savepath=f"{filename_stem}.convergence.png",
@@ -101,17 +102,24 @@ if __name__ == "__main__":
             show=not args.hide_plots,
         )
 
+        # stats
         stats = pd.concat([run.stats() for run in data], ignore_index=True)
+        stats_evals = stats.filter(like="evals_", axis=1)
+        stats_y = stats.filter(like="y_", axis=1)
+        stats_df = stats.drop(columns=stats_evals.columns.union(stats_y.columns))
 
         stats.to_csv(f"{filename_stem}.stats.csv")
-        print(tabulate(stats, headers="keys", tablefmt="github"))
+        print(tabulate(stats_df, headers="keys", tablefmt="github"), "\n")
+        print(tabulate(stats_y, headers="keys", tablefmt="github"), "\n")
+        print(tabulate(stats_evals, headers="keys", tablefmt="github"), "\n")
 
+        # stat tests
         if args.test_y:
             print("Mann Whitney U test on optimization results (y).")
             print("p-values for alternative hypothesis row < column")
-            print(mann_whitney_u_test_grid([run.bests_y() for run in data]))
+            print(mann_whitney_u_test_grid([run.bests_y() for run in data]), "\n")
 
         if args.test_evals:
             print("Mann Whitney U test on number of objective function evaluations.")
             print("p-values for alternative hypothesis row < column")
-            print(mann_whitney_u_test_grid([run.log_lengths() for run in data]))
+            print(mann_whitney_u_test_grid([run.log_lengths() for run in data]), "\n")

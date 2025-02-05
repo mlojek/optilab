@@ -6,7 +6,7 @@ install:
 	pre-commit install
 
 docker:
-	docker build . -t mlojek/optilab
+	docker build . -t mlojek/optilab:15
 
 clean:
 	rm -rf build

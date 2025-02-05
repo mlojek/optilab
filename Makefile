@@ -1,17 +1,17 @@
 all_code = src tests
 
-install:
+install_dependencies:
 	pip install -r requirements.txt
 	pip install -e .
+
+install: install_dependencies
 	pre-commit install
 
-docker:
-	docker build . -t mlojek/optilab
+docker: clean
+	docker build . -t mlojek/optilab:15
 
 clean:
-	rm -rf build
-	rm -rf src/optilab.egg-info
-	find . -type d -name "__pycache__" -exec rm -rf {} +
+	git clean -fdx
 
 format:
 	isort ${all_code} --profile black

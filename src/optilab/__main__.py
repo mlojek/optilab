@@ -17,7 +17,14 @@ from .utils.pickle_utils import load_from_pickle
 
 def mann_whitney_u_test_grid(data_lists: List[List[float]]) -> str:
     """
-    TODO
+    Perform a grid run of Mann-Whitney U test on given list of data values and return a printable
+    table with results.
+
+    Args:
+        data_lists (List[List[float]]): List of lists of values to perform test on.
+
+    Returns:
+        str: Results as a tabulated, ready to print table with p-values.
     """
     n = len(data_lists)
     results_table = [["-" for _ in range(n)] for _ in range(n)]

@@ -1,8 +1,10 @@
 all_code = src tests
 
-install:
+install_dependencies:
 	pip install -r requirements.txt
 	pip install -e .
+
+install:
 	pre-commit install
 
 docker:

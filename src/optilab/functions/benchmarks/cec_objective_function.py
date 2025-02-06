@@ -26,7 +26,7 @@ class CECObjectiveFunction(ObjectiveFunction):
 
         self.function_num = function_num
         self.function = opfunu.get_functions_by_classname(f"F{function_num}{year}")[0](
-            ndim=dim
+            ndim=dim, f_bias=0
         )
 
     def get_metadata(self) -> FunctionMetadata:

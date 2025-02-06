@@ -1,6 +1,6 @@
 [project]
 name = "optilab"
-version = "15"
+version = "16"
 authors = [
   { name="mlojek", email="marcin.lojek@pw.edu.pl" },
 ]
@@ -11,6 +11,27 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+]
+dependencies = [
+  "black",
+  "isort",
+  "tqdm",
+  "opfunu==1.0.0",
+  "pre-commit",
+  "sphinx",
+  "sphinx-rtd-theme",
+  "pylint",
+  "pytest",
+  "typing",
+  "tqdm",
+  "tabulate",
+  "setuptools",
+  "numpy==2.1.3",
+  "matplotlib==3.9.2",
+  "cma==4.0.0",
+  "pandas==2.2.3",
+  "scikit-learn==1.5.2",
+  "shapely==2.0.6"
 ]
 
 [project.urls]

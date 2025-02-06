@@ -1,5 +1,5 @@
 """
-Class that makes an objective function noisy using random normal distribution. 
+Class that makes an objective function noisy using random normal distribution.
 """
 
 import numpy as np

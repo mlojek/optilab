@@ -1,7 +1,6 @@
 # Optilab
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-![Docker Image Version](https://img.shields.io/docker/v/mlojek/optilab?logo=Docker&label=Docker%20image%20version)
-
+![Docker Pulls](https://img.shields.io/docker/pulls/mlojek/optilab?logo=Docker&label=Dockerhub%20pulls)
 
 Optilab is a lightweight and flexible python framework for testing black-box optimization.
 

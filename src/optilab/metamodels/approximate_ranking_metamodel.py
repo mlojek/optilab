@@ -2,6 +2,10 @@
 Approximate ranking metamodel based on lmm-CMA-ES.
 """
 
+# pylint: disable=too-many-instance-attributes, too-many-arguments
+
+from typing import Optional
+
 from ..data_classes import PointList
 from ..functions import ObjectiveFunction
 from ..functions.surrogate import SurrogateObjectiveFunction
@@ -16,6 +20,8 @@ class ApproximateRankingMetamodel:
         mu: int,
         objective_function: ObjectiveFunction,
         surrogate_function: SurrogateObjectiveFunction,
+        *,
+        buffer_size: Optional[int] = None,
     ) -> None:
         """
         Class constructor.
@@ -26,6 +32,8 @@ class ApproximateRankingMetamodel:
             objective_function (ObjectiveFunction): The objective function that's being optimized.
             surrogate_function (SurrogateObjectieFunction): Surrogate function used to estimate
                 the optimized function.
+            buffer_size (Optional[int]): Number of last evaluated samples to use for training the
+                surrogate function. If None, all samples are used.
         """
         self.population_size = population_size
         self.mu = mu
@@ -37,6 +45,8 @@ class ApproximateRankingMetamodel:
 
         self.objective_function = objective_function
         self.surrogate_function = surrogate_function
+
+        self.buffer_size = buffer_size
 
     def _update_n(self, num_iters: int) -> None:
         """
@@ -79,7 +89,14 @@ class ApproximateRankingMetamodel:
             points=[self.objective_function(point) for point in xs.points]
         )
         self.train_set.extend(result)
-        self.surrogate_function.train(self.train_set)
+
+        if self.buffer_size:
+            self.surrogate_function.train(
+                PointList(self.train_set[-self.buffer_size :])
+            )
+        else:
+            self.surrogate_function.train(self.train_set)
+
         return result
 
     def get_log(self) -> PointList:

@@ -1,5 +1,5 @@
 """
-Pytest fixtures used in surrogate objective functions unit tests. 
+Pytest fixtures used in surrogate objective functions unit tests.
 """
 
 import numpy as np

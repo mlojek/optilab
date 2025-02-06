@@ -18,7 +18,9 @@ class KnnCmaEs(CmaEs):
     to the one from LMM-CMA-ES.
     """
 
-    def __init__(self, population_size: int, sigma0: float, num_neighbors: int):
+    def __init__(
+        self, population_size: int, sigma0: float, num_neighbors: int, buffer_size: int
+    ):
         """
         Class constructor.
 
@@ -26,14 +28,19 @@ class KnnCmaEs(CmaEs):
             population_size (int): Size of the population.
             sigma0 (float): Starting value of the sigma,
             num_neighbors (int): Number of neighbors used by KNN metamodel.
+            buffer_size (int): Number of last evaluated points provided to KNN metamodel.
         """
         # Skipping super().__init__ and calling grandparent init instead.
         # pylint: disable=super-init-not-called, non-parent-init-called
         Optimizer.__init__(
             self,
-            f"knn{num_neighbors}-cma-es",
+            f"knn{num_neighbors}b{buffer_size}-cma-es",
             population_size,
-            {"sigma0": sigma0, "num_neighbors": num_neighbors},
+            {
+                "sigma0": sigma0,
+                "num_neighbors": num_neighbors,
+                "buffer_size": buffer_size,
+            },
         )
 
     def optimize(
@@ -64,6 +71,7 @@ class KnnCmaEs(CmaEs):
             KNNSurrogateObjectiveFunction(
                 self.metadata.hyperparameters["num_neighbors"]
             ),
+            buffer_size=self.metadata.hyperparameters["buffer_size"],
         )
 
         es = self._spawn_cmaes(bounds, function.dim)

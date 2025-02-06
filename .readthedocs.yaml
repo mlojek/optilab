@@ -8,6 +8,7 @@ build:
     python: "3.13"
   jobs:
     pre_build:
+     - make install
      - make doc
 
 sphinx:

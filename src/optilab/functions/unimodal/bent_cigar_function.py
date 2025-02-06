@@ -1,5 +1,5 @@
 """
-Bent Cigar objective function. 
+Bent Cigar objective function.
 """
 
 # pylint: disable=too-few-public-methods

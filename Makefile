@@ -1,14 +1,13 @@
 all_code = src tests
 
-install_dependencies:
-	pip install -r requirements.txt
+install:
 	pip install -e .
 
-install: install_dependencies
+setup: install
 	pre-commit install
 
 docker: clean
-	docker build . -t mlojek/optilab:16
+	docker build . -t mlojek/optilab
 
 clean:
 	git clean -fdx

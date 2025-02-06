@@ -4,6 +4,6 @@ WORKDIR /optilab
 
 COPY . .
 
-RUN make install_dependencies
+RUN make install
 
 ENTRYPOINT /bin/bash

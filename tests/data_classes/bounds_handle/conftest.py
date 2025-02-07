@@ -48,7 +48,7 @@ def point_below_bounds() -> Point:
     Point that lies below the example_bounds fixture.
     Expected values for bounds handlers are:
     - reflect: 18
-    - wrap: 2
+    - wrap: 12
     - project: 10
     """
     return Point([2])
@@ -98,7 +98,7 @@ def point_multidimensional() -> Point:
     A multidimensional point that has all the values of the previous fixtures.
     Expected values for bounds handlers are:
     - reflect: [14, 10, 20, 18, 17, 16, 12]
-    - wrap: [14, 10, 20, 2, 14, 16, 12]
+    - wrap: [14, 10, 20, 12, 13, 16, 12]
     - project: [14, 10, 20, 10, 20, 10, 20]
     """
-    return Point([14, 10, 20, 2, 23, -4, 23])
+    return Point([14, 10, 20, 2, 23, -4, 32])

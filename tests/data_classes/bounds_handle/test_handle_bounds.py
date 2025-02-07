@@ -19,10 +19,9 @@ class TestBoundsHandleBounds:
         handled_point = example_bounds.handle_bounds(point_multidimensional, "reflect")
         assert handled_point.x == [14, 10, 20, 18, 17, 16, 12]
 
-    @pytest.mark.xfail()
     def test_wrap(self, example_bounds, point_multidimensional):
         handled_point = example_bounds.handle_bounds(point_multidimensional, "wrap")
-        assert handled_point.x == [14, 10, 20, 2, 14, 16, 12]
+        assert handled_point.x == [14, 10, 20, 12, 13, 16, 12]
 
     def test_invalid_mode(self, example_bounds, point_multidimensional):
         with pytest.raises(ValueError, match="Invalid mode"):

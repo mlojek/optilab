@@ -2,10 +2,7 @@
 Unit tests for Bounds.wrap method.
 """
 
-import pytest
 
-
-@pytest.mark.xfail
 class TestBoundswrap:
     """
     Unit tests for Bounds.wrap method.
@@ -37,14 +34,14 @@ class TestBoundswrap:
         Test if wrapping works as expected when the point lies below the lower bound.
         """
         handled_point = example_bounds.wrap(point_below_bounds)
-        assert handled_point.x == [2]
+        assert handled_point.x == [12]
 
     def test_point_above_bounds(self, example_bounds, point_above_bounds):
         """
         Test if wrapping works as expected when the point lies above the upper bound.
         """
         handled_point = example_bounds.wrap(point_above_bounds)
-        assert handled_point.x == [14]
+        assert handled_point.x == [13]
 
     def test_point_twice_below_bounds(self, example_bounds, point_twice_below_bounds):
         """
@@ -65,4 +62,4 @@ class TestBoundswrap:
         Test if wrapping works as expected for a multidimensional point.
         """
         handled_point = example_bounds.wrap(point_multidimensional)
-        assert handled_point.x == [14, 10, 20, 2, 14, 16, 12]
+        assert handled_point.x == [14, 10, 20, 12, 13, 16, 12]

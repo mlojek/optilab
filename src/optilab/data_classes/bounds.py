@@ -110,7 +110,19 @@ class Bounds:
         Returns:
             Point: Wrapped point.
         """
-        raise NotImplementedError
+        new_x = []
+
+        for val in point.x:
+            if val < self.lower or val > self.upper:
+                val -= self.lower
+                val %= self.upper - self.lower
+                val += self.lower
+                new_x.append(val)
+            else:
+                new_x.append(val)
+
+        point.x = new_x
+        return point
 
     def project(self, point: Point) -> Point:
         """

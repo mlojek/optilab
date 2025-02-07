@@ -2,6 +2,7 @@
 Class representing bounds of the search space.
 """
 
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import List
 
@@ -83,3 +84,71 @@ class Bounds:
             Point: List of randomly sampled points from the search space.
         """
         return PointList([self.random_point(dim) for _ in range(num_points)])
+
+    # search space bounds handling methods
+    def reflect(self, point: Point) -> Point:
+        """
+        Handle bounds by reflecting the point back into the
+        search area.
+
+        Args:
+            point (Point): The point to handle.
+
+        Returns:
+            Point: Reflected point.
+        """
+        raise NotImplementedError
+
+    def wrap(self, point: Point) -> Point:
+        """
+        Handle bounds by wrapping the point around the
+        search area.
+
+        Args:
+            point (Point): The point to handle.
+
+        Returns:
+            Point: Wrapped point.
+        """
+        raise NotImplementedError
+
+    def project(self, point: Point) -> Point:
+        """
+        Handle bounds by projecting the point onto the bounds
+        of the search area.
+
+        Args:
+            point (Point): The point to handle.
+
+        Returns:
+            Point: Projected point.
+        """
+        new_x = []
+
+        for val in point.x:
+            if val < self.lower:
+                new_x.append(deepcopy(self.lower))
+            elif val > self.upper:
+                new_x.append(deepcopy(self.upper))
+            else:
+                new_x.append(val)
+
+        point.x = new_x
+        return point
+
+    def handle_bounds(self, point: Point, mode: str) -> Point:
+        """
+        Function to choose the bound handling method by name of the method.
+
+        Args:
+            point (Point): The point to handle.
+            mode (str): Bound handling mode to use, choose from reflect, wrap or project.
+
+        Returns:
+            Point: Handled point.
+        """
+        methods = {"reflect": self.reflect, "wrap": self.wrap, "project": self.project}
+        try:
+            return methods[mode](point)
+        except KeyError as err:
+            raise ValueError(f"Invalid mode {mode} in Bounds.handle_bounds!") from err

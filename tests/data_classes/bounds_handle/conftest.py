@@ -21,7 +21,7 @@ def point_in_bounds() -> Point:
     Point that lies within the example_bounds fixture.
     Expected values for bounds handlers is the same as the point.
     """
-    return Point(14)
+    return Point([14])
 
 
 @pytest.fixture()
@@ -30,7 +30,7 @@ def point_equal_lower_bound() -> Point:
     Point that lies on the lower bound of example_bounds fixture.
     Expected values for all bounds handlers are equal to the point.
     """
-    return Point(10)
+    return Point([10])
 
 
 @pytest.fixture()
@@ -39,7 +39,7 @@ def point_equal_upper_bound() -> Point:
     Point that lies on the upper bound of example_bounds fixture.
     Expected values for all bounds handlers are equal to the point.
     """
-    return Point(20)
+    return Point([20])
 
 
 @pytest.fixture()
@@ -51,7 +51,7 @@ def point_below_bounds() -> Point:
     - wrap: 2
     - project: 10
     """
-    return Point(2)
+    return Point([2])
 
 
 @pytest.fixture()
@@ -63,7 +63,7 @@ def point_above_bounds() -> Point:
     - wrap: 13
     - project: 20
     """
-    return Point(23)
+    return Point([23])
 
 
 @pytest.fixture
@@ -76,7 +76,7 @@ def point_twice_below_bounds() -> Point:
     - wrap: 16
     - project: 10
     """
-    return Point(-4)
+    return Point([-4])
 
 
 @pytest.fixture
@@ -89,4 +89,16 @@ def point_twice_above_bounds() -> Point:
     - wrap: 12
     - project: 20
     """
-    return Point(32)
+    return Point([32])
+
+
+@pytest.fixture
+def point_multidimensional() -> Point:
+    """
+    A multidimensional point that has all the values of the previous fixtures.
+    Expected values for bounds handlers are:
+    - reflect: [14, 10, 20, 18, 17, 16, 12]
+    - wrap: [14, 10, 20, 2, 14, 16, 12]
+    - project: [14, 10, 20, 10, 20, 10, 20]
+    """
+    return Point([14, 10, 20, 2, 23, -4, 23])

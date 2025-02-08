@@ -97,7 +97,23 @@ class Bounds:
         Returns:
             Point: Reflected point.
         """
-        raise NotImplementedError
+        new_x = []
+
+        for val in point.x:
+            if val < self.lower or val > self.upper:
+                val -= self.lower
+                remainder = val % (self.upper - self.lower)
+                relative_distance = val // (self.upper - self.lower)
+
+                if relative_distance % 2 == 0:
+                    new_x.append(self.lower + remainder)
+                else:
+                    new_x.append(self.upper - remainder)
+            else:
+                new_x.append(val)
+
+        point.x = new_x
+        return point
 
     def wrap(self, point: Point) -> Point:
         """

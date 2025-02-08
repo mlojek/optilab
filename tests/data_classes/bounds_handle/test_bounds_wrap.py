@@ -63,3 +63,11 @@ class TestBoundswrap:
         """
         handled_point = example_bounds.wrap(point_multidimensional)
         assert handled_point.x == [14, 10, 20, 12, 13, 16, 12]
+
+    def test_evaluated_point(self, example_bounds, evaluated_point):
+        """
+        Test if wrapping a point leaves y and is_evaluated members unchanged.
+        """
+        handled_point = example_bounds.wrap(evaluated_point)
+        assert handled_point.y == 10.1
+        assert handled_point.is_evaluated

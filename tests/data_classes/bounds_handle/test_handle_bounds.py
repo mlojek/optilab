@@ -14,7 +14,6 @@ class TestBoundsHandleBounds:
         handled_point = example_bounds.handle_bounds(point_multidimensional, "project")
         assert handled_point.x == [14, 10, 20, 10, 20, 10, 20]
 
-    @pytest.mark.xfail()
     def test_reflect(self, example_bounds, point_multidimensional):
         handled_point = example_bounds.handle_bounds(point_multidimensional, "reflect")
         assert handled_point.x == [14, 10, 20, 18, 17, 16, 12]

@@ -102,3 +102,12 @@ def point_multidimensional() -> Point:
     - project: [14, 10, 20, 10, 20, 10, 20]
     """
     return Point([14, 10, 20, 2, 23, -4, 32])
+
+
+@pytest.fixture
+def evaluated_point() -> Point:
+    """
+    An evaluated point, with y value and is_evaluated set to True.
+    Used to check if the handled point has the same y and is_evaluated values.
+    """
+    return Point(x=[14, 10, 20, -4], y=10.1, is_evaluated=True)

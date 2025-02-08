@@ -5,7 +5,6 @@ Unit tests for Bounds.reflect method.
 import pytest
 
 
-@pytest.mark.xfail
 class TestBoundsReflect:
     """
     Unit tests for Bounds.reflect method.
@@ -66,3 +65,11 @@ class TestBoundsReflect:
         """
         handled_point = example_bounds.reflect(point_multidimensional)
         assert handled_point.x == [14, 10, 20, 18, 17, 16, 12]
+
+    def test_evaluated_point(self, example_bounds, evaluated_point):
+        """
+        Test if reflecting a point leaves y and is_evaluated members unchanged.
+        """
+        handled_point = example_bounds.reflect(evaluated_point)
+        assert handled_point.y == 10.1
+        assert handled_point.is_evaluated

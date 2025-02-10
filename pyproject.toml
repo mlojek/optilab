@@ -1,6 +1,6 @@
 [project]
 name = "optilab"
-version = "17"
+version = "18"
 authors = [
   { name="mlojek", email="marcin.lojek@pw.edu.pl" },
 ]
@@ -31,7 +31,8 @@ dependencies = [
   "cma==4.0.0",
   "pandas==2.2.3",
   "scikit-learn==1.5.2",
-  "shapely==2.0.6"
+  "shapely==2.0.6",
+  "jupyter"
 ]
 
 [project.urls]

@@ -1,5 +1,5 @@
 """
-Bounds dataclass unit tests.
+Bounds dataclass unit tests. Unit tests for bound handling methods are in separate scripts.
 """
 
 import numpy as np
@@ -10,6 +10,7 @@ from optilab.data_classes import Bounds, Point
 class TestBounds:
     """
     Bounds dataclass unit tests class.
+    Unit tests for bound handling methods are in separate scripts.
     """
 
     def test_valid_bounds(self):

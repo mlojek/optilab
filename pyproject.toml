@@ -36,4 +36,4 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "github.com/mlojek/optilab"
+Homepage = "https://github.com/mlojek/optilab"

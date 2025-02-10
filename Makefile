@@ -3,8 +3,12 @@ all_code = src tests
 install:
 	pip install -e .
 
-setup: install
+install_dev: install
 	pre-commit install
+
+build_wheel:
+	pip install wheel twine
+	python -m build --wheel . --outdir dist/
 
 docker: clean
 	docker build . -t mlojek/optilab

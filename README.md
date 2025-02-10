@@ -6,17 +6,40 @@
 Optilab is a lightweight and flexible python framework for testing black-box optimization.
 
 ## Features
-- Intuitive interface to quickly prototype and run optimizers and metamodels.
-- High quality documentation.
-- Objective functions, optimizers, plotting and data handling.
-- CLI functionality to easily summarize results of previous experiments.
-- Multiprocessing for faster computation.
+- ✅ Intuitive interface to quickly prototype and run optimizers and metamodels.
+- 📚 High quality documentation.
+- 📈 Objective functions, optimizers, plotting and data handling.
+- ⋙ CLI functionality to easily summarize results of previous experiments.
+- 🚀 Multiprocessing for faster computation.
 
-## How to run
-Optilab has been tested to work on the latest python versions. To install it, just run `make install`.
+## How to install
+Optilab has been tested to work on python versions 3.11 and above. To install it from PyPI, run:
+```
+pip install optilab
+```
+You can also install from source by cloning this repo and running:
+```
+make install
+```
 
 ## Try the demos
-If you're not sure how to start using optilab, see some examples in `demo` directory.
+Learn how to use optilab by using our demo notebook. See `demo/tutorial.ipynb`.
+
+## CLI tool
+Optilab comes with a powerful CLI tool to easily summarize your experiments. It allows for plotting the results and performing statistical testing to check for statistical significance in optimization results.
+```
+Optilab CLI utility.
+usage: python -m optilab [-h] [--hide_plots] [--test_y] [--test_evals] pickle_path
+
+positional arguments:
+  pickle_path   Path to pickle file or directory with optimization runs.
+
+options:
+  -h, --help    show this help message and exit
+  --hide_plots  Hide plots when running the script.
+  --test_y      Perform Mann-Whitney U test on y values.
+  --test_evals  Perform Mann-Whitney U test on eval values.
+```
 
 ## Docker
 This project comes with a docker container. You can pull it from dockerhub:

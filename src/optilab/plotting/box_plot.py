@@ -29,7 +29,8 @@ def plot_box_plot(
         labels.append(name)
 
     plt.boxplot(plot_values)
-    plt.xticks(range(1, len(labels) + 1), labels)
+    plt.xticks(range(1, len(labels) + 1), labels, rotation=45, ha="right")
+    plt.tight_layout()
 
     if savepath:
         plt.savefig(savepath)

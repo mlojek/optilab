@@ -96,6 +96,7 @@ if __name__ == "__main__":
             data={run.model_metadata.name: run.logs for run in data},
             savepath=f"{filename_stem}.convergence.png",
             show=not args.hide_plots,
+            function_name=data[0].function_metadata.name,
         )
 
         plot_ecdf_curves(
@@ -105,12 +106,14 @@ if __name__ == "__main__":
             allowed_error=data[0].tolerance,
             savepath=f"{filename_stem}.ecdf.png",
             show=not args.hide_plots,
+            function_name=data[0].function_metadata.name,
         )
 
         plot_box_plot(
             data={run.model_metadata.name: run.bests_y() for run in data},
             savepath=f"{filename_stem}.box_plot.png",
             show=not args.hide_plots,
+            function_name=data[0].function_metadata.name,
         )
 
         # stats

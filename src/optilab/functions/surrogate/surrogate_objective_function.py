@@ -2,9 +2,6 @@
 Abstract base class for surrogate objective functions.
 """
 
-# pylint: disable=too-few-public-methods
-
-
 from ...data_classes import Point, PointList
 from ..objective_function import ObjectiveFunction
 

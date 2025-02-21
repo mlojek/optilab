@@ -2,8 +2,6 @@
 Plotting and calculating ECDF curves.
 """
 
-# pylint: disable=too-many-locals, too-many-arguments
-
 import math
 from typing import Dict, List, Tuple
 

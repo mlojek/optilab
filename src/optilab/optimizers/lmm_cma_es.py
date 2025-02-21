@@ -2,8 +2,6 @@
 LMM-CMA-ES optimizer: CMA-ES with local polynomial regression metamodel.
 """
 
-# pylint: disable=too-many-arguments, too-many-positional-arguments
-
 from ..data_classes import Bounds, PointList
 from ..functions import ObjectiveFunction
 from ..functions.surrogate import LocallyWeightedPolynomialRegression

@@ -37,3 +37,6 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/mlojek/optilab"
+
+[tool.pylint]
+disable = ["too-many-arguments", "too-many-positional-arguments", "too-few-public-methods", "too-many-instance-attributes", "too-many-locals"]

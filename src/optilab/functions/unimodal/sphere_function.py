@@ -2,8 +2,6 @@
 Sphere function. y is the sum of squares of elements of x vector.
 """
 
-# pylint: disable=too-few-public-methods
-
 from ...data_classes import Point
 from ..objective_function import ObjectiveFunction
 

@@ -2,8 +2,6 @@
 Approximate ranking metamodel based on lmm-CMA-ES.
 """
 
-# pylint: disable=too-many-instance-attributes, too-many-arguments
-
 from typing import Optional
 
 from ..data_classes import PointList

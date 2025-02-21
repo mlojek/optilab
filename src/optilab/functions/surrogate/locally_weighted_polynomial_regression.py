@@ -12,8 +12,6 @@ from sklearn.preprocessing import PolynomialFeatures
 from ...data_classes import FunctionMetadata, Point, PointList
 from .surrogate_objective_function import SurrogateObjectiveFunction
 
-# pylint: disable=too-many-arguments,too-many-positional-arguments
-
 
 def biquadratic_kernel_function(x: float) -> float:
     """

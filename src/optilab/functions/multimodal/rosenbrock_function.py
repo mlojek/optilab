@@ -2,8 +2,6 @@
 The rosenbrock objective function
 """
 
-# pylint: disable=too-few-public-methods
-
 from ...data_classes import Point
 from ..objective_function import ObjectiveFunction
 

@@ -2,8 +2,6 @@
 CMA-ES optimizer: Covariance Matrix Adaptation Evolution Strategy.
 """
 
-# pylint: disable=too-many-arguments, too-many-positional-arguments
-
 import cma
 
 from ..data_classes import Bounds, PointList

@@ -2,8 +2,6 @@
 The ackley objective function
 """
 
-# pylint: disable=too-few-public-methods
-
 import numpy as np
 
 from ...data_classes import Point

@@ -2,9 +2,6 @@
 Base class for optimizers.
 """
 
-# pylint: disable=too-many-arguments, too-many-positional-arguments
-
-
 from multiprocessing.pool import Pool
 from typing import Any, Dict
 

@@ -61,6 +61,12 @@ if __name__ == "__main__":
         action="store_true",
         help="Perform Mann-Whitney U test on eval values.",
     )
+    parser.add_argument(
+        "--entries",
+        nargs="+",
+        type=int,
+        help="Space separated list of indexes of entries to include in analysis.",
+    )
     args = parser.parse_args()
 
     file_path_list = []
@@ -77,6 +83,9 @@ if __name__ == "__main__":
         filename_stem = file_path.stem
 
         data = load_from_pickle(file_path)
+
+        if args.entries:
+            data = [data[i] for i in args.entries if 0 <= i < len(data)]
 
         assert isinstance(data, list)
         for run in data:

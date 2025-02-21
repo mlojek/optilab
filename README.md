@@ -28,17 +28,18 @@ Learn how to use optilab by using our demo notebook. See `demo/tutorial.ipynb`.
 ## CLI tool
 Optilab comes with a powerful CLI tool to easily summarize your experiments. It allows for plotting the results and performing statistical testing to check for statistical significance in optimization results.
 ```
-Optilab CLI utility.
-usage: python -m optilab [-h] [--hide_plots] [--test_y] [--test_evals] pickle_path
+usage: Optilab CLI utility. [-h] [--hide_plots] [--test_y] [--test_evals] [--entries ENTRIES [ENTRIES ...]] pickle_path
 
 positional arguments:
-  pickle_path   Path to pickle file or directory with optimization runs.
+  pickle_path           Path to pickle file or directory with optimization runs.
 
 options:
-  -h, --help    show this help message and exit
-  --hide_plots  Hide plots when running the script.
-  --test_y      Perform Mann-Whitney U test on y values.
-  --test_evals  Perform Mann-Whitney U test on eval values.
+  -h, --help            show this help message and exit
+  --hide_plots          Hide plots when running the script.
+  --test_y              Perform Mann-Whitney U test on y values.
+  --test_evals          Perform Mann-Whitney U test on eval values.
+  --entries ENTRIES [ENTRIES ...]
+                        Space separated list of indexes of entries to include in analysis.
 ```
 
 ## Docker

@@ -67,6 +67,11 @@ if __name__ == "__main__":
         type=int,
         help="Space separated list of indexes of entries to include in analysis.",
     )
+    parser.add_argument(
+        "--raw_values",
+        action="store_true",
+        help="If specified, y values below tolerance are not substituted by tolerance value.",
+    )
     args = parser.parse_args()
 
     file_path_list = []
@@ -110,14 +115,18 @@ if __name__ == "__main__":
         )
 
         plot_box_plot(
-            data={run.model_metadata.name: run.bests_y() for run in data},
+            data={
+                run.model_metadata.name: run.bests_y(args.raw_values) for run in data
+            },
             savepath=f"{filename_stem}.box_plot.png",
             show=not args.hide_plots,
             function_name=data[0].function_metadata.name,
         )
 
         # stats
-        stats = pd.concat([run.stats() for run in data], ignore_index=True)
+        stats = pd.concat(
+            [run.stats(args.raw_values) for run in data], ignore_index=True
+        )
         stats_evals = stats.filter(like="evals_", axis=1)
         stats_y = stats.filter(like="y_", axis=1)
         stats_df = stats.drop(columns=stats_evals.columns.union(stats_y.columns))

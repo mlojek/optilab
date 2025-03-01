@@ -89,7 +89,7 @@ class CmaEs(Optimizer):
         Returns:
             PointList: Results log from the optimization.
         """
-        es = self._spawn_cmaes(bounds, function.dim)
+        es = self._spawn_cmaes(bounds, function.metadata.dim)
 
         res_log = PointList(points=[])
 

@@ -54,7 +54,7 @@ class LmmCmaEs(CmaEs):
         Returns:
             PointList: Results log from the optimization.
         """
-        num_neighbors = function.dim * (function.dim + 3) + 2
+        num_neighbors = function.metadata.dim * (function.metadata.dim + 3) + 2
 
         metamodel = ApproximateRankingMetamodel(
             self.metadata.population_size,
@@ -65,7 +65,7 @@ class LmmCmaEs(CmaEs):
             ),
         )
 
-        es = self._spawn_cmaes(bounds, function.dim)
+        es = self._spawn_cmaes(bounds, function.metadata.dim)
 
         while not self._stop(es, metamodel.get_log(), call_budget, target, tolerance):
             solutions = PointList.from_list(es.ask())

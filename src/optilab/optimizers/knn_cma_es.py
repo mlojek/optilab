@@ -74,7 +74,7 @@ class KnnCmaEs(CmaEs):
             buffer_size=self.metadata.hyperparameters["buffer_size"],
         )
 
-        es = self._spawn_cmaes(bounds, function.dim)
+        es = self._spawn_cmaes(bounds, function.metadata.dim)
 
         while not self._stop(es, metamodel.get_log(), call_budget, target, tolerance):
             solutions = PointList.from_list(es.ask())

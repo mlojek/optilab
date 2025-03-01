@@ -110,7 +110,7 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
 
         distance_points.sort(key=lambda i: i[0])
 
-        knn_points = distance_points[: self.metadata.hyperparameters["num_neighbours"]]
+        knn_points = distance_points[: self.metadata.hyperparameters["num_neighbors"]]
 
         bandwidth = knn_points[-1][0]
 

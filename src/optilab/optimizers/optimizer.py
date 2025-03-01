@@ -25,7 +25,7 @@ class Optimizer:
         Args:
             name (str): Name of this optimizer.
             population_size (int): Size of the population.
-            hyperparameters (Dict[str, Any]): Dictionary with the metadata of the optimizer.
+            hyperparameters (Dict[str, Any]): Dictionary with the hyperparameters of the optimizer.
         """
         self.metadata = OptimizerMetadata(name, population_size, hyperparameters)
 
@@ -93,7 +93,7 @@ class Optimizer:
 
         return OptimizationRun(
             model_metadata=self.metadata,
-            function_metadata=function.get_metadata(),
+            function_metadata=function.metadata,
             bounds=bounds,
             tolerance=tolerance,
             logs=logs,

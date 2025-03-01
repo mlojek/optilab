@@ -4,7 +4,7 @@ Objective functions from CEC benchmarks.
 
 import opfunu
 
-from ...data_classes import FunctionMetadata, Point
+from ...data_classes import Point
 from ..objective_function import ObjectiveFunction
 
 
@@ -22,23 +22,13 @@ class CECObjectiveFunction(ObjectiveFunction):
             function_num (int): The number of benchmark function.
             dim (int): Dimensionality of the function.
         """
-        super().__init__(f"cec{year}_f{function_num:02}", dim)
+        super().__init__(
+            f"cec{year}_f{function_num:02}", dim, {"function_num": function_num}
+        )
 
-        self.function_num = function_num
         self.function = opfunu.get_functions_by_classname(f"F{function_num}{year}")[0](
             ndim=dim, f_bias=0
         )
-
-    def get_metadata(self) -> FunctionMetadata:
-        """
-        Get the metadata describing the function.
-
-        Returns:
-            FunctionMetadata: The metadata of the function.
-        """
-        metadata = super().get_metadata()
-        metadata.hyperparameters["function_num"] = self.function_num
-        return metadata
 
     def __call__(self, point: Point) -> Point:
         """

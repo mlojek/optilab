@@ -6,7 +6,7 @@ with polynomial regression with interactions optimized using least squares.
 import numpy as np
 from sklearn.preprocessing import PolynomialFeatures
 
-from ...data_classes import FunctionMetadata, Point, PointList
+from ...data_classes import Point, PointList
 from .surrogate_objective_function import SurrogateObjectiveFunction
 
 
@@ -25,20 +25,10 @@ class PolynomialRegression(SurrogateObjectiveFunction):
             train_set (PointList): Training data for the model.
         """
         self.preprocessor = PolynomialFeatures(degree=degree)
-        self.degree = degree
 
-        super().__init__(f"polynomial_regression_{degree}_degree", train_set)
-
-    def get_metadata(self) -> FunctionMetadata:
-        """
-        Get the metadata describing the function.
-
-        Returns:
-            FunctionMetadata: The metadata of the function.
-        """
-        metadata = super().get_metadata()
-        metadata.hyperparameters["degree"] = self.degree
-        return metadata
+        super().__init__(
+            f"polynomial_regression_{degree}_degree", train_set, {"degree": degree}
+        )
 
     def train(self, train_set: PointList) -> None:
         """

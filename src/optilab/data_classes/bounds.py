@@ -112,8 +112,9 @@ class Bounds:
             else:
                 new_x.append(val)
 
-        point.x = new_x
-        return point
+        new_point = deepcopy(point)
+        new_point.x = new_x
+        return new_point
 
     def wrap(self, point: Point) -> Point:
         """
@@ -137,8 +138,9 @@ class Bounds:
             else:
                 new_x.append(val)
 
-        point.x = new_x
-        return point
+        new_point = deepcopy(point)
+        new_point.x = new_x
+        return new_point
 
     def project(self, point: Point) -> Point:
         """
@@ -161,8 +163,9 @@ class Bounds:
             else:
                 new_x.append(val)
 
-        point.x = new_x
-        return point
+        new_point = deepcopy(point)
+        new_point.x = new_x
+        return new_point
 
     def handle_bounds(self, point: Point, mode: str) -> Point:
         """

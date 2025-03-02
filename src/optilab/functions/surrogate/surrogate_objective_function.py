@@ -2,8 +2,7 @@
 Abstract base class for surrogate objective functions.
 """
 
-# pylint: disable=too-few-public-methods
-
+from typing import Any, Dict
 
 from ...data_classes import Point, PointList
 from ..objective_function import ObjectiveFunction
@@ -14,16 +13,22 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
     Abstract base class for surrogate objective functions.
     """
 
-    def __init__(self, name: str, train_set: PointList = None) -> None:
+    def __init__(
+        self,
+        name: str,
+        train_set: PointList = None,
+        hyperparameters: Dict[str, Any] = None,
+    ) -> None:
         """
         Class constructor. The dimensionality is deduced from the training points.
 
         Args:
             name (str): Name of the surrogate function.
             train_set (PointList): Training data for the model.
+            hyperparameters (Dict[str, Any]): Dictionary with hyperparameters of the function.
         """
         self.is_ready = False
-        super().__init__(name, 1)
+        super().__init__(name, 1, hyperparameters)
 
         if train_set:
             self.train(train_set)
@@ -48,7 +53,7 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
             raise ValueError(
                 "Provided train set has x-es with different dimensionalities."
             )
-        self.dim = list(dim_set)[0]
+        self.metadata.dim = list(dim_set)[0]
 
         self.train_set = train_set
 

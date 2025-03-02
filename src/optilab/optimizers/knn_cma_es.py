@@ -2,7 +2,7 @@
 KNN-CMA-ES optimizer. CMA-ES is enhanced with a KNN metamodel similar to the one from LMM-CMA-ES.
 """
 
-# pylint: disable=too-many-arguments, too-many-positional-arguments, duplicate-code
+# pylint: disable=duplicate-code
 
 from ..data_classes import Bounds, PointList
 from ..functions import ObjectiveFunction
@@ -74,7 +74,7 @@ class KnnCmaEs(CmaEs):
             buffer_size=self.metadata.hyperparameters["buffer_size"],
         )
 
-        es = self._spawn_cmaes(bounds, function.dim)
+        es = self._spawn_cmaes(bounds, function.metadata.dim)
 
         while not self._stop(es, metamodel.get_log(), call_budget, target, tolerance):
             solutions = PointList.from_list(es.ask())

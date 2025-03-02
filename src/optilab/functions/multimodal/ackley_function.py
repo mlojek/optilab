@@ -2,8 +2,6 @@
 The ackley objective function
 """
 
-# pylint: disable=too-few-public-methods
-
 import numpy as np
 
 from ...data_classes import Point
@@ -40,8 +38,11 @@ class AckleyFunction(ObjectiveFunction):
         super().__call__(point)
         function_value = (
             20
-            - 20 * np.exp(-0.2 * np.sqrt(sum(x_i**2 for x_i in point.x) / self.dim))
+            - 20
+            * np.exp(-0.2 * np.sqrt(sum(x_i**2 for x_i in point.x) / self.metadata.dim))
             + np.e
-            - np.exp(sum(np.cos(2 * np.pi * x_i) for x_i in point.x) / self.dim)
+            - np.exp(
+                sum(np.cos(2 * np.pi * x_i) for x_i in point.x) / self.metadata.dim
+            )
         )
         return Point(x=point.x, y=function_value, is_evaluated=True)

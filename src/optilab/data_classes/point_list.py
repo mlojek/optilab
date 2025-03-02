@@ -2,6 +2,8 @@
 Class holding a list of points.
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import List, Tuple
 
@@ -22,7 +24,7 @@ class PointList:
 
     # alternative constructors
     @classmethod
-    def from_list(cls, xs: List[np.ndarray]):
+    def from_list(cls, xs: List[np.ndarray]) -> PointList:
         """
         Alternative constructor that takes a list of x values.
 
@@ -46,7 +48,7 @@ class PointList:
         """
         self.points.append(new_point)
 
-    def extend(self, new_points) -> None:
+    def extend(self, new_points: PointList) -> None:
         """
         Append a list of points to this PointList.
 
@@ -84,7 +86,7 @@ class PointList:
         """
         return self.x(), self.y()
 
-    def only_evaluated(self):
+    def only_evaluated(self) -> PointList:
         """
         Return list of only those points that have been evaluated.
 
@@ -94,16 +96,19 @@ class PointList:
         return PointList(list(filter(lambda point: point.is_evaluated, self.points)))
 
     # magic methods for list abstraction
-    def __getitem__(self, index: int) -> Point:
+    def __getitem__(self, index: int | slice) -> Point | PointList:
         """
-        Allows to index this object like a list.
+        Allows indexing and slicing this object like a list.
 
         Args:
-            index (int): The index of object to fetch.
+            index (int | slice): The index or slice of objects to fetch.
 
         Returns:
-            Point: The object at given index.
+            Point | PointList: A single Point object for integer index,
+                or a new PointList instance for slicing.
         """
+        if isinstance(index, slice):
+            return PointList(self.points[index])
         return self.points[index]
 
     def __len__(self) -> int:
@@ -127,7 +132,7 @@ class PointList:
             sorted(self.points, key=lambda point: point.y, reverse=reverse)
         )
 
-    def x_difference(self, other):
+    def x_difference(self, other) -> PointList:
         """
         Return list of points in self that do not appear in other based on their x values.
 
@@ -173,11 +178,11 @@ class PointList:
         """
         return min((point.y for point in self.points), default=np.inf)
 
-    def slice_to_best(self):
+    def slice_to_best(self) -> PointList:
         """
         Return a list of all points up to the best in the list, including the best.
 
         Returns:
             PointList: List of points up to the best point.
         """
-        return PointList(self[: self.best_index() + 1])
+        return self[: self.best_index() + 1]

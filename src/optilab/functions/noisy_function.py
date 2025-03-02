@@ -4,7 +4,7 @@ Class that makes an objective function noisy using random normal distribution.
 
 import numpy as np
 
-from ..data_classes import FunctionMetadata, Point
+from ..data_classes import Point
 from .objective_function import ObjectiveFunction
 
 
@@ -21,20 +21,10 @@ class NoisyFunction(ObjectiveFunction):
             function (ObjectiveFunction): Objective function to noise.
             noise (float): Noise value of the function.
         """
-        super().__init__(f"noisy_{function.name}_{noise}", function.dim)
+        super().__init__(
+            f"noisy_{function.name}_{noise}", function.dim, {"noise": noise}
+        )
         self.function = function
-        self.noise = noise
-
-    def get_metadata(self) -> FunctionMetadata:
-        """
-        Get the metadata describing the function.
-
-        Returns:
-            FunctionMetadata: The metadata of the function.
-        """
-        metadata = super().get_metadata()
-        metadata.hyperparameters["noise"] = self.noise
-        return metadata
 
     def __call__(self, point: Point) -> Point:
         """
@@ -51,5 +41,7 @@ class NoisyFunction(ObjectiveFunction):
         """
         super().__call__(point)
         evaluated_point = self.function(point)
-        evaluated_point.x *= 1 + self.noise * np.random.normal(0, 1)
+        evaluated_point.x *= 1 + self.metadata.hyperparameters[
+            "noise"
+        ] * np.random.normal(0, 1)
         return evaluated_point

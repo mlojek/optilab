@@ -76,7 +76,7 @@ class TestKNNSurrogateObjectiveFunction:
         y = knn_sof(Point(np.array([100]))).y
         assert y == 1
         assert knn_sof.num_calls == 1
-        assert knn_sof.dim == 1
+        assert knn_sof.metadata.dim == 1
 
     def test_square(self, train_set_2d_square):
         """
@@ -89,7 +89,7 @@ class TestKNNSurrogateObjectiveFunction:
         assert inference_result.y == 0
         assert not inference_result.is_evaluated
         assert knn_sof.num_calls == 1
-        assert knn_sof.dim == 2
+        assert knn_sof.metadata.dim == 2
 
     def test_dim_not_constant(self):
         """
@@ -126,7 +126,7 @@ class TestKNNSurrogateObjectiveFunction:
         knn_sof.train(train_set_2d_square)
         assert knn_sof(Point(np.array([0, 0]))).y == 0
         assert knn_sof.num_calls == 1
-        assert knn_sof.dim == 2
+        assert knn_sof.metadata.dim == 2
 
     def test_knn_point_from_training_set(self, train_set_2d_square):
         """

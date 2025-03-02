@@ -2,8 +2,6 @@
 Plotting and calculating ECDF curves.
 """
 
-# pylint: disable=too-many-locals, too-many-arguments
-
 import math
 from typing import Dict, List, Tuple
 
@@ -110,6 +108,7 @@ def plot_ecdf_curves(
     savepath: str = None,
     *,
     show: bool = True,
+    function_name: str = None,
 ) -> None:
     """
     Calculate and plot ECDF curves.
@@ -121,6 +120,7 @@ def plot_ecdf_curves(
         n_thresholds (int): Number of ECDF thresholds.
         savepath (str): Path to save the plot, optional.
         show (bool): Wheather to show the plot, default True.
+        function_name (str): Name of the optimized function, used in title.
     """
     plt.clf()
 
@@ -132,10 +132,14 @@ def plot_ecdf_curves(
     plt.xlabel("Number of function evaluations divided by the number of dimensions.")
     plt.xscale("log")
     plt.ylabel("ECDF point pairs")
-    plt.title("ECDF Curves")
 
     plt.legend()
     plt.grid(True)
+
+    if function_name:
+        plt.title(f"ECDF curves for function {function_name}")
+    else:
+        plt.title("ECDF curves")
 
     if savepath:
         plt.savefig(savepath)

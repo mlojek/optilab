@@ -2,8 +2,6 @@
 Unit tests for PointList dataclass.
 """
 
-# pylint: disable=too-many-public-methods
-
 import numpy as np
 import pytest
 

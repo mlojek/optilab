@@ -2,8 +2,6 @@
 Approximate ranking metamodel based on lmm-CMA-ES.
 """
 
-# pylint: disable=too-many-instance-attributes, too-many-arguments
-
 from typing import Optional
 
 from ..data_classes import PointList
@@ -74,6 +72,17 @@ class ApproximateRankingMetamodel:
         """
         return PointList(points=[self.surrogate_function(x) for x in points])
 
+    def train_surrogate(self) -> None:
+        """
+        Retrain the surrogate function with samples from the training set.
+        """
+        if self.buffer_size:
+            self.surrogate_function.train(
+                PointList(self.train_set[-self.buffer_size :])
+            )
+        else:
+            self.surrogate_function.train(self.train_set)
+
     def evaluate(self, xs: PointList) -> PointList:
         """
         Evaluate provided point with the objective function and append results to the training
@@ -90,12 +99,7 @@ class ApproximateRankingMetamodel:
         )
         self.train_set.extend(result)
 
-        if self.buffer_size:
-            self.surrogate_function.train(
-                PointList(self.train_set[-self.buffer_size :])
-            )
-        else:
-            self.surrogate_function.train(self.train_set)
+        self.train_surrogate()
 
         return result
 

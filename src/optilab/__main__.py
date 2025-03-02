@@ -4,47 +4,19 @@ Entrypoint for CLI functionality of optilab.
 
 import argparse
 from pathlib import Path
-from typing import List
 
 import pandas as pd
-from scipy.stats import mannwhitneyu
 from tabulate import tabulate
 
 from .data_classes import OptimizationRun
 from .plotting import plot_box_plot, plot_convergence_curve, plot_ecdf_curves
 from .utils.pickle_utils import load_from_pickle
-
-
-def mann_whitney_u_test_grid(data_lists: List[List[float]]) -> str:
-    """
-    Perform a grid run of Mann-Whitney U test on given list of data values and return a printable
-    table with results.
-
-    Args:
-        data_lists (List[List[float]]): List of lists of values to perform test on.
-
-    Returns:
-        str: Results as a tabulated, ready to print table with p-values.
-    """
-    n = len(data_lists)
-    results_table = [["-" for _ in range(n)] for _ in range(n)]
-
-    for i in range(n):
-        for j in range(n):
-            if i != j:
-                p_value = mannwhitneyu(
-                    data_lists[i], data_lists[j], alternative="less"
-                )[1]
-                results_table[i][j] = f"{p_value:.4f}"
-
-    header = list(range(n))
-    return tabulate(
-        results_table, headers=header, showindex="always", tablefmt="github"
-    )
-
+from .utils.stat_test import display_test_grid, mann_whitney_u_test_grid
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("Optilab CLI utility.")
+    parser = argparse.ArgumentParser(
+        description="Optilab CLI utility.", prog="python -m optilab"
+    )
     parser.add_argument(
         "pickle_path",
         type=Path,
@@ -60,6 +32,22 @@ if __name__ == "__main__":
         "--test_evals",
         action="store_true",
         help="Perform Mann-Whitney U test on eval values.",
+    )
+    parser.add_argument(
+        "--entries",
+        nargs="+",
+        type=int,
+        help="Space separated list of indexes of entries to include in analysis.",
+    )
+    parser.add_argument(
+        "--raw_values",
+        action="store_true",
+        help="If specified, y values below tolerance are not substituted by tolerance value.",
+    )
+    parser.add_argument(
+        "--hide_outliers",
+        action="store_true",
+        help="If specified, outliers will not be shown in the box plot.",
     )
     args = parser.parse_args()
 
@@ -78,6 +66,9 @@ if __name__ == "__main__":
 
         data = load_from_pickle(file_path)
 
+        if args.entries:
+            data = [data[i] for i in args.entries if 0 <= i < len(data)]
+
         assert isinstance(data, list)
         for run in data:
             assert isinstance(run, OptimizationRun)
@@ -87,6 +78,7 @@ if __name__ == "__main__":
             data={run.model_metadata.name: run.logs for run in data},
             savepath=f"{filename_stem}.convergence.png",
             show=not args.hide_plots,
+            function_name=data[0].function_metadata.name,
         )
 
         plot_ecdf_curves(
@@ -96,16 +88,23 @@ if __name__ == "__main__":
             allowed_error=data[0].tolerance,
             savepath=f"{filename_stem}.ecdf.png",
             show=not args.hide_plots,
+            function_name=data[0].function_metadata.name,
         )
 
         plot_box_plot(
-            data={run.model_metadata.name: run.bests_y() for run in data},
+            data={
+                run.model_metadata.name: run.bests_y(args.raw_values) for run in data
+            },
             savepath=f"{filename_stem}.box_plot.png",
             show=not args.hide_plots,
+            function_name=data[0].function_metadata.name,
+            hide_outliers=args.hide_outliers,
         )
 
         # stats
-        stats = pd.concat([run.stats() for run in data], ignore_index=True)
+        stats = pd.concat(
+            [run.stats(args.raw_values) for run in data], ignore_index=True
+        )
         stats_evals = stats.filter(like="evals_", axis=1)
         stats_y = stats.filter(like="y_", axis=1)
         stats_df = stats.drop(columns=stats_evals.columns.union(stats_y.columns))
@@ -119,9 +118,19 @@ if __name__ == "__main__":
         if args.test_y:
             print("## Mann Whitney U test on optimization results (y).")
             print("p-values for alternative hypothesis row < column")
-            print(mann_whitney_u_test_grid([run.bests_y() for run in data]), "\n")
+            print(
+                display_test_grid(
+                    mann_whitney_u_test_grid([run.bests_y() for run in data])
+                ),
+                "\n",
+            )
 
         if args.test_evals:
             print("## Mann Whitney U test on number of objective function evaluations.")
             print("p-values for alternative hypothesis row < column")
-            print(mann_whitney_u_test_grid([run.log_lengths() for run in data]), "\n")
+            print(
+                display_test_grid(
+                    mann_whitney_u_test_grid([run.log_lengths() for run in data])
+                ),
+                "\n",
+            )

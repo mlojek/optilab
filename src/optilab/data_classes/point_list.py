@@ -48,7 +48,7 @@ class PointList:
         """
         self.points.append(new_point)
 
-    def extend(self, new_points) -> None:
+    def extend(self, new_points: PointList) -> None:
         """
         Append a list of points to this PointList.
 

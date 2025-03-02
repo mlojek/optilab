@@ -28,7 +28,9 @@ Learn how to use optilab by using our demo notebook. See `demo/tutorial.ipynb`.
 ## CLI tool
 Optilab comes with a powerful CLI tool to easily summarize your experiments. It allows for plotting the results and performing statistical testing to check for statistical significance in optimization results.
 ```
-usage: Optilab CLI utility. [-h] [--hide_plots] [--test_y] [--test_evals] [--entries ENTRIES [ENTRIES ...]] [--raw_values] pickle_path
+usage: python -m optilab [-h] [--hide_plots] [--test_y] [--test_evals] [--entries ENTRIES [ENTRIES ...]] [--raw_values] [--hide_outliers] pickle_path
+
+Optilab CLI utility.
 
 positional arguments:
   pickle_path           Path to pickle file or directory with optimization runs.
@@ -41,6 +43,7 @@ options:
   --entries ENTRIES [ENTRIES ...]
                         Space separated list of indexes of entries to include in analysis.
   --raw_values          If specified, y values below tolerance are not substituted by tolerance value.
+  --hide_outliers       If specified, outliers will not be shown in the box plot.
 ```
 
 ## Docker

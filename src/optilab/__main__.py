@@ -44,7 +44,9 @@ def mann_whitney_u_test_grid(data_lists: List[List[float]]) -> str:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("Optilab CLI utility.")
+    parser = argparse.ArgumentParser(
+        description="Optilab CLI utility.", prog="python -m optilab"
+    )
     parser.add_argument(
         "pickle_path",
         type=Path,
@@ -71,6 +73,11 @@ if __name__ == "__main__":
         "--raw_values",
         action="store_true",
         help="If specified, y values below tolerance are not substituted by tolerance value.",
+    )
+    parser.add_argument(
+        "--hide_outliers",
+        action="store_true",
+        help="If specified, outliers will not be shown in the box plot.",
     )
     args = parser.parse_args()
 
@@ -121,6 +128,7 @@ if __name__ == "__main__":
             savepath=f"{filename_stem}.box_plot.png",
             show=not args.hide_plots,
             function_name=data[0].function_metadata.name,
+            hide_outliers=args.hide_outliers,
         )
 
         # stats

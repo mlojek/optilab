@@ -10,6 +10,7 @@ classifiers = [
 dependencies = [
     "black",
     "cma==4.0.0",
+    "faiss-cpu",
     "isort",
     "jupyter",
     "matplotlib==3.9.2",

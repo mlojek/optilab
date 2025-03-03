@@ -143,9 +143,9 @@ class ApproximateRankingMetamodel:
         items_current.rank()
 
         # evaluate first n_init items
-        to_evaluate_n_init = PointList(points=items_current[: self.n_init])
+        to_evaluate_n_init = items_current[: self.n_init]
         evaluated_this_run.extend(to_evaluate_n_init)
-        self.evaluate(PointList(points=to_evaluate_n_init))
+        self.evaluate(to_evaluate_n_init)
 
         num_iter = 0
         for _ in range((self.population_size - self.n_init) // self.n_step):
@@ -169,11 +169,10 @@ class ApproximateRankingMetamodel:
                 break
 
             # else evaluate n_step next items
-            to_evaluate_n_step = PointList(
-                points=items_current.x_difference(evaluated_this_run)[: self.n_step]
-            )
+            to_evaluate_n_step = items_current.x_difference(evaluated_this_run)[
+                : self.n_step
+            ]
             evaluated_this_run.extend(to_evaluate_n_step)
-            self.evaluate(PointList(points=to_evaluate_n_step))
+            self.evaluate(to_evaluate_n_step)
 
-        # print(len(evaluated_this_run) / len(xs))
         self._update_n(num_iter)

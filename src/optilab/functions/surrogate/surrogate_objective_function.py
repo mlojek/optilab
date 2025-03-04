@@ -53,6 +53,10 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
             raise ValueError(
                 "Provided train set has x-es with different dimensionalities."
             )
+
+        if 0 in dim_set:
+            raise ValueError("0-dim x values found in train set.")
+
         self.metadata.dim = list(dim_set)[0]
 
         self.train_set = train_set

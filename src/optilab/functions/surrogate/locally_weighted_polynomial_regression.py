@@ -5,8 +5,8 @@ Points are weighted based on mahalanobis distance from query points.
 
 from typing import Callable
 
+import faiss
 import numpy as np
-from scipy.spatial.distance import mahalanobis
 from sklearn.preprocessing import PolynomialFeatures
 
 from ...data_classes import Point, PointList
@@ -61,17 +61,19 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
             {"degree": degree, "num_neighbors": num_neighbors},
         )
 
-        if train_set:
-            self.train(train_set)
-
         if covariance_matrix:
             self.set_covariance_matrix(covariance_matrix)
         else:
             self.set_covariance_matrix(np.eye(self.metadata.dim))
 
+        if train_set:
+            self.train(train_set)
+
         self.kernel_function = kernel_function
         self.preprocessor = PolynomialFeatures(degree=degree)
+
         self.weights = None
+        self.index = None
 
     def set_covariance_matrix(self, new_covariance_matrix: np.ndarray) -> None:
         """
@@ -81,7 +83,25 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
             new_covariance_matrix (np.ndarray): New covariance matrix to use for mahalanobis
                 distance.
         """
-        self.reversed_covariance_matrix = np.linalg.inv(new_covariance_matrix)
+        self.inverse_sqrt_covariance = np.linalg.inv(
+            np.linalg.cholesky(new_covariance_matrix)
+        ).T
+
+    def train(self, train_set: PointList) -> None:
+        """
+        Build FAISS index and preprocess data to use Mahalanobis distance.
+
+        Args:
+            train_set (PointList): Training set for the function
+        """
+        super().train(train_set)
+
+        x_train, y_train = self.train_set.pairs()
+        x_train = np.array(x_train, dtype=np.float32) @ self.inverse_sqrt_covariance
+        self.y_train = np.array(y_train, dtype=np.float32)
+
+        self.index = faiss.IndexFlatL2(x_train.shape[1])
+        self.index.add(x_train)  # pylint: disable=no-value-for-parameter
 
     def __call__(self, point: Point) -> Point:
         """
@@ -99,40 +119,28 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         """
         super().__call__(point)
 
-        distance_points = [
-            (
-                mahalanobis(train_point.x, point.x, self.reversed_covariance_matrix),
-                np.array(train_point.x),
-                train_point.y,
-            )
-            for train_point in self.train_set
-        ]
+        x_query = np.array([point.x], dtype=np.float32) @ self.inverse_sqrt_covariance
+        distances, indices = self.index.search(
+            x_query, self.metadata.hyperparameters["num_neighbors"]
+        )
+        distances = np.sqrt(distances)
 
-        distance_points.sort(key=lambda i: i[0])
+        knn_x = np.array([self.train_set[i].x for i in indices[0]])
+        knn_y = np.array([self.train_set[i].y for i in indices[0]])
 
-        knn_points = distance_points[: self.metadata.hyperparameters["num_neighbors"]]
+        bandwidth = distances[0][-1]
 
-        bandwidth = knn_points[-1][0]
-
-        weights = [
-            (np.sqrt(self.kernel_function(d / bandwidth)), x_i, y_i)
-            for d, x_i, y_i in knn_points
-        ]
-
-        weighted_x, weighted_y = zip(
-            *[
-                (
-                    w * np.array(self.preprocessor.fit_transform([x_i])[0]),
-                    w * np.array(y_i),
-                )
-                for w, x_i, y_i in weights
-            ]
+        weights = np.array(
+            [np.sqrt(self.kernel_function(d / bandwidth)) for d in distances[0]]
         )
 
-        self.weights = np.linalg.lstsq(weighted_x, weighted_y)[0]
+        weighted_x = weights[:, None] * self.preprocessor.fit_transform(knn_x)
+        weighted_y = weights * knn_y
 
-        return Point(
-            x=point.x,
-            y=sum(self.weights * self.preprocessor.fit_transform([point.x])[0]),
-            is_evaluated=False,
+        self.weights = np.linalg.lstsq(weighted_x, weighted_y, rcond=None)[0]
+
+        y_pred = float(
+            np.dot(self.preprocessor.fit_transform([point.x])[0], self.weights)
         )
+
+        return Point(x=point.x, y=y_pred, is_evaluated=False)

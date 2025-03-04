@@ -66,8 +66,7 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         x_query = np.array([point.x], dtype=np.float32)
         distances, indices = self.faiss_index.search(x_query, self.num_neighbors)
 
-        weights = 1 / (distances + 1e-8)  # avoid division by zero
-        weights /= weights.sum()
-        y_pred = np.sum(self.y_train[indices] * weights, axis=1)[0]
+        weights = 1 / (np.sqrt(distances) + 1e-8)  # avoid division by zero
+        y_pred = np.sum(self.y_train[indices] * weights, axis=1)[0] / weights.sum()
 
         return Point(x=point.x, y=float(y_pred), is_evaluated=False)

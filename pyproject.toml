@@ -10,6 +10,7 @@ classifiers = [
 dependencies = [
     "black",
     "cma==4.0.0",
+    "faiss-cpu",
     "isort",
     "jupyter",
     "matplotlib==3.9.2",
@@ -34,7 +35,7 @@ description = "Simple framework for optimization functions and metamodels"
 name = "optilab"
 readme = "README.md"
 requires-python = ">=3.11.9"
-version = "20"
+version = "21"
 
 [project.urls]
 Homepage = "https://github.com/mlojek/optilab"

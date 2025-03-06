@@ -23,7 +23,7 @@ make install
 ```
 
 ## Try the demos
-Learn how to use optilab by using our demo notebook. See `demo/tutorial.ipynb`.
+Learn how to use optilab and fit it to your needs with demo notebooks in `demo` directory.
 
 ## CLI tool
 Optilab comes with a powerful CLI tool to easily summarize your experiments. It allows for plotting the results and performing statistical testing to check for statistical significance in optimization results.

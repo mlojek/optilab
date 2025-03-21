@@ -49,6 +49,11 @@ if __name__ == "__main__":
         action="store_true",
         help="If specified, outliers will not be shown in the box plot.",
     )
+    parser.add_argument(
+        "--no_save",
+        action="store_true",
+        help="If specified, no artifacts will be saved.",
+    )
     args = parser.parse_args()
 
     file_path_list = []
@@ -76,7 +81,7 @@ if __name__ == "__main__":
         # plots
         plot_convergence_curve(
             data={run.model_metadata.name: run.logs for run in data},
-            savepath=f"{filename_stem}.convergence.png",
+            savepath=f"{filename_stem}.convergence.png" if not args.no_save else None,
             show=not args.hide_plots,
             function_name=data[0].function_metadata.name,
         )
@@ -86,7 +91,7 @@ if __name__ == "__main__":
             n_dimensions=data[0].function_metadata.dim,
             n_thresholds=100,
             allowed_error=data[0].tolerance,
-            savepath=f"{filename_stem}.ecdf.png",
+            savepath=f"{filename_stem}.ecdf.png" if not args.no_save else None,
             show=not args.hide_plots,
             function_name=data[0].function_metadata.name,
         )
@@ -95,7 +100,7 @@ if __name__ == "__main__":
             data={
                 run.model_metadata.name: run.bests_y(args.raw_values) for run in data
             },
-            savepath=f"{filename_stem}.box_plot.png",
+            savepath=f"{filename_stem}.box_plot.png" if not args.no_save else None,
             show=not args.hide_plots,
             function_name=data[0].function_metadata.name,
             hide_outliers=args.hide_outliers,
@@ -109,7 +114,9 @@ if __name__ == "__main__":
         stats_y = stats.filter(like="y_", axis=1)
         stats_df = stats.drop(columns=stats_evals.columns.union(stats_y.columns))
 
-        stats.to_csv(f"{filename_stem}.stats.csv")
+        if not args.no_save:
+            stats.to_csv(f"{filename_stem}.stats.csv")
+
         print(tabulate(stats_df, headers="keys", tablefmt="github"), "\n")
         print(tabulate(stats_y, headers="keys", tablefmt="github"), "\n")
         print(tabulate(stats_evals, headers="keys", tablefmt="github"), "\n")

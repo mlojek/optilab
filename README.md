@@ -28,7 +28,10 @@ Learn how to use optilab and fit it to your needs with demo notebooks in `demo` 
 ## CLI tool
 Optilab comes with a powerful CLI tool to easily summarize your experiments. It allows for plotting the results and performing statistical testing to check for statistical significance in optimization results.
 ```
-usage: python -m optilab [-h] [--hide_plots] [--test_y] [--test_evals] [--entries ENTRIES [ENTRIES ...]] [--raw_values] [--hide_outliers] [--no_save] pickle_path
+usage: python -m optilab [-h] [--save_path SAVE_PATH] [--hide_plots] [--test_y]
+                         [--test_evals] [--entries ENTRIES [ENTRIES ...]] [--raw_values]
+                         [--hide_outliers] [--no_save]
+                         pickle_path
 
 Optilab CLI utility.
 
@@ -37,12 +40,16 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
+  --save_path SAVE_PATH
+                        Path to directory to save the artifacts. Default is the user's
+                        working directory.
   --hide_plots          Hide plots when running the script.
   --test_y              Perform Mann-Whitney U test on y values.
   --test_evals          Perform Mann-Whitney U test on eval values.
   --entries ENTRIES [ENTRIES ...]
                         Space separated list of indexes of entries to include in analysis.
-  --raw_values          If specified, y values below tolerance are not substituted by tolerance value.
+  --raw_values          If specified, y values below tolerance are not substituted by
+                        tolerance value.
   --hide_outliers       If specified, outliers will not be shown in the box plot.
   --no_save             If specified, no artifacts will be saved.
 ```

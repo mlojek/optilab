@@ -28,7 +28,6 @@ dependencies = [
     "sphinx-rtd-theme",
     "tabulate",
     "tqdm",
-    "tqdm",
     "typing",
 ]
 description = "Simple framework for optimization functions and metamodels"

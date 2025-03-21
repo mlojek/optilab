@@ -141,21 +141,31 @@ if __name__ == "__main__":
 
         # stat tests
         if args.test_y:
+            pvalues_y = mann_whitney_u_test_grid([run.bests_y() for run in data])
+
             print("## Mann Whitney U test on optimization results (y).")
             print("p-values for alternative hypothesis row < column")
-            print(
-                display_test_grid(
-                    mann_whitney_u_test_grid([run.bests_y() for run in data])
-                ),
-                "\n",
-            )
+            print(display_test_grid(pvalues_y), "\n")
+
+            if not args.no_save:
+                pvalues_y_df = pd.DataFrame(
+                    columns=list(range(len(data))), data=pvalues_y
+                )
+                pvalues_y_df.to_csv(args.save_path / f"{filename_stem}.pvalues_y.csv")
 
         if args.test_evals:
+            pvalues_evals = mann_whitney_u_test_grid(
+                [run.log_lengths() for run in data]
+            )
+
             print("## Mann Whitney U test on number of objective function evaluations.")
             print("p-values for alternative hypothesis row < column")
-            print(
-                display_test_grid(
-                    mann_whitney_u_test_grid([run.log_lengths() for run in data])
-                ),
-                "\n",
-            )
+            print(display_test_grid(pvalues_evals), "\n")
+
+            if not args.no_save:
+                pvalues_evals_df = pd.DataFrame(
+                    columns=list(range(len(data))), data=pvalues_evals
+                )
+                pvalues_evals_df.to_csv(
+                    args.save_path / f"{filename_stem}.pvalues_evals.csv"
+                )

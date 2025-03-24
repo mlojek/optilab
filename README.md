@@ -28,7 +28,7 @@ Learn how to use optilab and fit it to your needs with demo notebooks in `demo` 
 ## CLI tool
 Optilab comes with a powerful CLI tool to easily summarize your experiments. It allows for plotting the results and performing statistical testing to check for statistical significance in optimization results.
 ```
-usage: python -m optilab [-h] [--aggregate_pvalue] [--aggregate_stats]
+usage: python -m optilab [-h] [--aggregate_pvalues] [--aggregate_stats]
                          [--entries ENTRIES [ENTRIES ...]] [--hide_outliers]
                          [--hide_plots] [--no_save] [--raw_values]
                          [--save_path SAVE_PATH] [--test_evals] [--test_y]
@@ -41,7 +41,7 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --aggregate_pvalue    Aggregate pvalues of stat tests against run 0 in each pickle
+  --aggregate_pvalues   Aggregate pvalues of stat tests against run 0 in each pickle
                         file into one table.
   --aggregate_stats     Aggregate median and iqr for all processed runs into one table.
   --entries ENTRIES [ENTRIES ...]

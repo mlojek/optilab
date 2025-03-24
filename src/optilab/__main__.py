@@ -10,6 +10,7 @@ from tabulate import tabulate
 
 from .data_classes import OptimizationRun
 from .plotting import plot_box_plot, plot_convergence_curve, plot_ecdf_curves
+from .utils.aggregate_pvalues import aggregate_pvalues
 from .utils.aggregate_stats import aggregate_stats
 from .utils.pickle_utils import load_from_pickle
 from .utils.stat_test import display_test_grid, mann_whitney_u_test_grid
@@ -24,7 +25,7 @@ if __name__ == "__main__":
         help="Path to pickle file or directory with optimization runs.",
     )
     parser.add_argument(
-        "--aggregate_pvalue",
+        "--aggregate_pvalues",
         action="store_true",
         help="Aggregate pvalues of stat tests against run 0 in each pickle file into one table.",
     )
@@ -75,6 +76,11 @@ if __name__ == "__main__":
 
     stats_to_aggregate_df = pd.DataFrame(
         columns=["model", "function", "y_median", "y_iqr"]
+    )
+
+    y_pvalues_to_aggregate_df = pd.DataFrame(columns=["model", "function", "pvalue"])
+    evals_pvalues_to_aggregate_df = pd.DataFrame(
+        columns=["model", "function", "pvalue"]
     )
 
     file_path_list = []
@@ -165,6 +171,23 @@ if __name__ == "__main__":
         if args.test_y:
             pvalues_y = mann_whitney_u_test_grid([run.bests_y() for run in data])
 
+            if args.aggregate_pvalues:
+                pvalues_df = pd.DataFrame(
+                    [
+                        {
+                            "model": stats.model,
+                            "function": stats.function,
+                            "pvalue": row[0],
+                        }
+                        for row, (_, stats) in zip(
+                            pvalues_y[1:], list(stats_df.iterrows())[1:]
+                        )
+                    ]
+                )
+                y_pvalues_to_aggregate_df = pd.concat(
+                    [y_pvalues_to_aggregate_df, pvalues_df], axis=0
+                )
+
             print("## Mann Whitney U test on optimization results (y).")
             print("p-values for alternative hypothesis row < column")
             print(display_test_grid(pvalues_y), "\n")
@@ -179,6 +202,23 @@ if __name__ == "__main__":
             pvalues_evals = mann_whitney_u_test_grid(
                 [run.log_lengths() for run in data]
             )
+
+            if args.aggregate_pvalues:
+                pvalues_df = pd.DataFrame(
+                    [
+                        {
+                            "model": stats.model,
+                            "function": stats.function,
+                            "pvalue": row[0],
+                        }
+                        for row, (_, stats) in zip(
+                            pvalues_evals[1:], list(stats_df.iterrows())[1:]
+                        )
+                    ]
+                )
+                evals_pvalues_to_aggregate_df = pd.concat(
+                    [evals_pvalues_to_aggregate_df, pvalues_df], axis=0
+                )
 
             print("## Mann Whitney U test on number of objective function evaluations.")
             print("p-values for alternative hypothesis row < column")
@@ -195,9 +235,38 @@ if __name__ == "__main__":
     if args.aggregate_stats:
         aggregated_stats = aggregate_stats(stats_to_aggregate_df)
 
+        print("# Aggregated stats")
         print(tabulate(aggregated_stats, headers="keys", tablefmt="github"), "\n")
 
         if not args.no_save:
             aggregated_stats.to_csv(
                 args.save_path / "aggregated_stats.csv", index=False
             )
+
+    if args.aggregate_pvalues:
+        if args.test_y:
+            aggregated_y_pvalues = aggregate_pvalues(y_pvalues_to_aggregate_df)
+
+            print("# Aggregated y pvalues")
+            print(
+                tabulate(aggregated_y_pvalues, headers="keys", tablefmt="github"), "\n"
+            )
+
+            if not args.no_save:
+                aggregated_y_pvalues.to_csv(
+                    args.save_path / "aggregated_y_pvalues.csv", index=False
+                )
+
+        if args.test_evals:
+            aggregated_evals_pvalues = aggregate_pvalues(evals_pvalues_to_aggregate_df)
+
+            print("# Aggregated evals pvalues")
+            print(
+                tabulate(aggregated_evals_pvalues, headers="keys", tablefmt="github"),
+                "\n",
+            )
+
+            if not args.no_save:
+                aggregated_evals_pvalues.to_csv(
+                    args.save_path / "aggregated_evals_pvalues.csv", index=False
+                )

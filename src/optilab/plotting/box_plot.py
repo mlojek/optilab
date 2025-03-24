@@ -38,7 +38,7 @@ def plot_box_plot(
     plt.boxplot(plot_values, showfliers=not hide_outliers)
     plt.xticks(range(1, len(labels) + 1), labels, rotation=45, ha="right")
     plt.ylabel("value")
-    plt.tight_layout()
+    plt.tight_layout(pad=2.0)
 
     if function_name:
         plt.title(f"Box plot for function {function_name}")

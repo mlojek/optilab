@@ -23,12 +23,16 @@ make install
 ```
 
 ## Try the demos
-Learn how to use optilab by using our demo notebook. See `demo/tutorial.ipynb`.
+Learn how to use optilab and fit it to your needs with demo notebooks in `demo` directory.
 
 ## CLI tool
 Optilab comes with a powerful CLI tool to easily summarize your experiments. It allows for plotting the results and performing statistical testing to check for statistical significance in optimization results.
 ```
-usage: python -m optilab [-h] [--hide_plots] [--test_y] [--test_evals] [--entries ENTRIES [ENTRIES ...]] [--raw_values] [--hide_outliers] pickle_path
+usage: python -m optilab [-h] [--aggregate_pvalues] [--aggregate_stats]
+                         [--entries ENTRIES [ENTRIES ...]] [--hide_outliers]
+                         [--hide_plots] [--no_save] [--raw_values]
+                         [--save_path SAVE_PATH] [--test_evals] [--test_y]
+                         pickle_path
 
 Optilab CLI utility.
 
@@ -37,13 +41,22 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --hide_plots          Hide plots when running the script.
-  --test_y              Perform Mann-Whitney U test on y values.
-  --test_evals          Perform Mann-Whitney U test on eval values.
+  --aggregate_pvalues   Aggregate pvalues of stat tests against run 0 in each pickle
+                        file into one table.
+  --aggregate_stats     Aggregate median and iqr for all processed runs into one table.
   --entries ENTRIES [ENTRIES ...]
-                        Space separated list of indexes of entries to include in analysis.
-  --raw_values          If specified, y values below tolerance are not substituted by tolerance value.
+                        Space separated list of indexes of entries to include in
+                        analysis.
   --hide_outliers       If specified, outliers will not be shown in the box plot.
+  --hide_plots          Hide plots when running the script.
+  --no_save             If specified, no artifacts will be saved.
+  --raw_values          If specified, y values below tolerance are not substituted by
+                        tolerance value.
+  --save_path SAVE_PATH
+                        Path to directory to save the artifacts. Default is the user's
+                        working directory.
+  --test_evals          Perform Mann-Whitney U test on eval values.
+  --test_y              Perform Mann-Whitney U test on y values.
 ```
 
 ## Docker

@@ -18,6 +18,22 @@ def aggregate_stats(stats_df: pd.DataFrame) -> pd.DataFrame:
     """
     assert set(stats_df.columns) == {"model", "function", "y_median", "y_iqr"}
 
-    aggregated_stats = pd.DataFrame()
+    model_list = stats_df.model.unique()
+    function_list = sorted(stats_df.function.unique())
 
-    return aggregated_stats
+    aggregated_data = []
+
+    for function in function_list:
+        for stat in ["y_median", "y_iqr"]:
+            row = {"function": function, "stat": stat}
+
+            for model in model_list:
+                value = stats_df.loc[
+                    (stats_df["model"] == model) & (stats_df["function"] == function),
+                    stat,
+                ]
+                row[model] = value.values[0] if not value.empty else None
+
+            aggregated_data.append(row)
+
+    return pd.DataFrame(aggregated_data)

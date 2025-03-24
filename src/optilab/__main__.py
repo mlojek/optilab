@@ -198,4 +198,6 @@ if __name__ == "__main__":
         print(tabulate(aggregated_stats, headers="keys", tablefmt="github"), "\n")
 
         if not args.no_save:
-            aggregated_stats.to_csv(args.save_path / "aggregated_stats.csv")
+            aggregated_stats.to_csv(
+                args.save_path / "aggregated_stats.csv", index=False
+            )

@@ -10,6 +10,7 @@ from tabulate import tabulate
 
 from .data_classes import OptimizationRun
 from .plotting import plot_box_plot, plot_convergence_curve, plot_ecdf_curves
+from .utils.aggregate_stats import aggregate_stats
 from .utils.pickle_utils import load_from_pickle
 from .utils.stat_test import display_test_grid, mann_whitney_u_test_grid
 
@@ -71,6 +72,10 @@ if __name__ == "__main__":
         "--test_y", action="store_true", help="Perform Mann-Whitney U test on y values."
     )
     args = parser.parse_args()
+
+    stats_to_aggregate_df = pd.DataFrame(
+        columns=["model", "function", "y_median", "y_iqr"]
+    )
 
     file_path_list = []
 
@@ -138,6 +143,13 @@ if __name__ == "__main__":
         stats = pd.concat(
             [run.stats(args.raw_values) for run in data], ignore_index=True
         )
+
+        if args.aggregate_stats:
+            stats_to_concat = pd.DataFrame(stats, columns=stats_to_aggregate_df.columns)
+            stats_to_aggregate_df = pd.concat(
+                [stats_to_aggregate_df, stats_to_concat], axis=0
+            )
+
         stats_evals = stats.filter(like="evals_", axis=1)
         stats_y = stats.filter(like="y_", axis=1)
         stats_df = stats.drop(columns=stats_evals.columns.union(stats_y.columns))
@@ -179,3 +191,11 @@ if __name__ == "__main__":
                 pvalues_evals_df.to_csv(
                     args.save_path / f"{filename_stem}.pvalues_evals.csv"
                 )
+
+    if args.aggregate_stats:
+        aggregated_stats = aggregate_stats(stats_to_aggregate_df)
+
+        print(tabulate(aggregated_stats, headers="keys", tablefmt="github"), "\n")
+
+        if not args.no_save:
+            aggregated_stats.to_csv(args.save_path / "aggregated_stats.csv")

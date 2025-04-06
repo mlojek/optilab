@@ -65,6 +65,12 @@ if __name__ == "__main__":
         help="Path to directory to save the artifacts. Default is the user's working directory.",
     )
     parser.add_argument(
+        "--siginificance",
+        type=float,
+        default=0.05,
+        help="Statistical significance of the U tests. Default value is 0.05.",
+    )
+    parser.add_argument(
         "--test_evals",
         action="store_true",
         help="Perform Mann-Whitney U test on eval values.",
@@ -78,9 +84,11 @@ if __name__ == "__main__":
         columns=["model", "function", "y_median", "y_iqr"]
     )
 
-    y_pvalues_to_aggregate_df = pd.DataFrame(columns=["model", "function", "pvalue"])
+    y_pvalues_to_aggregate_df = pd.DataFrame(
+        columns=["model", "function", "alternative", "pvalue"]
+    )
     evals_pvalues_to_aggregate_df = pd.DataFrame(
-        columns=["model", "function", "pvalue"]
+        columns=["model", "function", "alternative", "pvalue"]
     )
 
     file_path_list = []
@@ -172,11 +180,12 @@ if __name__ == "__main__":
             pvalues_y = mann_whitney_u_test_grid([run.bests_y() for run in data])
 
             if args.aggregate_pvalues:
-                pvalues_df = pd.DataFrame(
+                better_df = pd.DataFrame(
                     [
                         {
                             "model": stats.model,
                             "function": stats.function,
+                            "alternative": "better",
                             "pvalue": row[0],
                         }
                         for row, (_, stats) in zip(
@@ -184,8 +193,21 @@ if __name__ == "__main__":
                         )
                     ]
                 )
+                worse_df = pd.DataFrame(
+                    [
+                        {
+                            "model": stats.model,
+                            "function": stats.function,
+                            "alternative": "worse",
+                            "pvalue": pvalue,
+                        }
+                        for pvalue, (_, stats) in zip(
+                            pvalues_y[0][1:], list(stats_df.iterrows())[1:]
+                        )
+                    ]
+                )
                 y_pvalues_to_aggregate_df = pd.concat(
-                    [y_pvalues_to_aggregate_df, pvalues_df], axis=0
+                    [y_pvalues_to_aggregate_df, better_df, worse_df], axis=0
                 )
 
             print("## Mann Whitney U test on optimization results (y).")
@@ -204,11 +226,12 @@ if __name__ == "__main__":
             )
 
             if args.aggregate_pvalues:
-                pvalues_df = pd.DataFrame(
+                better_df = pd.DataFrame(
                     [
                         {
                             "model": stats.model,
                             "function": stats.function,
+                            "alternative": "better",
                             "pvalue": row[0],
                         }
                         for row, (_, stats) in zip(
@@ -216,8 +239,21 @@ if __name__ == "__main__":
                         )
                     ]
                 )
+                worse_df = pd.DataFrame(
+                    [
+                        {
+                            "model": stats.model,
+                            "function": stats.function,
+                            "alternative": "worse",
+                            "pvalue": pvalue,
+                        }
+                        for pvalue, (_, stats) in zip(
+                            pvalues_evals[0][1:], list(stats_df.iterrows())[1:]
+                        )
+                    ]
+                )
                 evals_pvalues_to_aggregate_df = pd.concat(
-                    [evals_pvalues_to_aggregate_df, pvalues_df], axis=0
+                    [evals_pvalues_to_aggregate_df, better_df, worse_df], axis=0
                 )
 
             print("## Mann Whitney U test on number of objective function evaluations.")

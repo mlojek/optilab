@@ -7,28 +7,34 @@ import pandas as pd
 
 def aggregate_pvalues(pvalues_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Aggregate pvalues for mutliple algorithms and function into one table.
+    Aggregate p-values for multiple algorithms and functions into one table.
 
     Args:
-        pvalues_df (pd.DataFrame): Dataframe with columns: model, function, pvalue.
+        pvalues_df (pd.DataFrame): DataFrame with columns: model, function, alternative, pvalue.
 
     Returns:
-        pd.DataFrame: Dataframe with model names as columns, function names as row names
-            and pvalues as values.
+        pd.DataFrame: DataFrame with function and alternative as the first two columns,
+                      model names as remaining columns, and p-values as values.
     """
-    assert set(pvalues_df.columns) == {"model", "function", "pvalue"}
+    assert set(pvalues_df.columns) == {"model", "function", "alternative", "pvalue"}
 
-    model_list = pvalues_df.model.unique()
-    function_list = sorted(pvalues_df.function.unique())
+    assert (pvalues_df["alternative"]).issubset({"better", "worse"})
+
+    model_list = pvalues_df["model"].unique()
+    func_dir_list = sorted(
+        pvalues_df[["function", "alternative"]].drop_duplicates().values.tolist()
+    )
 
     aggregated_data = []
 
-    for function in function_list:
-        row = {"function": function}
+    for function, alternative in func_dir_list:
+        row = {"function": function, "alternative": alternative}
 
         for model in model_list:
             value = pvalues_df.loc[
-                (pvalues_df["model"] == model) & (pvalues_df["function"] == function),
+                (pvalues_df["model"] == model)
+                & (pvalues_df["function"] == function)
+                & (pvalues_df["alternative"] == alternative),
                 "pvalue",
             ]
             row[model] = value.values[0] if not value.empty else None

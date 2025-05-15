@@ -64,9 +64,11 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
             raise ValueError("Train set length is below number of neighbors.")
 
         x_query = np.array([point.x], dtype=np.float32)
-        distances, indices = self.faiss_index.search(
-            x_query,
-            self.num_neighbors,
+        distances, indices = (
+            self.faiss_index.search(  # pylint: disable=no-value-for-parameter
+                x_query,
+                self.num_neighbors,
+            )
         )
 
         weights = 1 / (np.sqrt(distances) + 1e-8)  # avoid division by zero

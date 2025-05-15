@@ -15,10 +15,12 @@ from .utils.aggregate_stats import aggregate_stats
 from .utils.pickle_utils import load_from_pickle
 from .utils.stat_test import display_test_grid, mann_whitney_u_test_grid
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Optilab CLI utility.", prog="python -m optilab"
-    )
+
+def main():
+    """
+    Main function of the CLI utility. It's called when using optilab CLI command.
+    """
+    parser = argparse.ArgumentParser(description="Optilab CLI utility.", prog="optilab")
     parser.add_argument(
         "pickle_path",
         type=Path,
@@ -306,3 +308,7 @@ if __name__ == "__main__":
                 aggregated_evals_pvalues.to_csv(
                     args.save_path / "aggregated_evals_pvalues.csv", index=False
                 )
+
+
+if __name__ == "__main__":
+    main()

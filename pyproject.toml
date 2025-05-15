@@ -36,6 +36,9 @@ readme = "README.md"
 requires-python = ">=3.11.9"
 version = "22"
 
+[project.scripts]
+optilab = "optilab.__main__:main"
+
 [project.urls]
 Homepage = "https://github.com/mlojek/optilab"
 
@@ -43,7 +46,9 @@ Homepage = "https://github.com/mlojek/optilab"
 disable = [
     "too-few-public-methods",
     "too-many-arguments",
+    "too-many-branches",
     "too-many-instance-attributes",
     "too-many-locals",
     "too-many-positional-arguments",
+    "too-many-statements",
 ]

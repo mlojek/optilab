@@ -121,7 +121,8 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
 
         x_query = np.array([point.x], dtype=np.float32) @ self.inverse_sqrt_covariance
         distances, indices = self.index.search(
-            x_query, self.metadata.hyperparameters["num_neighbors"]
+            x_query,
+            self.metadata.hyperparameters["num_neighbors"],
         )
         distances = np.sqrt(distances)
 

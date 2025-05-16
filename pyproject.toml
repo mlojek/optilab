@@ -34,7 +34,7 @@ description = "Simple framework for optimization functions and metamodels"
 name = "optilab"
 readme = "README.md"
 requires-python = ">=3.11.9"
-version = "22"
+version = "23"
 
 [project.scripts]
 optilab = "optilab.__main__:main"

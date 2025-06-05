@@ -12,7 +12,7 @@ from .data_classes import OptimizationRun
 from .plotting import plot_box_plot, plot_convergence_curve, plot_ecdf_curves
 from .utils.aggregate_pvalues import aggregate_pvalues
 from .utils.aggregate_stats import aggregate_stats
-from .utils.pickle_utils import load_from_pickle
+from .utils.pickle_utils import list_all_pickles, load_from_pickle
 from .utils.stat_test import display_test_grid, mann_whitney_u_test_grid
 
 
@@ -97,14 +97,7 @@ def main():
         columns=["model", "function", "alternative", "pvalue"]
     )
 
-    file_path_list = []
-
-    if args.pickle_path.is_file():
-        file_path_list.append(args.pickle_path)
-    elif args.pickle_path.is_dir():
-        for file_path in sorted(args.pickle_path.iterdir()):
-            if file_path.is_file() and file_path.suffix == ".pkl":
-                file_path_list.append(file_path)
+    file_path_list = list_all_pickles(args.pickle_path)
 
     for file_path in file_path_list:
         print(f"# File {file_path}")
@@ -241,7 +234,8 @@ def main():
                             "pvalue": row[0],
                         }
                         for row, (_, stats) in zip(
-                            pvalues_evals[1:], list(stats_df.iterrows())[1:]
+                            pvalues_evals[1:],
+                            list(stats_df.iterrows())[1:],
                         )
                     ]
                 )
@@ -254,12 +248,18 @@ def main():
                             "pvalue": pvalue,
                         }
                         for pvalue, (_, stats) in zip(
-                            pvalues_evals[0][1:], list(stats_df.iterrows())[1:]
+                            pvalues_evals[0][1:],
+                            list(stats_df.iterrows())[1:],
                         )
                     ]
                 )
                 evals_pvalues_to_aggregate_df = pd.concat(
-                    [evals_pvalues_to_aggregate_df, better_df, worse_df], axis=0
+                    [
+                        evals_pvalues_to_aggregate_df,
+                        better_df,
+                        worse_df,
+                    ],
+                    axis=0,
                 )
 
             print("## Mann Whitney U test on number of objective function evaluations.")

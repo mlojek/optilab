@@ -45,4 +45,8 @@ class AckleyFunction(ObjectiveFunction):
                 sum(np.cos(2 * np.pi * x_i) for x_i in point.x) / self.metadata.dim
             )
         )
-        return Point(x=point.x, y=function_value, is_evaluated=True)
+        return Point(
+            x=point.x,
+            y=function_value,
+            is_evaluated=True,
+        )

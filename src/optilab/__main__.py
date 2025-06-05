@@ -48,7 +48,9 @@ def main():
         help="If specified, outliers will not be shown in the box plot.",
     )
     parser.add_argument(
-        "--hide_plots", action="store_true", help="Hide plots when running the script."
+        "--hide_plots",
+        action="store_true",
+        help="Hide plots when running the script.",
     )
     parser.add_argument(
         "--no_save",
@@ -78,7 +80,9 @@ def main():
         help="Perform Mann-Whitney U test on eval values.",
     )
     parser.add_argument(
-        "--test_y", action="store_true", help="Perform Mann-Whitney U test on y values."
+        "--test_y",
+        action="store_true",
+        help="Perform Mann-Whitney U test on y values.",
     )
     args = parser.parse_args()
 

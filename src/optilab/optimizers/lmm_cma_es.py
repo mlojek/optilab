@@ -15,7 +15,12 @@ class LmmCmaEs(CmaEs):
     LMM-CMA-ES optimizer: CMA-ES with local polynomial regression metamodel.
     """
 
-    def __init__(self, population_size: int, sigma0: float, polynomial_dim: int):
+    def __init__(
+        self,
+        population_size: int,
+        sigma0: float,
+        polynomial_dim: int,
+    ):
         """
         Class constructor.
 
@@ -30,7 +35,10 @@ class LmmCmaEs(CmaEs):
             self,
             "lmm-cma-es",
             population_size,
-            {"sigma0": sigma0, "polynomial_dim": polynomial_dim},
+            {
+                "sigma0": sigma0,
+                "polynomial_dim": polynomial_dim,
+            },
         )
 
     def optimize(

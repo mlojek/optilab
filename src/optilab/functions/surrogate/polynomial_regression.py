@@ -16,7 +16,11 @@ class PolynomialRegression(SurrogateObjectiveFunction):
     with polynomial regression with interactions optimized using least squares.
     """
 
-    def __init__(self, degree: int, train_set: PointList = None) -> None:
+    def __init__(
+        self,
+        degree: int,
+        train_set: PointList = None,
+    ) -> None:
         """
         Class constructor.
 
@@ -27,7 +31,9 @@ class PolynomialRegression(SurrogateObjectiveFunction):
         self.preprocessor = PolynomialFeatures(degree=degree)
 
         super().__init__(
-            f"polynomial_regression_{degree}_degree", train_set, {"degree": degree}
+            f"polynomial_regression_{degree}_degree",
+            train_set,
+            {"degree": degree},
         )
 
     def train(self, train_set: PointList) -> None:

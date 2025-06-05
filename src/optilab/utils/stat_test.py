@@ -26,7 +26,9 @@ def mann_whitney_u_test_grid(data_lists: List[List[float]]) -> List[List[float]]
         for j in range(n):
             if i != j:
                 p_value = mannwhitneyu(
-                    data_lists[i], data_lists[j], alternative="less"
+                    data_lists[i],
+                    data_lists[j],
+                    alternative="less",
                 )[1]
                 results_table[i][j] = p_value
 
@@ -53,5 +55,8 @@ def display_test_grid(test_results: List[List[float]]) -> str:
 
     header = list(range(n))
     return tabulate(
-        printable_results, headers=header, showindex="always", tablefmt="github"
+        printable_results,
+        headers=header,
+        showindex="always",
+        tablefmt="github",
     )

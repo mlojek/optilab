@@ -53,7 +53,7 @@ options:
   --save_path SAVE_PATH
                         Path to directory to save the artifacts. Default is the user's working
                         directory.
-  --siginificance SIGINIFICANCE
+  --significance SIGNIFICANCE
                         Statistical significance of the U tests. Default value is 0.05.
   --test_evals          Perform Mann-Whitney U test on eval values.
   --test_y              Perform Mann-Whitney U test on y values.

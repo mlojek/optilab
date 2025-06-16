@@ -69,7 +69,7 @@ def main():
         help="Path to directory to save the artifacts. Default is the user's working directory.",
     )
     parser.add_argument(
-        "--siginificance",
+        "--significance",
         type=float,
         default=0.05,
         help="Statistical significance of the U tests. Default value is 0.05.",
@@ -287,7 +287,9 @@ def main():
 
     if args.aggregate_pvalues:
         if args.test_y:
-            aggregated_y_pvalues = aggregate_pvalues(y_pvalues_to_aggregate_df)
+            aggregated_y_pvalues = aggregate_pvalues(
+                y_pvalues_to_aggregate_df, args.significance
+            )
 
             print("# Aggregated y pvalues")
             print(
@@ -300,7 +302,9 @@ def main():
                 )
 
         if args.test_evals:
-            aggregated_evals_pvalues = aggregate_pvalues(evals_pvalues_to_aggregate_df)
+            aggregated_evals_pvalues = aggregate_pvalues(
+                evals_pvalues_to_aggregate_df, args.significance
+            )
 
             print("# Aggregated evals pvalues")
             print(

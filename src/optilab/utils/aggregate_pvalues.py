@@ -5,12 +5,13 @@ Aggregate pvalues for multiple algorithms and functions into one table.
 import pandas as pd
 
 
-def aggregate_pvalues(pvalues_df: pd.DataFrame) -> pd.DataFrame:
+def aggregate_pvalues(pvalues_df: pd.DataFrame, significance: float) -> pd.DataFrame:
     """
     Aggregate p-values for multiple algorithms and functions into one table.
 
     Args:
         pvalues_df (pd.DataFrame): DataFrame with columns: model, function, alternative, pvalue.
+        significance (float): Statistical significance threshold for the tests.
 
     Returns:
         pd.DataFrame: DataFrame with function and alternative as the first two columns,
@@ -18,7 +19,7 @@ def aggregate_pvalues(pvalues_df: pd.DataFrame) -> pd.DataFrame:
     """
     assert set(pvalues_df.columns) == {"model", "function", "alternative", "pvalue"}
 
-    assert (pvalues_df["alternative"]).issubset({"better", "worse"})
+    assert set(pvalues_df["alternative"]).issubset({"better", "worse"})
 
     model_list = pvalues_df["model"].unique()
     func_dir_list = sorted(
@@ -26,6 +27,13 @@ def aggregate_pvalues(pvalues_df: pd.DataFrame) -> pd.DataFrame:
     )
 
     aggregated_data = []
+
+    sum_better_row = {"function": "total", "alternative": "better"} | {
+        model: 0 for model in model_list
+    }
+    sum_worse_row = {"function": "total", "alternative": "worse"} | {
+        model: 0 for model in model_list
+    }
 
     for function, alternative in func_dir_list:
         row = {"function": function, "alternative": alternative}
@@ -37,8 +45,20 @@ def aggregate_pvalues(pvalues_df: pd.DataFrame) -> pd.DataFrame:
                 & (pvalues_df["alternative"] == alternative),
                 "pvalue",
             ]
-            row[model] = value.values[0] if not value.empty else None
+
+            if not value.empty:
+                row[model] = value.values[0]
+
+                if value.values[0] < significance:
+                    if alternative == "better":
+                        sum_better_row[model] += 1
+                    elif alternative == "worse":
+                        sum_worse_row[model] += 1
+            else:
+                row[model] = None
 
         aggregated_data.append(row)
+
+    aggregated_data.extend([sum_better_row, sum_worse_row])
 
     return pd.DataFrame(aggregated_data)

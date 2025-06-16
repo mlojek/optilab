@@ -14,7 +14,11 @@ class CmaEs(Optimizer):
     CMA-ES optimizer: Covariance Matrix Adaptation Evolution Strategy.
     """
 
-    def __init__(self, population_size: int, sigma0: float):
+    def __init__(
+        self,
+        population_size: int,
+        sigma0: float,
+    ):
         """
         Class constructor.
 
@@ -22,7 +26,11 @@ class CmaEs(Optimizer):
             population_size (int): Size of the population.
             sigma0 (float): Starting value of the sigma,
         """
-        super().__init__("cma-es", population_size, {"sigma0": sigma0})
+        super().__init__(
+            "cma-es",
+            population_size,
+            {"sigma0": sigma0},
+        )
 
     def _spawn_cmaes(self, bounds: Bounds, dim: int) -> cma.CMAEvolutionStrategy:
         """

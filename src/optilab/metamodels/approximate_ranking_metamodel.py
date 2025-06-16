@@ -162,7 +162,8 @@ class ApproximateRankingMetamodel:
                 (
                     new_pt == pt
                     for new_pt, pt in zip(
-                        items_previous[: self.mu], items_current[: self.mu]
+                        items_previous[: self.mu],
+                        items_current[: self.mu],
                     )
                 )
             ):

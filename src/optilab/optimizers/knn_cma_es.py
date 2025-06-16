@@ -19,7 +19,11 @@ class KnnCmaEs(CmaEs):
     """
 
     def __init__(
-        self, population_size: int, sigma0: float, num_neighbors: int, buffer_size: int
+        self,
+        population_size: int,
+        sigma0: float,
+        num_neighbors: int,
+        buffer_size: int,
     ):
         """
         Class constructor.

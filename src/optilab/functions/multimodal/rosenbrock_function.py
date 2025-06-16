@@ -39,4 +39,8 @@ class RosenbrockFunction(ObjectiveFunction):
             100 * (x_i**2 - x_i_next) ** 2 + (x_i - 1) ** 2
             for x_i, x_i_next in zip(point.x, point.x[1:])
         )
-        return Point(x=point.x, y=function_value, is_evaluated=True)
+        return Point(
+            x=point.x,
+            y=function_value,
+            is_evaluated=True,
+        )

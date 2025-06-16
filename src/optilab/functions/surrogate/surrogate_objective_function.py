@@ -28,7 +28,11 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
             hyperparameters (Dict[str, Any]): Dictionary with hyperparameters of the function.
         """
         self.is_ready = False
-        super().__init__(name, 1, hyperparameters)
+        super().__init__(
+            name,
+            1,
+            hyperparameters,
+        )
 
         if train_set:
             self.train(train_set)

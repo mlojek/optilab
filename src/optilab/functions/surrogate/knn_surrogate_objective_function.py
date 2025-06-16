@@ -14,7 +14,11 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
     Surrogate objective function using FAISS for fast KNN-based regression.
     """
 
-    def __init__(self, num_neighbors: int, train_set: PointList = None) -> None:
+    def __init__(
+        self,
+        num_neighbors: int,
+        train_set: PointList = None,
+    ) -> None:
         """
         Class constructor.
 
@@ -28,7 +32,9 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         self.y_train = None
 
         super().__init__(
-            f"FastKNN{num_neighbors}", train_set, {"num_neighbors": num_neighbors}
+            f"FastKNN{num_neighbors}",
+            train_set,
+            {"num_neighbors": num_neighbors},
         )
 
     def train(self, train_set: PointList) -> None:
@@ -64,9 +70,18 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
             raise ValueError("Train set length is below number of neighbors.")
 
         x_query = np.array([point.x], dtype=np.float32)
-        distances, indices = self.faiss_index.search(x_query, self.num_neighbors)
+        distances, indices = (
+            self.faiss_index.search(  # pylint: disable=no-value-for-parameter
+                x_query,
+                self.num_neighbors,
+            )
+        )
 
         weights = 1 / (np.sqrt(distances) + 1e-8)  # avoid division by zero
         y_pred = np.sum(self.y_train[indices] * weights, axis=1)[0] / weights.sum()
 
-        return Point(x=point.x, y=float(y_pred), is_evaluated=False)
+        return Point(
+            x=point.x,
+            y=float(y_pred),
+            is_evaluated=False,
+        )

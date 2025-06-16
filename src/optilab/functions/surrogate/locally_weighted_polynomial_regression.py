@@ -120,8 +120,11 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         super().__call__(point)
 
         x_query = np.array([point.x], dtype=np.float32) @ self.inverse_sqrt_covariance
-        distances, indices = self.index.search(
-            x_query, self.metadata.hyperparameters["num_neighbors"]
+        distances, indices = (
+            self.index.search(  # pylint: disable=no-value-for-parameter
+                x_query,
+                self.metadata.hyperparameters["num_neighbors"],
+            )
         )
         distances = np.sqrt(distances)
 
@@ -140,7 +143,14 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         self.weights = np.linalg.lstsq(weighted_x, weighted_y, rcond=None)[0]
 
         y_pred = float(
-            np.dot(self.preprocessor.fit_transform([point.x])[0], self.weights)
+            np.dot(
+                self.preprocessor.fit_transform([point.x])[0],
+                self.weights,
+            )
         )
 
-        return Point(x=point.x, y=y_pred, is_evaluated=False)
+        return Point(
+            x=point.x,
+            y=y_pred,
+            is_evaluated=False,
+        )

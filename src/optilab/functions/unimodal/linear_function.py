@@ -34,4 +34,8 @@ class LinearFunction(ObjectiveFunction):
             Point: Evaluated point.
         """
         super().__call__(point)
-        return Point(x=point.x, y=sum(point.x), is_evaluated=True)
+        return Point(
+            x=point.x,
+            y=sum(point.x),
+            is_evaluated=True,
+        )

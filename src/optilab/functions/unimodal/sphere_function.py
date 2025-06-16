@@ -34,4 +34,8 @@ class SphereFunction(ObjectiveFunction):
             Point: Evaluated point.
         """
         super().__call__(point)
-        return Point(x=point.x, y=sum(point.x**2), is_evaluated=True)
+        return Point(
+            x=point.x,
+            y=sum(point.x**2),
+            is_evaluated=True,
+        )

@@ -13,7 +13,10 @@ class ObjectiveFunction:
     """
 
     def __init__(
-        self, name: str, dim: int, hyperparameters: Dict[str, Any] = None
+        self,
+        name: str,
+        dim: int,
+        hyperparameters: Dict[str, Any] = None,
     ) -> None:
         """
         Class constructor.

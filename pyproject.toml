@@ -3,7 +3,7 @@ authors = [
     { email = "marcin.lojek@pw.edu.pl", name = "mlojek" },
 ]
 classifiers = [
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
 ]
@@ -34,7 +34,10 @@ description = "Simple framework for optimization functions and metamodels"
 name = "optilab"
 readme = "README.md"
 requires-python = ">=3.11.9"
-version = "22"
+version = "23"
+
+[project.scripts]
+optilab = "optilab.__main__:main"
 
 [project.urls]
 Homepage = "https://github.com/mlojek/optilab"
@@ -43,7 +46,9 @@ Homepage = "https://github.com/mlojek/optilab"
 disable = [
     "too-few-public-methods",
     "too-many-arguments",
+    "too-many-branches",
     "too-many-instance-attributes",
     "too-many-locals",
     "too-many-positional-arguments",
+    "too-many-statements",
 ]

@@ -73,9 +73,21 @@ class LmmCmaEs(CmaEs):
             ),
         )
 
-        es = self._spawn_cmaes(bounds, function.metadata.dim)
+        es = self._spawn_cmaes(
+            bounds,
+            function.metadata.dim,
+            self.metadata.population_size,
+            self.metadata.hyperparameters["sigma0"],
+        )
 
-        while not self._stop(es, metamodel.get_log(), call_budget, target, tolerance):
+        while not self._stop(
+            es,
+            metamodel.get_log(),
+            self.metadata.population_size,
+            call_budget,
+            target,
+            tolerance,
+        ):
             solutions = PointList.from_list(es.ask())
             metamodel.surrogate_function.set_covariance_matrix(es.C)
             metamodel.adapt(solutions)

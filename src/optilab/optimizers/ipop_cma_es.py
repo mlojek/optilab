@@ -23,6 +23,7 @@ class IpopCmaEs(CmaEs):
             {},
         )
 
+    # pylint: disable=duplicate-code
     def optimize(
         self,
         function: ObjectiveFunction,

@@ -45,6 +45,7 @@ class KnnCmaEs(CmaEs):
             },
         )
 
+    # pylint: disable=duplicate-code
     def optimize(
         self,
         function: ObjectiveFunction,

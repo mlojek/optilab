@@ -32,7 +32,29 @@ class CmaEs(Optimizer):
             {"sigma0": sigma0},
         )
 
-    def _spawn_cmaes(self, bounds: Bounds, dim: int) -> cma.CMAEvolutionStrategy:
+    @staticmethod
+    def _stop_internal(
+        es: cma.CMAEvolutionStrategy,
+    ) -> bool:
+        """
+        Check an instance of CMA-ES optimizer for internal stop criteria.
+
+        Args:
+            es (cma.CMAEvolutionStrategy): An instance of CMA-ES optimizer.
+
+        Returns:
+            bool: If true, the internal stop criteria of CMA-ES have been reached and optimization
+                should be ended.
+        """
+        return es.stop()
+
+    @staticmethod
+    def _spawn_cmaes(
+        bounds: Bounds,
+        dim: int,
+        population_size: int,
+        sigma0: float,
+    ) -> cma.CMAEvolutionStrategy:
         """
         Create a new instance of cma optimizer.
 
@@ -45,9 +67,9 @@ class CmaEs(Optimizer):
         """
         return cma.CMAEvolutionStrategy(
             bounds.random_point(dim).x,
-            self.metadata.hyperparameters["sigma0"],
+            sigma0,
             {
-                "popsize": self.metadata.population_size,
+                "popsize": population_size,
                 "bounds": bounds.to_list(),
                 "verbose": -9,
             },
@@ -57,6 +79,7 @@ class CmaEs(Optimizer):
         self,
         es: cma.CMAEvolutionStrategy,
         log: PointList,
+        population_size: int,
         call_budget: int,
         target: float,
         tolerance: float,
@@ -67,6 +90,7 @@ class CmaEs(Optimizer):
         Args:
             es (cma.CMAEvolutionStrategy): CMA-ES instance.
             log (PointList): Results log.
+            population_size (int): The size of the population in one generation.
             call_budget (int): Maximum number of optimized function calls.
             target (float): Global minimum value of the optimized function.
             tolerance (float): Tolerated error value of the optimization.
@@ -74,7 +98,13 @@ class CmaEs(Optimizer):
         Returns:
             bool: True if the optimization should be stopped.
         """
-        return es.stop() or len(log) >= call_budget or log.best_y() < target + tolerance
+        return self._stop_internal(es) or self._stop_external(
+            log,
+            population_size,
+            call_budget,
+            target,
+            tolerance,
+        )
 
     def optimize(
         self,
@@ -97,11 +127,23 @@ class CmaEs(Optimizer):
         Returns:
             PointList: Results log from the optimization.
         """
-        es = self._spawn_cmaes(bounds, function.metadata.dim)
+        es = self._spawn_cmaes(
+            bounds,
+            function.metadata.dim,
+            self.metadata.population_size,
+            self.metadata.hyperparameters["sigma0"],
+        )
 
         res_log = PointList(points=[])
 
-        while not self._stop(es, res_log, call_budget, target, tolerance):
+        while not self._stop(
+            es,
+            res_log,
+            self.metadata.population_size,
+            call_budget,
+            target,
+            tolerance,
+        ):
             solutions = PointList.from_list(es.ask())
             results = PointList(points=[function(x) for x in solutions.points])
             res_log.extend(results)

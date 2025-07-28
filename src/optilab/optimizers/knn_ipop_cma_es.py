@@ -1,5 +1,6 @@
 """
-KNN-CMA-ES optimizer. CMA-ES is enhanced with a KNN metamodel similar to the one from LMM-CMA-ES.
+KNN-IPOP-CMA-ES optimizer. IPOP-CMA-ES is enhanced with a KNN metamodel
+similar to the one from LMM-CMA-ES.
 """
 
 from ..data_classes import Bounds, PointList
@@ -10,16 +11,15 @@ from .cma_es import CmaEs
 from .optimizer import Optimizer
 
 
-class KnnCmaEs(CmaEs):
+class KnnIpopCmaEs(CmaEs):
     """
-    KNN-CMA-ES optimizer. CMA-ES is enhanced with a KNN metamodel similar
-    to the one from LMM-CMA-ES.
+    KNN-IPOP-CMA-ES optimizer: CMA-ES with increasing population restarts and with KNN
+    metamodel similar to LMM-CMA-ES.
     """
 
     def __init__(
         self,
         population_size: int,
-        sigma0: float,
         num_neighbors: int,
         buffer_size: int,
     ):
@@ -27,8 +27,7 @@ class KnnCmaEs(CmaEs):
         Class constructor.
 
         Args:
-            population_size (int): Size of the population.
-            sigma0 (float): Starting value of the sigma,
+            population_size (int): Starting size of the population.
             num_neighbors (int): Number of neighbors used by KNN metamodel.
             buffer_size (int): Number of last evaluated points provided to KNN metamodel.
         """
@@ -36,10 +35,9 @@ class KnnCmaEs(CmaEs):
         # pylint: disable=super-init-not-called, non-parent-init-called
         Optimizer.__init__(
             self,
-            f"knn{num_neighbors}b{buffer_size}-cma-es",
+            f"knn{num_neighbors}b{buffer_size}-ipop-cma-es",
             population_size,
             {
-                "sigma0": sigma0,
                 "num_neighbors": num_neighbors,
                 "buffer_size": buffer_size,
             },
@@ -54,19 +52,8 @@ class KnnCmaEs(CmaEs):
         tolerance: float,
         target: float = 0.0,
     ) -> PointList:
-        """
-        Run a single optimization of provided objective function.
+        current_population_size = self.metadata.population_size
 
-        Args:
-            function (ObjectiveFunction): Objective function to optimize.
-            bounds (Bounds): Search space of the function.
-            call_budget (int): Max number of calls to the objective function.
-            tolerance (float): Tolerance of y value to count a solution as acceptable.
-            target (float): Objective function value target, default 0.
-
-        Returns:
-            PointList: Results log from the optimization.
-        """
         metamodel = ApproximateRankingMetamodel(
             self.metadata.population_size,
             self.metadata.population_size // 2,
@@ -77,33 +64,44 @@ class KnnCmaEs(CmaEs):
             buffer_size=self.metadata.hyperparameters["buffer_size"],
         )
 
-        es = self._spawn_cmaes(
-            bounds,
-            function.metadata.dim,
-            self.metadata.population_size,
-            self.metadata.hyperparameters["sigma0"],
-        )
-
-        while not self._stop(
-            es,
+        while not self._stop_external(
             metamodel.get_log(),
-            self.metadata.population_size,
+            current_population_size,
             call_budget,
             target,
             tolerance,
         ):
-            solutions = PointList.from_list(es.ask())
+            es = self._spawn_cmaes(
+                bounds,
+                function.metadata.dim,
+                current_population_size,
+                len(bounds) / 2,
+            )
 
-            if (
-                len(metamodel.train_set)
-                < self.metadata.hyperparameters["num_neighbors"]
+            while not self._stop(
+                es,
+                metamodel.get_log(),
+                current_population_size,
+                call_budget,
+                target,
+                tolerance,
             ):
-                xy_pairs = metamodel.evaluate(solutions)
-            else:
-                metamodel.adapt(solutions)
-                xy_pairs = metamodel(solutions)
+                solutions = PointList.from_list(es.ask())
 
-            x, y = xy_pairs.pairs()
-            es.tell(x, y)
+                if (
+                    len(metamodel.train_set)
+                    < self.metadata.hyperparameters["num_neighbors"]
+                ):
+                    xy_pairs = metamodel.evaluate(solutions)
+                else:
+                    metamodel.adapt(solutions)
+                    xy_pairs = metamodel(solutions)
+
+                x, y = xy_pairs.pairs()
+                es.tell(x, y)
+
+            current_population_size *= 2
+            metamodel.population_size *= 2
+            metamodel.mu *= 2
 
         return metamodel.get_log()

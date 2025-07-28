@@ -29,6 +29,80 @@ class Optimizer:
         """
         self.metadata = OptimizerMetadata(name, population_size, hyperparameters)
 
+    # Stop checker methods
+    @staticmethod
+    def _stop_budget(
+        log: PointList,
+        population_size: int,
+        call_budget: int,
+    ) -> bool:
+        """
+        Check if the call budget will allow for another algorithm generation.
+
+        Args:
+            log (PointList): Log with all points evaluated so far.
+            population_size (int): Number of points in a single generation.
+            call_budget (int): Number of allowed point evaluations.
+
+        Returns:
+            bool: If true, the call budget has been expended and another generation
+                cannot be evaluated.
+        """
+        return len(log) + population_size > call_budget
+
+    @staticmethod
+    def _stop_target_found(
+        log: PointList,
+        target: float,
+        tolerance: float,
+    ) -> bool:
+        """
+        Check if the optimal function value has been found.
+
+        Args:
+            log (PointList): Log with all points evaluated so far.
+            target (float): Global optimum value of the optimized function.
+            tolerance (float): Allowed error value from global optimum value.
+
+        Returns:
+            bool: If true, the global optimum has been found.
+        """
+        return log.best_y() < target + tolerance
+
+    def _stop_external(
+        self,
+        log: PointList,
+        population_size: int,
+        call_budget: int,
+        target: float,
+        tolerance: float,
+    ) -> bool:
+        """
+        Check if the external stop criteria has been met, i.e. if the budget has been expended
+        or the the global optimum has been found.
+
+        Args:
+            log (PointList): Log with all points evaluated so far.
+            population_size (int): Number of points in a single generation.
+            call_budget (int): Number of allowed point evaluations.
+            target (float): Global optimum value of the optimized function.
+            tolerance (float): Allowed error value from global optimum value.
+
+        Returns:
+            bool: If true, the external stop criteria has been met and the optimization
+                should be stopped.
+        """
+        return self._stop_budget(
+            log,
+            population_size,
+            call_budget,
+        ) or self._stop_target_found(
+            log,
+            target,
+            tolerance,
+        )
+
+    # Optimization methods
     def optimize(
         self,
         function: ObjectiveFunction,

@@ -33,6 +33,15 @@ class Bounds:
         """
         return [self.lower, self.upper]
 
+    def __len__(self) -> float:
+        """
+        Returns the width of the search space - the distance between the lower and upper bound.
+
+        Returns:
+            float: The width of the search space.
+        """
+        return self.upper - self.lower
+
     def __str__(self) -> str:
         """
         Express the bounds as a string.

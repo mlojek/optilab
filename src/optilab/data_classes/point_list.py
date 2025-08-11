@@ -150,6 +150,13 @@ class PointList:
             ]
         )
 
+    def remove_x(self) -> None:
+        """
+        Set x values of points to None. This is done to save memory since xs are rarely used.
+        """
+        for point in self:
+            point.remove_x()
+
     # best value getters and similar methods
     def best(self) -> Point:
         """

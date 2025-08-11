@@ -2,6 +2,7 @@
 Approximate ranking metamodel based on lmm-CMA-ES.
 """
 
+import copy
 from typing import Optional
 
 from ..data_classes import PointList
@@ -132,8 +133,8 @@ class ApproximateRankingMetamodel:
             self.evaluate(xs)
             return
 
-        # points evaluated in this run
-        evaluated_this_run = PointList(points=[])
+        # points not evaluated in this run
+        not_evaluated = copy.deepcopy(xs)
 
         # points from current and previous loop
         items_previous = None
@@ -143,9 +144,10 @@ class ApproximateRankingMetamodel:
         items_current.rank()
 
         # evaluate first n_init items
-        to_evaluate_n_init = items_current[: self.n_init]
-        evaluated_this_run.extend(to_evaluate_n_init)
-        self.evaluate(to_evaluate_n_init)
+        not_evaluated = self(not_evaluated)
+        not_evaluated.rank()
+        self.evaluate(not_evaluated[: self.n_init])
+        not_evaluated = not_evaluated[self.n_init :]
 
         num_iter = 0
         for _ in range((self.population_size - self.n_init) // self.n_step):
@@ -170,10 +172,9 @@ class ApproximateRankingMetamodel:
                 break
 
             # else evaluate n_step next items
-            to_evaluate_n_step = items_current.x_difference(evaluated_this_run)[
-                : self.n_step
-            ]
-            evaluated_this_run.extend(to_evaluate_n_step)
-            self.evaluate(to_evaluate_n_step)
+            not_evaluated = self(not_evaluated)
+            not_evaluated.rank()
+            self.evaluate(not_evaluated[: self.n_step])
+            not_evaluated = not_evaluated[self.n_step :]
 
         self._update_n(num_iter)

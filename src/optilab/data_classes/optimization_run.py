@@ -91,3 +91,11 @@ class OptimizationRun:
                 "y_iqr": [scipy.stats.iqr(self.bests_y(raw_values))],
             }
         )
+
+    def remove_x(self) -> None:
+        """
+        Set x values of points in the logs to None. This is done to save memory and storage since
+        x values are rarely used.
+        """
+        for log in self.logs:
+            log.remove_x()

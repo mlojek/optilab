@@ -13,7 +13,7 @@ class Point:
     Point dataclass, representing a point in the search space.
     """
 
-    x: np.ndarray
+    x: np.ndarray | None
     "1D vector representing the point from the search space"
 
     y: float | None = None
@@ -30,6 +30,12 @@ class Point:
             int: Dimensionality of the point, equal to length of x.
         """
         return len(self.x)
+
+    def remove_x(self) -> None:
+        """
+        Set x to None. This is done mostly to save memory and storage space since x is rarely used.
+        """
+        self.x = None
 
     def __eq__(self, other) -> bool:
         """

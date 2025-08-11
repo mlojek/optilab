@@ -16,7 +16,7 @@ def dump_to_pickle(data: Any, pickle_path: Path) -> None:
         pickle_path (Path): Path to file to save the data.
     """
     with open(pickle_path, "wb") as pickle_handle:
-        pickle.dump(data, pickle_handle)
+        pickle.dump(data, pickle_handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def load_from_pickle(pickle_path: Path) -> Any:

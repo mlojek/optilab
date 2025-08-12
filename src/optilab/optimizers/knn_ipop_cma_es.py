@@ -31,16 +31,16 @@ class KnnIpopCmaEs(CmaEs):
             num_neighbors (int): Number of neighbors used by KNN metamodel.
             buffer_size (int): Number of last evaluated points provided to KNN metamodel.
         """
+        # buffer cannot be smaller than the number of neighbors
+        buffer_size = max(buffer_size, num_neighbors)
+
         # Skipping super().__init__ and calling grandparent init instead.
         # pylint: disable=super-init-not-called, non-parent-init-called
         Optimizer.__init__(
             self,
             f"knn{num_neighbors}b{buffer_size}-ipop-cma-es",
             population_size,
-            {
-                "num_neighbors": num_neighbors,
-                "buffer_size": buffer_size,
-            },
+            {"num_neighbors": num_neighbors, "buffer_size": buffer_size},
         )
 
     # pylint: disable=duplicate-code

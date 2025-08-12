@@ -32,6 +32,9 @@ class KnnCmaEs(CmaEs):
             num_neighbors (int): Number of neighbors used by KNN metamodel.
             buffer_size (int): Number of last evaluated points provided to KNN metamodel.
         """
+        # buffer cannot be smaller than the number of neighbors
+        buffer_size = max(buffer_size, num_neighbors)
+
         # Skipping super().__init__ and calling grandparent init instead.
         # pylint: disable=super-init-not-called, non-parent-init-called
         Optimizer.__init__(

@@ -29,6 +29,7 @@ dependencies = [
     "tabulate",
     "tqdm",
     "typing",
+    "zstandard",
 ]
 description = "Simple framework for optimization functions and metamodels"
 name = "optilab"

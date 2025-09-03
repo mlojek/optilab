@@ -37,8 +37,9 @@ class ApproximateRankingMetamodel:
         self.population_size = population_size
         self.mu = mu
 
-        self._init_n()
-
+        self.n_init: int
+        self.n_step: int
+        self.init_n()
         self.train_set = PointList(points=[])
 
         self.objective_function = objective_function
@@ -46,7 +47,7 @@ class ApproximateRankingMetamodel:
 
         self.buffer_size = buffer_size
 
-    def _init_n(self) -> None:
+    def init_n(self) -> None:
         """
         Initializes n_init and n_step values based on the population size.
         """

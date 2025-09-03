@@ -103,7 +103,6 @@ class KnnIpopCmaEs(CmaEs):
             current_population_size *= 2
             metamodel.population_size *= 2
             metamodel.mu *= 2
-            metamodel.n_init = current_population_size
-            metamodel.n_step = max(1, current_population_size // 10)
+            metamodel._init_n()
 
         return metamodel.get_log()

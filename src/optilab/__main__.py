@@ -101,7 +101,7 @@ def main():
 
     for file_path in file_path_list:
         print(f"# File {file_path}")
-        filename_stem = file_path.stem
+        filename_stem = file_path.stem.split(".")[0]
 
         data = load_from_pickle(file_path)
 

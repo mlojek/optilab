@@ -1,5 +1,6 @@
 """
-LMM-CMA-ES optimizer: CMA-ES with local polynomial regression metamodel.
+LMM-IPOP-CMA-ES optimizer: IPOP-CMA-ES with local polynomial regression metamodel.
+It's a fusion of IPOP-CMA-ES and LMM-CMA-ES.
 """
 
 from ..data_classes import Bounds, PointList
@@ -10,9 +11,10 @@ from .cma_es import CmaEs
 from .optimizer import Optimizer
 
 
-class LmmCmaEs(CmaEs):
+class LmmIpopCmaEs(CmaEs):
     """
-    LMM-CMA-ES optimizer: CMA-ES with local polynomial regression metamodel.
+    LMM-IPOP-CMA-ES optimizer: IPOP-CMA-ES with local polynomial regression metamodel.
+    It's a fusion of IPOP-CMA-ES and LMM-CMA-ES.
     """
 
     def __init__(
@@ -25,7 +27,6 @@ class LmmCmaEs(CmaEs):
 
         Args:
             population_size (int): Size of the population.
-            sigma0 (float): Starting value of the sigma,
             polynomial_dim (int): Dimension of the polynomial regression.
         """
         # Skipping super().__init__ and calling grandparent init instead.

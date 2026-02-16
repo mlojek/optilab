@@ -61,7 +61,7 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
             {"degree": degree, "num_neighbors": num_neighbors},
         )
 
-        if covariance_matrix:
+        if covariance_matrix is not None:
             self.set_covariance_matrix(covariance_matrix)
         else:
             self.set_covariance_matrix(np.eye(self.metadata.dim))

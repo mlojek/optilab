@@ -29,6 +29,7 @@ dependencies = [
     "tabulate",
     "tqdm",
     "typing",
+    "xgboost",
     "zstandard",
 ]
 description = "Simple framework for optimization functions and metamodels"

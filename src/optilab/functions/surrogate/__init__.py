@@ -6,3 +6,4 @@ from .knn_surrogate_objective_function import KNNSurrogateObjectiveFunction
 from .locally_weighted_polynomial_regression import LocallyWeightedPolynomialRegression
 from .polynomial_regression import PolynomialRegression
 from .surrogate_objective_function import SurrogateObjectiveFunction
+from .xgboost_surrogate_objective_function import XGBoostSurrogateObjectiveFunction

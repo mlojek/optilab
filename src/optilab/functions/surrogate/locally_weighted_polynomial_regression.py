@@ -97,11 +97,13 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         super().train(train_set)
 
         x_train, y_train = self.train_set.pairs()
-        x_train = np.array(x_train, dtype=np.float32) @ self.inverse_sqrt_covariance
-        self.y_train = np.array(y_train, dtype=np.float32)
+        x_train = np.array(x_train, dtype=np.float64) @ self.inverse_sqrt_covariance
+        self.y_train = np.array(y_train, dtype=np.float64)
 
         self.index = faiss.IndexFlatL2(x_train.shape[1])
-        self.index.add(x_train)  # pylint: disable=no-value-for-parameter
+        self.index.add(  # pylint: disable=no-value-for-parameter
+            x_train.astype(np.float32)
+        )
 
     def __call__(self, point: Point) -> Point:
         """
@@ -119,23 +121,28 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         """
         super().__call__(point)
 
-        x_query = np.array([point.x], dtype=np.float32) @ self.inverse_sqrt_covariance
+        x_query = np.array([point.x], dtype=np.float64) @ self.inverse_sqrt_covariance
         distances, indices = (
             self.index.search(  # pylint: disable=no-value-for-parameter
-                x_query,
+                x_query.astype(np.float32),
                 self.metadata.hyperparameters["num_neighbors"],
             )
         )
-        distances = np.sqrt(distances)
+        distances = np.sqrt(distances.astype(np.float64))
 
-        knn_x = np.array([self.train_set[i].x for i in indices[0]])
-        knn_y = np.array([self.train_set[i].y for i in indices[0]])
+        knn_x = np.array([self.train_set[i].x for i in indices[0]], dtype=np.float64)
+        knn_y = np.array([self.train_set[i].y for i in indices[0]], dtype=np.float64)
 
         bandwidth = distances[0][-1]
 
-        weights = np.array(
-            [np.sqrt(self.kernel_function(d / bandwidth)) for d in distances[0]]
-        )
+        if bandwidth < 1e-300:
+            # All neighbors are at the same location — use equal weights.
+            weights = np.ones(len(knn_y), dtype=np.float64)
+        else:
+            weights = np.array(
+                [np.sqrt(self.kernel_function(d / bandwidth)) for d in distances[0]],
+                dtype=np.float64,
+            )
 
         weighted_x = weights[:, None] * self.preprocessor.fit_transform(knn_x)
         weighted_y = weights * knn_y

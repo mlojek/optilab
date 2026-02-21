@@ -122,7 +122,7 @@ class Bounds:
                 new_x.append(val)
 
         new_point = deepcopy(point)
-        new_point.x = new_x
+        new_point.x = np.array(new_x, dtype=np.float64)
         return new_point
 
     def wrap(self, point: Point) -> Point:
@@ -148,7 +148,7 @@ class Bounds:
                 new_x.append(val)
 
         new_point = deepcopy(point)
-        new_point.x = new_x
+        new_point.x = np.array(new_x, dtype=np.float64)
         return new_point
 
     def project(self, point: Point) -> Point:
@@ -162,18 +162,8 @@ class Bounds:
         Returns:
             Point: Projected point.
         """
-        new_x = []
-
-        for val in point.x:
-            if val < self.lower:
-                new_x.append(deepcopy(self.lower))
-            elif val > self.upper:
-                new_x.append(deepcopy(self.upper))
-            else:
-                new_x.append(val)
-
         new_point = deepcopy(point)
-        new_point.x = new_x
+        new_point.x = np.clip(point.x, self.lower, self.upper)
         return new_point
 
     def handle_bounds(self, point: Point, mode: str) -> Point:

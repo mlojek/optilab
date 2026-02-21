@@ -165,20 +165,20 @@ class TestPointList:
         """
         Test if x getter method works correctly on an empty PointList.
         """
-        assert PointList([]).x() == []
+        assert np.array_equal(PointList([]).x(), [])
 
     # y
     def test_get_y(self, example_2d_pointlist):
         """
         Test if y getter method works correctly.
         """
-        assert example_2d_pointlist.y() == [10, 8, 5, 1, 2]
+        assert np.array_equal(example_2d_pointlist.y(), [10, 8, 5, 1, 2])
 
     def test_get_y_empty(self):
         """
         Test if y getter method works correctly on an empty PointList.
         """
-        assert PointList([]).y() == []
+        assert np.array_equal(PointList([]).y(), [])
 
     # only_evaluated
     def test_only_evaluated(self, example_2d_pointlist):
@@ -203,14 +203,14 @@ class TestPointList:
         Test if a PointList is correctly ranked by ascending y value.
         """
         example_2d_pointlist.rank()
-        assert example_2d_pointlist.y() == [1, 2, 5, 8, 10]
+        assert np.array_equal(example_2d_pointlist.y(), [1, 2, 5, 8, 10])
 
     def test_rank_reverse(self, example_2d_pointlist):
         """
         Test if a PointList is correctly ranked by descending y value.
         """
         example_2d_pointlist.rank(reverse=True)
-        assert example_2d_pointlist.y() == [10, 8, 5, 2, 1]
+        assert np.array_equal(example_2d_pointlist.y(), [10, 8, 5, 2, 1])
 
     def test_rank_empty(self):
         """

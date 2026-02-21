@@ -58,31 +58,31 @@ class PointList:
         self.points.extend(new_points.points)
 
     # getting point values
-    def x(self) -> List[np.ndarray]:
+    def x(self) -> np.ndarray:
         """
         Get all x values of points in this list.
 
         Returns:
-            List[np.ndarray]: List containing x values of all points.
+            np.ndarray: List containing x values of all points.
         """
-        return [point.x for point in self.points]
+        return np.array([point.x for point in self.points], dtype=np.float64)
 
-    def y(self) -> List[float]:
+    def y(self) -> np.ndarray:
         """
         Get all y values of points in this list.
 
         Returns:
-            List[float]: List of y values of all points.
+            np.ndarray: List of y values of all points.
         """
-        return [point.y for point in self.points]
+        return np.array([point.y for point in self.points], dtype=np.float64)
 
-    def pairs(self) -> Tuple[List[np.ndarray], List[float]]:
+    def pairs(self) -> Tuple[np.ndarray, np.ndarray]:
         """
         Return the contents of this point list as list of x and list of y values.
         This is potentially useful for quickly accesing point values for training surrofates.
 
         Returns:
-            Tuple[List[np.ndarray], List[float]]: Lists of x and y values.
+            Tuple[np.ndarray, np.ndarray]: Lists of x and y values.
         """
         return self.x(), self.y()
 

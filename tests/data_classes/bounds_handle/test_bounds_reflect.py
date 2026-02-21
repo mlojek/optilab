@@ -2,6 +2,7 @@
 Unit tests for Bounds.reflect method.
 """
 
+import numpy as np
 import pytest
 
 
@@ -64,7 +65,7 @@ class TestBoundsReflect:
         Test if reflection works as expected for a multidimensional point.
         """
         handled_point = example_bounds.reflect(point_multidimensional)
-        assert handled_point.x == [14, 10, 20, 18, 17, 16, 12]
+        assert np.array_equal(handled_point.x, [14, 10, 20, 18, 17, 16, 12])
 
     def test_evaluated_point(self, example_bounds, evaluated_point):
         """

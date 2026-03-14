@@ -2,6 +2,7 @@
 Objective functions from CEC benchmarks.
 """
 
+import numpy as np
 import opfunu
 
 from ...data_classes import Point
@@ -54,8 +55,10 @@ class CECObjectiveFunction(ObjectiveFunction):
             Point: Evaluated point.
         """
         super().__call__(point)
+        with np.errstate(divide="ignore", invalid="ignore", over="ignore"):
+            y = self.function.evaluate(point.x) - self.function.f_global
         return Point(
             x=point.x,
-            y=self.function.evaluate(point.x) - self.function.f_global,
+            y=y,
             is_evaluated=True,
         )

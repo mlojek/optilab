@@ -1,18 +1,13 @@
 """
-Top-half metamodel.
-
-Estimates all candidate solutions with a surrogate function, then evaluates
-only the best half (top-mu) with the real objective function. The remaining
-solutions receive penalised y-values so that CMA-ES — which only uses the
-best mu = lambda/2 solutions for its state update — is guaranteed to operate
-exclusively on real evaluations.
+Top half metamodel. Estimates all points using the surrogate function, then
+evaluates the top mu (typically half) points with the objective function.
 """
 
 # pylint: disable=duplicate-code
 
 from typing import Optional
 
-from ..data_classes import Point, PointList
+from ..data_classes import PointList
 from ..functions import ObjectiveFunction
 from ..functions.surrogate import SurrogateObjectiveFunction
 
@@ -21,15 +16,10 @@ class TopHalfMetamodel:
     """
     Top-half metamodel.
 
-    Workflow inside ``adapt()``:
-    1. Estimate all *lambda* candidate points with the surrogate.
-    2. Pick the best *mu* = *lambda* / 2 by surrogate estimate.
-    3. Evaluate those *mu* points with the real objective function.
-    4. Assign penalised y-values to the remaining *lambda* - *mu* points
-       so that they are guaranteed to rank below the real evaluations.
-
-    The next call to ``__call__()`` after ``adapt()`` returns the combined
-    result (real values for the evaluated half, penalty for the rest).
+    Estimates all points using the surrogate function, then calculates the
+    real value for the top mu (typically half, hence the name) using the actual
+    objective function. The remaining points get a value that's guaranteed
+    to be worse than the rest of the points.
     """
 
     def __init__(
@@ -46,7 +36,7 @@ class TopHalfMetamodel:
 
         Args:
             population_size: The population size (lambda).
-            mu: Number of elite solutions (should be population_size // 2).
+            mu: Number of elite solutions (typically population_size // 2).
             objective_function: The real objective function.
             surrogate_function: Surrogate used to pre-screen candidates.
             buffer_size: If set, only the last *buffer_size* real evaluations
@@ -62,7 +52,6 @@ class TopHalfMetamodel:
 
         self.buffer_size = buffer_size
 
-        # Stores combined results produced by the last ``adapt()`` call.
         self._adapted_results: Optional[PointList] = None
 
     def __call__(self, points: PointList) -> PointList:
@@ -100,50 +89,33 @@ class TopHalfMetamodel:
         if len(xs) != self.population_size:
             raise ValueError(f"Expected {self.population_size} points, got {len(xs)}.")
 
-        # Not enough history → evaluate everything (bootstrap phase).
         if len(self.train_set) < self.population_size:
             self._adapted_results = self.evaluate(xs)
             return
 
-        # --- Step 1: surrogate estimation of all candidates ---------------
         estimated = PointList(points=[self.surrogate_function(x) for x in xs])
+        estimated.rank()
 
-        # --- Step 2: pick top-mu by surrogate value ----------------------
-        indexed = [(i, estimated[i].y) for i in range(len(estimated))]
-        indexed.sort(key=lambda pair: pair[1])
-        top_indices = sorted(idx for idx, _ in indexed[: self.mu])
-        top_indices_set = set(top_indices)
+        evaluated = self.evaluate(estimated[: self.mu])
+        evaluated.rank()
 
-        # --- Step 3: evaluate top-mu with real objective ------------------
-        top_points = PointList(points=[xs[i] for i in top_indices])
-        evaluated = self.evaluate(top_points)
+        # penalize worst points
+        penalty_y = evaluated[-1].y * 1.1
+        not_evaluated = estimated[self.mu :]
 
-        # --- Step 4: build combined result --------------------------------
-        eval_map = {idx: evaluated.points[j] for j, idx in enumerate(top_indices)}
+        for point in not_evaluated:
+            point.y = penalty_y
 
-        # Penalty: strictly worse than all real values.
-        max_real_y = max(p.y for p in evaluated)
-        penalty_y = max_real_y + abs(max_real_y) * 1e-6 + 1e-10
+        evaluated.extend(not_evaluated)
 
-        combined = []
-        for i, x in enumerate(xs):
-            if i in top_indices_set:
-                combined.append(eval_map[i])
-            else:
-                combined.append(Point(x=x.x, y=penalty_y, is_evaluated=False))
-
-        self._adapted_results = PointList(points=combined)
-
-    # ------------------------------------------------------------------
-    # Training / evaluation helpers
-    # ------------------------------------------------------------------
+        self._adapted_results = evaluated
 
     def train_surrogate(self) -> None:
-        """Retrain the surrogate on (optionally windowed) real evaluations."""
+        """
+        Retrain the surrogate on the real evaluations.
+        """
         if self.buffer_size:
-            self.surrogate_function.train(
-                PointList(self.train_set[-self.buffer_size :])
-            )
+            self.surrogate_function.train(self.train_set[-self.buffer_size :])
         else:
             self.surrogate_function.train(self.train_set)
 
@@ -162,9 +134,13 @@ class TopHalfMetamodel:
             points=[self.objective_function(point) for point in xs.points]
         )
         self.train_set.extend(result)
+
         self.train_surrogate()
+
         return result
 
     def get_log(self) -> PointList:
-        """Return all points evaluated with the real objective so far."""
+        """
+        Return all points evaluated with the real objective so far.
+        """
         return self.train_set

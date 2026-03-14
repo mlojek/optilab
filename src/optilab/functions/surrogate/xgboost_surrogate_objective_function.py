@@ -63,8 +63,6 @@ class XGBoostSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         super().train(train_set)
 
         x_train, y_train = self.train_set.pairs()
-        x_train = np.array(x_train, dtype=np.float64)
-        y_train = np.array(y_train, dtype=np.float64)
 
         self.model = xgb.XGBRegressor(
             n_estimators=self.n_estimators,

@@ -14,10 +14,10 @@ def mann_whitney_u_test_grid(data_lists: List[List[float]]) -> List[List[float]]
     a 2d array with results.
 
     Args:
-        data_lists (List[List[float]]): List of lists of values to perform test on.
+        data_lists: List of lists of values to perform test on.
 
     Returns:
-        List[List[float]]: Results as a 2d array with p-values.
+        Results as a 2d array with p-values.
     """
     n = len(data_lists)
     results_table = [[None for _ in range(n)] for _ in range(n)]
@@ -40,10 +40,10 @@ def display_test_grid(test_results: List[List[float]]) -> str:
     Given a grid of statistical test results, display them in a printable table.
 
     Args:
-        test_results (List[List[float]]): Grid of p-values from the statistical test.
+        test_results: Grid of p-values from the statistical test.
 
     Returns:
-        str: Stat tests as a tabulated, ready to print table with p-values.
+        Stat tests as a tabulated, ready to print table with p-values.
     """
     n = len(test_results)
     printable_results = [["-" for _ in range(n)] for _ in range(n)]

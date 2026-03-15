@@ -34,7 +34,7 @@ class Point:
         Return the dimensionality of the point.
 
         Returns:
-            int: Dimensionality of the point, equal to length of x.
+            Dimensionality of the point, equal to length of x.
         """
         return len(self.x)
 
@@ -50,9 +50,9 @@ class Point:
         Other properites are not compared.
 
         Args:
-            other (Point): Another instance of Point class.
+            other: Another instance of Point class.
 
         Returns:
-            bool: True if x values of self and other are equal, False otherwise.
+            True if x values of self and other are equal, False otherwise.
         """
         return np.array_equal(self.x, other.x)

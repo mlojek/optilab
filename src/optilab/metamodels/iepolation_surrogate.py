@@ -31,9 +31,9 @@ class IEPolationSurrogate(SurrogateObjectiveFunction):
         Class constructor.
 
         Args:
-            interpolation_surrogate (SurrogateObjectiveFunction): Surrogate used for interpolation.
-            extrapolation_surrogate (SurrogateObjectiveFunction): Surrogate used for extrapolation.
-            train_set (PointList): Initial training set for the surrogates.
+            interpolation_surrogate: Surrogate used for interpolation.
+            extrapolation_surrogate: Surrogate used for extrapolation.
+            train_set: Initial training set for the surrogates.
         """
 
         super().__init__("iepolation", train_set)
@@ -52,7 +52,7 @@ class IEPolationSurrogate(SurrogateObjectiveFunction):
         wheather the point value should be interpolated or extrapolated.
 
         Args:
-            train_set (PointList): Training set.
+            train_set: Training set.
         """
         hull = ConvexHull(train_set.x())
         hull_points = hull.points[hull.vertices]
@@ -63,7 +63,7 @@ class IEPolationSurrogate(SurrogateObjectiveFunction):
         Train both surrogate functions with provided data.
 
         Args:
-            train_set (PointList): Training data for the model.
+            train_set: Training data for the model.
         """
         super().train(train_set)
         self.interpolation_surrogate.train(self.train_set)
@@ -75,10 +75,10 @@ class IEPolationSurrogate(SurrogateObjectiveFunction):
         Check if the given point lies inside of the convex hull of training points.
 
         Args:
-            point (Point): The point to be checked.
+            point: The point to be checked.
 
         Returns:
-            bool: True if the given point lies inside the convex hull, False otherwise.
+            True if the given point lies inside the convex hull, False otherwise.
         """
         return self.convex_hull.contains(ShapelyPoint(point.x))
 
@@ -87,7 +87,7 @@ class IEPolationSurrogate(SurrogateObjectiveFunction):
         Estimate the value of a single point with the surrogate function.
 
         Args:
-            x (Point): Point to estimate.
+            x: Point to estimate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim.

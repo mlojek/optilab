@@ -23,12 +23,12 @@ def _ecdf_thresholding(
     The resulting y is the number of thresholds achieved by the log items.
 
     Args:
-        log (PointList): Error log of a optimization function.
-        thresholds (List[float]): ECDF value thresholds.
-        n_dimensions (int): Dimensionality of optimized function.
+        log: Error log of a optimization function.
+        thresholds: ECDF value thresholds.
+        n_dimensions: Dimensionality of optimized function.
 
     Returns:
-        Tuple[List[float], List[float]]: x and y values for the curve.
+        x and y values for the curve.
     """
     y = [np.sum(thresholds >= item) / len(thresholds) for item in log]
 
@@ -54,13 +54,13 @@ def ecdf_curve(
     Calculate ECDF curves.
 
     Args:
-        data (Dict[str, PointList]): Lists of value logs indexed by method name.
-        n_dimensions (int): Dimensionality of the solved problem.
-        allowed_error (float): Tolerable error value, used as the last threshold.
-        n_thresholds (int): Number of ECDF thresholds.
+        data: Lists of value logs indexed by method name.
+        n_dimensions: Dimensionality of the solved problem.
+        allowed_error: Tolerable error value, used as the last threshold.
+        n_thresholds: Number of ECDF thresholds.
 
     Returns:
-        Dict[str, Tuple[List[float], List[float]]]: x, y plot points for each method.
+        x, y plot points for each method.
     """
     processed_logs = {}
     log_lengths = {}
@@ -114,13 +114,13 @@ def plot_ecdf_curves(
     Calculate and plot ECDF curves.
 
     Args:
-        data (Dict[str, List[List[float]]]): Lists of value logs for every method.
-        n_dimensions (int): Dimensionality of the optimized function.
-        allowed_error (float): Tolerable error value, used as the last threshold.
-        n_thresholds (int): Number of ECDF thresholds.
-        savepath (str): Path to save the plot, optional.
-        show (bool): Wheather to show the plot, default True.
-        function_name (str): Name of the optimized function, used in title.
+        data: Lists of value logs for every method.
+        n_dimensions: Dimensionality of the optimized function.
+        allowed_error: Tolerable error value, used as the last threshold.
+        n_thresholds: Number of ECDF thresholds.
+        savepath: Path to save the plot, optional.
+        show: Wheather to show the plot, default True.
+        function_name: Name of the optimized function, used in title.
     """
     plt.clf()
 

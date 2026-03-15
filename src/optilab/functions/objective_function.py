@@ -22,9 +22,9 @@ class ObjectiveFunction:
         Class constructor.
 
         Args:
-            name (str): Name of the objective function.
-            dim (int): Dimensionality of the function.
-            hyperparameters (Dict[str, Any]): Dictionary with hyperparameters of the function.
+            name: Name of the objective function.
+            dim: Dimensionality of the function.
+            hyperparameters: Dictionary with hyperparameters of the function.
         """
         if not hyperparameters:
             hyperparameters = {}
@@ -36,13 +36,13 @@ class ObjectiveFunction:
         Evaluate a single point with the objective function.
 
         Args:
-            point (Point): Point to evaluate.
+            point: Point to evaluate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim
 
         Returns:
-            Point: Evaluated point.
+            Evaluated point.
         """
         if not len(point.x) == self.metadata.dim:
             raise ValueError(

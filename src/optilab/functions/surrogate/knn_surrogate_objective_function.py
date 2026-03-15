@@ -23,8 +23,8 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         Class constructor.
 
         Args:
-            num_neighbors (int): Number of closest neighbors to use in regression.
-            train_set (PointList): Training data for the model.
+            num_neighbors: Number of closest neighbors to use in regression.
+            train_set: Training data for the model.
         """
         self.num_neighbors = num_neighbors
 
@@ -42,7 +42,7 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         Train the FAISS-based KNN Surrogate function with provided data.
 
         Args:
-            train_set (PointList): Training data for the model.
+            train_set: Training data for the model.
         """
         super().train(train_set)
 
@@ -61,10 +61,10 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         Estimate the function value at a given point using kNN regression.
 
         Args:
-            point (Point): Point to estimate.
+            point: Point to estimate.
 
         Returns:
-            Point: Estimated value of the function at the given point.
+            Estimated value of the function at the given point.
         """
         super().__call__(point)
 

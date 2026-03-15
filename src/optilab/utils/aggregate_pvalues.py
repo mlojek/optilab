@@ -10,11 +10,11 @@ def aggregate_pvalues(pvalues_df: pd.DataFrame, significance: float) -> pd.DataF
     Aggregate p-values for multiple algorithms and functions into one table.
 
     Args:
-        pvalues_df (pd.DataFrame): DataFrame with columns: model, function, alternative, pvalue.
-        significance (float): Statistical significance threshold for the tests.
+        pvalues_df: DataFrame with columns: model, function, alternative, pvalue.
+        significance: Statistical significance threshold for the tests.
 
     Returns:
-        pd.DataFrame: DataFrame with function and alternative as the first two columns,
+        DataFrame with function and alternative as the first two columns,
                       model names as remaining columns, and p-values as values.
     """
     assert set(pvalues_df.columns) == {"model", "function", "alternative", "pvalue"}

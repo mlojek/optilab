@@ -25,8 +25,8 @@ class PolynomialRegression(SurrogateObjectiveFunction):
         Class constructor.
 
         Args:
-            degree (int): Degree of the polynomial used for approximation.
-            train_set (PointList): Training data for the model.
+            degree: Degree of the polynomial used for approximation.
+            train_set: Training data for the model.
         """
         self.preprocessor = PolynomialFeatures(degree=degree)
 
@@ -41,7 +41,7 @@ class PolynomialRegression(SurrogateObjectiveFunction):
         Train the Surrogate function with provided data
 
         Args:
-            train_set (PointList): Train data for the model.
+            train_set: Train data for the model.
         """
         super().train(train_set)
         x, y = self.train_set.pairs()
@@ -52,13 +52,13 @@ class PolynomialRegression(SurrogateObjectiveFunction):
         Estimate the value of a single point with the surrogate function.
 
         Args:
-            point (Point): Point to estimate.
+            point: Point to estimate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim.
 
         Returns:
-            Point: Estimated value of the function in the provided point.
+            Estimated value of the function in the provided point.
         """
         super().__call__(point)
         return Point(

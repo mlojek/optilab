@@ -76,7 +76,7 @@ class MLPSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         Train the MLP surrogate function with provided data.
 
         Args:
-            train_set (PointList): Training data for the model.
+            train_set: Training data for the model.
         """
         super().train(train_set)
 
@@ -104,10 +104,10 @@ class MLPSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         Estimate the function value at a given point using MLP regression.
 
         Args:
-            point (Point): Point to estimate.
+            point: Point to estimate.
 
         Returns:
-            Point: Estimated value of the function at the given point.
+            Estimated value of the function at the given point.
         """
         super().__call__(point)
 

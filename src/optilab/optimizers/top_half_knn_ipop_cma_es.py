@@ -70,7 +70,7 @@ class TopHalfKnnIpopCmaEs(CmaEs):
             target: Objective function value target, default 0.
 
         Returns:
-            PointList: Results log from the optimisation.
+            Results log from the optimisation.
         """
         current_population_size = self.metadata.population_size
 

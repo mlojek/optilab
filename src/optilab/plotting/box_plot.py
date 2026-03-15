@@ -19,12 +19,12 @@ def plot_box_plot(
     Plot box plots of optimization results.
 
     Args:
-        data (Dict[str, List[float]]): dictionary where keys are optimization method or function
+        data: dictionary where keys are optimization method or function
             names and values are list of best values from each run.
-        savepath (str): Path to save the plot, optional.
-        show (bool): Wheather to show the plot, default True.
-        function_name (str): Name of the optimized function, used in title.
-        hide_outliers (bool): If true, outliers won't be shown on the box plot. Defualt is False.
+        savepath: Path to save the plot, optional.
+        show: Wheather to show the plot, default True.
+        function_name: Name of the optimized function, used in title.
+        hide_outliers: If true, outliers won't be shown on the box plot. Defualt is False.
     """
     plt.clf()
 

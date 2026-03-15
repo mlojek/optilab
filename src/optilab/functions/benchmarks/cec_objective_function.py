@@ -24,9 +24,9 @@ class CECObjectiveFunction(ObjectiveFunction):
         Class constructor.
 
         Args:
-            year (int): Year of the CEC competition.
-            function_num (int): The number of benchmark function.
-            dim (int): Dimensionality of the function.
+            year: Year of the CEC competition.
+            function_num: The number of benchmark function.
+            dim: Dimensionality of the function.
         """
         super().__init__(
             f"cec{year}_f{function_num:02}",
@@ -46,13 +46,13 @@ class CECObjectiveFunction(ObjectiveFunction):
         Evaluate a single point with the objective function.
 
         Args:
-            point (Point): Point to evaluate.
+            point: Point to evaluate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim.
 
         Returns:
-            Point: Evaluated point.
+            Evaluated point.
         """
         super().__call__(point)
 

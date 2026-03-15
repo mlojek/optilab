@@ -19,9 +19,9 @@ def dump_to_pickle(
     the data using zstandard. Compressed pickles should have *.zstd.pkl extension.
 
     Args:
-        data (Any): Data to save to a pickle file.
-        pickle_path (Path): Path to file to save the data.
-        zstd_compression (int | None): Zstandard compression level. If None, then
+        data: Data to save to a pickle file.
+        pickle_path: Path to file to save the data.
+        zstd_compression: Zstandard compression level. If None, then
             no compression is used.
     """
     with open(pickle_path, "wb") as pickle_handle:
@@ -39,10 +39,10 @@ def load_from_pickle(pickle_path: Path) -> Any:
     is detected from the file extension (*.zstd.pkl).
 
     Args:
-        pickle_path (Path): Pickle file path to read from.
+        pickle_path: Pickle file path to read from.
 
     Returns:
-        Any: Data read from the pickle.
+        Data read from the pickle.
     """
     with open(pickle_path, "rb") as pickle_handle:
         if pickle_path.suffixes == [".zstd", ".pkl"]:
@@ -60,10 +60,10 @@ def list_all_pickles(path: Path) -> List[Path]:
     Given a path to either a file or directory return a list of all pickle files present there.
 
     Args:
-        path (Path): Either a path to a pickle file or path to directory containing pickle files.
+        path: Either a path to a pickle file or path to directory containing pickle files.
 
     Returns:
-        List[Path]: List of paths to found pickle files.
+        List of paths to found pickle files.
 
     Raises:
         ValueError: If the path is a file and not a pickle, or when the path is a directory and

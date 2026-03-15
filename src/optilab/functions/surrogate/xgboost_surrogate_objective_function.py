@@ -33,10 +33,10 @@ class XGBoostSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         Class constructor.
 
         Args:
-            n_estimators (int): Number of boosting rounds.
-            max_depth (int): Maximum depth of each tree.
-            learning_rate (float): Step size shrinkage used to prevent overfitting.
-            train_set (PointList): Training data for the model.
+            n_estimators: Number of boosting rounds.
+            max_depth: Maximum depth of each tree.
+            learning_rate: Step size shrinkage used to prevent overfitting.
+            train_set: Training data for the model.
         """
         self.n_estimators = n_estimators
         self.max_depth = max_depth
@@ -58,7 +58,7 @@ class XGBoostSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         Train the XGBoost surrogate function with provided data.
 
         Args:
-            train_set (PointList): Training data for the model.
+            train_set: Training data for the model.
         """
         super().train(train_set)
 
@@ -77,10 +77,10 @@ class XGBoostSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         Estimate the function value at a given point using XGBoost regression.
 
         Args:
-            point (Point): Point to estimate.
+            point: Point to estimate.
 
         Returns:
-            Point: Estimated value of the function at the given point.
+            Estimated value of the function at the given point.
         """
         super().__call__(point)
 

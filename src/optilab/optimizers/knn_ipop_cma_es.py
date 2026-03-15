@@ -28,9 +28,9 @@ class KnnIpopCmaEs(CmaEs):
         Class constructor.
 
         Args:
-            population_size (int): Starting size of the population.
-            num_neighbors (int): Number of neighbors used by KNN metamodel.
-            buffer_size (int): Number of last evaluated points provided to KNN metamodel.
+            population_size: Starting size of the population.
+            num_neighbors: Number of neighbors used by KNN metamodel.
+            buffer_size: Number of last evaluated points provided to KNN metamodel.
         """
         # buffer cannot be smaller than the number of neighbors
         buffer_size = max(buffer_size, num_neighbors)

@@ -22,8 +22,8 @@ class NoisyFunction(ObjectiveFunction):
         Class constructor.
 
         Args:
-            function (ObjectiveFunction): Objective function to noise.
-            noise (float): Noise value of the function.
+            function: Objective function to noise.
+            noise: Noise value of the function.
         """
         super().__init__(
             f"noisy_{function.name}_{noise}",
@@ -37,13 +37,13 @@ class NoisyFunction(ObjectiveFunction):
         Evaluate a single point with the objective function.
 
         Args:
-            point (Point): Point to be evaluated.
+            point: Point to be evaluated.
 
         Raises:
             ValueError: If dimensionality of x doesn't match the dimensionality of the function.
 
         Returns:
-            Point: Evaluated point.
+            Evaluated point.
         """
         super().__call__(point)
         evaluated_point = self.function(point)

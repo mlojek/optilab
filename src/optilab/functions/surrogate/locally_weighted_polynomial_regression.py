@@ -18,10 +18,10 @@ def biquadratic_kernel_function(x: float) -> float:
     Biquadratic weighting function.
 
     Args:
-        x (float): Distance between points.
+        x: Distance between points.
 
     Returns:
-        float: Weight value.
+        Weight value.
     """
     if np.abs(x) >= 1:
         return 0
@@ -47,12 +47,12 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         Class constructor.
 
         Args:
-            degree (int): Degree of the polynomial used to approximate function.
-            num_neighbors (float): Number of closest points to use in function approximation.
-            train_set (PointList): Training set for the regressor, optional.
-            covariance_matrix (np.ndarray): Covariance class used in mahalanobis distance,
+            degree: Degree of the polynomial used to approximate function.
+            num_neighbors: Number of closest points to use in function approximation.
+            train_set: Training set for the regressor, optional.
+            covariance_matrix: Covariance class used in mahalanobis distance,
                 optional. When no such matrix is provided an identity matrix is used.
-            kernel_function (Callable[[float], float]): Function used to assign weights to points.
+            kernel_function: Function used to assign weights to points.
         """
         self.is_ready = False
         super().__init__(
@@ -80,7 +80,7 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         Setter for the covariance matrix.
 
         Args:
-            new_covariance_matrix (np.ndarray): New covariance matrix to use for mahalanobis
+            new_covariance_matrix: New covariance matrix to use for mahalanobis
                 distance.
         """
         self.inverse_sqrt_covariance = np.linalg.inv(
@@ -92,7 +92,7 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         Build FAISS index and preprocess data to use Mahalanobis distance.
 
         Args:
-            train_set (PointList): Training set for the function
+            train_set: Training set for the function
         """
         super().train(train_set)
 
@@ -116,7 +116,7 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         is built for each point independently, this is where the regressor is trained.
 
         Args:
-            x (Point): Point to estimate.
+            x: Point to estimate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim.

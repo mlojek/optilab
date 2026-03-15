@@ -2,6 +2,8 @@
 Unit tests for Bounds.project method.
 """
 
+import numpy as np
+
 
 class TestBoundsProject:
     """
@@ -62,7 +64,7 @@ class TestBoundsProject:
         Test if projection works as expected for a multidimensional point.
         """
         handled_point = example_bounds.project(point_multidimensional)
-        assert handled_point.x == [14, 10, 20, 10, 20, 10, 20]
+        assert np.array_equal(handled_point.x, [14, 10, 20, 10, 20, 10, 20])
 
     def test_evaluated_point(self, example_bounds, evaluated_point):
         """

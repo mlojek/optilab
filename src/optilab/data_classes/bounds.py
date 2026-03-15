@@ -29,7 +29,7 @@ class Bounds:
         Return the bounds as a list of two floats.
 
         Returns:
-            List[float]: List containing the lower and upper bound.
+            List containing the lower and upper bound.
         """
         return [self.lower, self.upper]
 
@@ -38,7 +38,7 @@ class Bounds:
         Returns the width of the search space - the distance between the lower and upper bound.
 
         Returns:
-            float: The width of the search space.
+            The width of the search space.
         """
         return self.upper - self.lower
 
@@ -47,7 +47,7 @@ class Bounds:
         Express the bounds as a string.
 
         Returns:
-            str: Simple, printable string representation of this object.
+            Simple, printable string representation of this object.
         """
         return f"{self.lower} {self.upper}"
 
@@ -56,7 +56,7 @@ class Bounds:
         Check if the bounds are valid, i.e. if lower bound is below upper bound.
 
         Returns:
-            bool: True if bounds are valid, false otherwise.
+            True if bounds are valid, false otherwise.
         """
         return self.lower < self.upper
 
@@ -65,7 +65,7 @@ class Bounds:
         Check if a point lies in the bounds. This method overrides the "in" operator.
 
         Returns:
-            bool: True if point lies in the bounds.
+            True if point lies in the bounds.
         """
         return np.all((point.x >= self.lower) & (point.x <= self.upper))
 
@@ -74,10 +74,10 @@ class Bounds:
         Sample the bounds for a random point of given dimensionality.
 
         Args:
-            dim (int): The dimensionality of the point.
+            dim: The dimensionality of the point.
 
         Returns:
-            Point: Randomly sampled point from the search space.
+            Randomly sampled point from the search space.
         """
         return Point(np.random.uniform(low=self.lower, high=self.upper, size=dim))
 
@@ -86,11 +86,11 @@ class Bounds:
         Sample the bounds for a list of random points of given dimensionality.
 
         Args:
-            num_points (int): The number of points to sample.
-            dim (int): The dimensionality of the points.
+            num_points: The number of points to sample.
+            dim: The dimensionality of the points.
 
         Returns:
-            Point: List of randomly sampled points from the search space.
+            List of randomly sampled points from the search space.
         """
         return PointList([self.random_point(dim) for _ in range(num_points)])
 
@@ -101,10 +101,10 @@ class Bounds:
         search area.
 
         Args:
-            point (Point): The point to handle.
+            point: The point to handle.
 
         Returns:
-            Point: Reflected point.
+            Reflected point.
         """
         new_x = []
 
@@ -122,7 +122,7 @@ class Bounds:
                 new_x.append(val)
 
         new_point = deepcopy(point)
-        new_point.x = new_x
+        new_point.x = np.array(new_x, dtype=np.float64)
         return new_point
 
     def wrap(self, point: Point) -> Point:
@@ -131,10 +131,10 @@ class Bounds:
         search area.
 
         Args:
-            point (Point): The point to handle.
+            point: The point to handle.
 
         Returns:
-            Point: Wrapped point.
+            Wrapped point.
         """
         new_x = []
 
@@ -148,7 +148,7 @@ class Bounds:
                 new_x.append(val)
 
         new_point = deepcopy(point)
-        new_point.x = new_x
+        new_point.x = np.array(new_x, dtype=np.float64)
         return new_point
 
     def project(self, point: Point) -> Point:
@@ -157,23 +157,13 @@ class Bounds:
         of the search area.
 
         Args:
-            point (Point): The point to handle.
+            point: The point to handle.
 
         Returns:
-            Point: Projected point.
+            Projected point.
         """
-        new_x = []
-
-        for val in point.x:
-            if val < self.lower:
-                new_x.append(deepcopy(self.lower))
-            elif val > self.upper:
-                new_x.append(deepcopy(self.upper))
-            else:
-                new_x.append(val)
-
         new_point = deepcopy(point)
-        new_point.x = new_x
+        new_point.x = np.clip(point.x, self.lower, self.upper)
         return new_point
 
     def handle_bounds(self, point: Point, mode: str) -> Point:
@@ -181,11 +171,11 @@ class Bounds:
         Function to choose the bound handling method by name of the method.
 
         Args:
-            point (Point): The point to handle.
-            mode (str): Bound handling mode to use, choose from reflect, wrap or project.
+            point: The point to handle.
+            mode: Bound handling mode to use, choose from reflect, wrap or project.
 
         Returns:
-            Point: Handled point.
+            Handled point.
         """
         methods = {"reflect": self.reflect, "wrap": self.wrap, "project": self.project}
         try:

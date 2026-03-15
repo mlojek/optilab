@@ -28,10 +28,10 @@ class KnnCmaEs(CmaEs):
         Class constructor.
 
         Args:
-            population_size (int): Size of the population.
-            sigma0 (float): Starting value of the sigma,
-            num_neighbors (int): Number of neighbors used by KNN metamodel.
-            buffer_size (int): Number of last evaluated points provided to KNN metamodel.
+            population_size: Size of the population.
+            sigma0: Starting value of the sigma,
+            num_neighbors: Number of neighbors used by KNN metamodel.
+            buffer_size: Number of last evaluated points provided to KNN metamodel.
         """
         # buffer cannot be smaller than the number of neighbors
         buffer_size = max(buffer_size, num_neighbors)
@@ -61,14 +61,14 @@ class KnnCmaEs(CmaEs):
         Run a single optimization of provided objective function.
 
         Args:
-            function (ObjectiveFunction): Objective function to optimize.
-            bounds (Bounds): Search space of the function.
-            call_budget (int): Max number of calls to the objective function.
-            tolerance (float): Tolerance of y value to count a solution as acceptable.
-            target (float): Objective function value target, default 0.
+            function: Objective function to optimize.
+            bounds: Search space of the function.
+            call_budget: Max number of calls to the objective function.
+            tolerance: Tolerance of y value to count a solution as acceptable.
+            target: Objective function value target, default 0.
 
         Returns:
-            PointList: Results log from the optimization.
+            Results log from the optimization.
         """
         metamodel = ApproximateRankingMetamodel(
             self.metadata.population_size,

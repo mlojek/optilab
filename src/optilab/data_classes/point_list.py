@@ -29,10 +29,10 @@ class PointList:
         Alternative constructor that takes a list of x values.
 
         Args:
-            xs (List[np.ndarray]): List of x values.
+            xs: List of x values.
 
         Returns:
-            PointList: Object of class PointList containing points with given x.
+            Object of class PointList containing points with given x.
         """
         return PointList(
             points=[Point(x=point, y=None, is_evaluated=False) for point in xs]
@@ -44,7 +44,7 @@ class PointList:
         Add new point to the list.
 
         Args:
-            new_point (Point): Point to append to this object.
+            new_point: Point to append to this object.
         """
         self.points.append(new_point)
 
@@ -53,36 +53,36 @@ class PointList:
         Append a list of points to this PointList.
 
         Args:
-            new_points (PointList): A list of point to append to this object.
+            new_points: A list of point to append to this object.
         """
         self.points.extend(new_points.points)
 
     # getting point values
-    def x(self) -> List[np.ndarray]:
+    def x(self) -> np.ndarray:
         """
         Get all x values of points in this list.
 
         Returns:
-            List[np.ndarray]: List containing x values of all points.
+            List containing x values of all points.
         """
-        return [point.x for point in self.points]
+        return np.array([point.x for point in self.points], dtype=np.float64)
 
-    def y(self) -> List[float]:
+    def y(self) -> np.ndarray:
         """
         Get all y values of points in this list.
 
         Returns:
-            List[float]: List of y values of all points.
+            List of y values of all points.
         """
-        return [point.y for point in self.points]
+        return np.array([point.y for point in self.points], dtype=np.float64)
 
-    def pairs(self) -> Tuple[List[np.ndarray], List[float]]:
+    def pairs(self) -> Tuple[np.ndarray, np.ndarray]:
         """
         Return the contents of this point list as list of x and list of y values.
         This is potentially useful for quickly accesing point values for training surrofates.
 
         Returns:
-            Tuple[List[np.ndarray], List[float]]: Lists of x and y values.
+            Lists of x and y values.
         """
         return self.x(), self.y()
 
@@ -91,7 +91,7 @@ class PointList:
         Return list of only those points that have been evaluated.
 
         Returns:
-            PointList: List containing evaluated points.
+            List containing evaluated points.
         """
         return PointList(list(filter(lambda point: point.is_evaluated, self.points)))
 
@@ -101,10 +101,10 @@ class PointList:
         Allows indexing and slicing this object like a list.
 
         Args:
-            index (int | slice): The index or slice of objects to fetch.
+            index: The index or slice of objects to fetch.
 
         Returns:
-            Point | PointList: A single Point object for integer index,
+            A single Point object for integer index,
                 or a new PointList instance for slicing.
         """
         if isinstance(index, slice):
@@ -116,7 +116,7 @@ class PointList:
         Return number of points stored in the list.
 
         Returns:
-            int: Number of points stored in the list.
+            Number of points stored in the list.
         """
         return len(self.points)
 
@@ -126,7 +126,7 @@ class PointList:
         Sort points by y value in place ascending.
 
         Args:
-            reverse (bool): If true, sorting is done descending. Default False.
+            reverse: If true, sorting is done descending. Default False.
         """
         self.points = list(
             sorted(self.points, key=lambda point: point.y, reverse=reverse)
@@ -137,10 +137,10 @@ class PointList:
         Return list of points in self that do not appear in other based on their x values.
 
         Args:
-            other (PointList): Another PointList to compare against.
+            other: Another PointList to compare against.
 
         Returns:
-            PointList: List of points in self that are not in other.
+            List of points in self that are not in other.
         """
         return PointList(
             points=[
@@ -163,7 +163,7 @@ class PointList:
         Get the best point by y value from the PointList.
 
         Returns:
-            Point: The Point with the lowest y value in the list.
+            The Point with the lowest y value in the list.
         """
         return min(self.points, key=lambda point: point.y)
 
@@ -172,7 +172,7 @@ class PointList:
         Get the index of the best point by y value in the PointList.
 
         Returns:
-            int: The index of the point with the lowest y value.
+            The index of the point with the lowest y value.
         """
         return min(range(len(self.points)), key=lambda i: self.points[i].y)
 
@@ -181,7 +181,7 @@ class PointList:
         Get the best y value found. If list is empty, infinity is returned.
 
         Returns:
-            float: The best y value found.
+            The best y value found.
         """
         return min((point.y for point in self.points), default=np.inf)
 
@@ -190,6 +190,6 @@ class PointList:
         Return a list of all points up to the best in the list, including the best.
 
         Returns:
-            PointList: List of points up to the best point.
+            List of points up to the best point.
         """
         return self[: self.best_index() + 1]

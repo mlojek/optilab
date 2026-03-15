@@ -18,10 +18,10 @@ def biquadratic_kernel_function(x: float) -> float:
     Biquadratic weighting function.
 
     Args:
-        x (float): Distance between points.
+        x: Distance between points.
 
     Returns:
-        float: Weight value.
+        Weight value.
     """
     if np.abs(x) >= 1:
         return 0
@@ -39,20 +39,20 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         self,
         degree: int,
         num_neighbors: int,
-        train_set: PointList = None,
-        covariance_matrix: np.ndarray = None,
+        train_set: PointList | None = None,
+        covariance_matrix: np.ndarray | None = None,
         kernel_function: Callable[[float], float] = biquadratic_kernel_function,
     ) -> None:
         """
         Class constructor.
 
         Args:
-            degree (int): Degree of the polynomial used to approximate function.
-            num_neighbors (float): Number of closest points to use in function approximation.
-            train_set (PointList): Training set for the regressor, optional.
-            covariance_matrix (np.ndarray): Covariance class used in mahalanobis distance,
+            degree: Degree of the polynomial used to approximate function.
+            num_neighbors: Number of closest points to use in function approximation.
+            train_set: Training set for the regressor, optional.
+            covariance_matrix: Covariance class used in mahalanobis distance,
                 optional. When no such matrix is provided an identity matrix is used.
-            kernel_function (Callable[[float], float]): Function used to assign weights to points.
+            kernel_function: Function used to assign weights to points.
         """
         self.is_ready = False
         super().__init__(
@@ -61,7 +61,7 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
             {"degree": degree, "num_neighbors": num_neighbors},
         )
 
-        if covariance_matrix:
+        if covariance_matrix is not None:
             self.set_covariance_matrix(covariance_matrix)
         else:
             self.set_covariance_matrix(np.eye(self.metadata.dim))
@@ -80,7 +80,7 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         Setter for the covariance matrix.
 
         Args:
-            new_covariance_matrix (np.ndarray): New covariance matrix to use for mahalanobis
+            new_covariance_matrix: New covariance matrix to use for mahalanobis
                 distance.
         """
         self.inverse_sqrt_covariance = np.linalg.inv(
@@ -92,16 +92,23 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         Build FAISS index and preprocess data to use Mahalanobis distance.
 
         Args:
-            train_set (PointList): Training set for the function
+            train_set: Training set for the function
         """
         super().train(train_set)
 
         x_train, y_train = self.train_set.pairs()
-        x_train = np.array(x_train, dtype=np.float32) @ self.inverse_sqrt_covariance
-        self.y_train = np.array(y_train, dtype=np.float32)
+
+        # ignore warnings about overflows and zero divisions when covariance matrix
+        # is ill-conditioned
+        with np.errstate(divide="ignore", over="ignore", invalid="ignore"):
+            x_train = x_train @ self.inverse_sqrt_covariance
+
+        self.y_train = y_train
 
         self.index = faiss.IndexFlatL2(x_train.shape[1])
-        self.index.add(x_train)  # pylint: disable=no-value-for-parameter
+        self.index.add(  # pylint: disable=no-value-for-parameter
+            x_train.astype(np.float32)
+        )
 
     def __call__(self, point: Point) -> Point:
         """
@@ -109,7 +116,7 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         is built for each point independently, this is where the regressor is trained.
 
         Args:
-            x (Point): Point to estimate.
+            x: Point to estimate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim.
@@ -119,23 +126,34 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         """
         super().__call__(point)
 
-        x_query = np.array([point.x], dtype=np.float32) @ self.inverse_sqrt_covariance
+        # ignore warnings about overflows and zero divisions when covariance matrix
+        # is ill-conditioned
+        with np.errstate(divide="ignore", over="ignore", invalid="ignore"):
+            x_query = (
+                np.array([point.x], dtype=np.float64) @ self.inverse_sqrt_covariance
+            )
+
         distances, indices = (
             self.index.search(  # pylint: disable=no-value-for-parameter
-                x_query,
+                x_query.astype(np.float32),
                 self.metadata.hyperparameters["num_neighbors"],
             )
         )
-        distances = np.sqrt(distances)
+        distances = np.sqrt(distances.astype(np.float64))
 
-        knn_x = np.array([self.train_set[i].x for i in indices[0]])
-        knn_y = np.array([self.train_set[i].y for i in indices[0]])
+        knn_x = np.array([self.train_set[i].x for i in indices[0]], dtype=np.float64)
+        knn_y = np.array([self.train_set[i].y for i in indices[0]], dtype=np.float64)
 
         bandwidth = distances[0][-1]
 
-        weights = np.array(
-            [np.sqrt(self.kernel_function(d / bandwidth)) for d in distances[0]]
-        )
+        if np.isclose(bandwidth, 0):
+            # All neighbors are at the same location — use equal weights.
+            weights = np.ones(len(knn_y), dtype=np.float64)
+        else:
+            weights = np.array(
+                [np.sqrt(self.kernel_function(d / bandwidth)) for d in distances[0]],
+                dtype=np.float64,
+            )
 
         weighted_x = weights[:, None] * self.preprocessor.fit_transform(knn_x)
         weighted_y = weights * knn_y

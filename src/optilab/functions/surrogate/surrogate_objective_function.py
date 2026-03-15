@@ -16,16 +16,16 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
     def __init__(
         self,
         name: str,
-        train_set: PointList = None,
-        hyperparameters: Dict[str, Any] = None,
+        train_set: PointList | None = None,
+        hyperparameters: Dict[str, Any] | None = None,
     ) -> None:
         """
         Class constructor. The dimensionality is deduced from the training points.
 
         Args:
-            name (str): Name of the surrogate function.
-            train_set (PointList): Training data for the model.
-            hyperparameters (Dict[str, Any]): Dictionary with hyperparameters of the function.
+            name: Name of the surrogate function.
+            train_set: Training data for the model.
+            hyperparameters: Dictionary with hyperparameters of the function.
         """
         self.is_ready = False
         super().__init__(
@@ -42,7 +42,7 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
         Train the Surrogate function with provided data.
 
         Args:
-            train_set (PointList): Training data for the model.
+            train_set: Training data for the model.
 
         Raises:
             ValueError: If not all points are evaluated.
@@ -70,13 +70,13 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
         Estimate the value of a single point with the surrogate function.
 
         Args:
-            point (Point): Point to estimate.
+            point: Point to estimate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim.
 
         Returns:
-            Point: Estimated value of the function in the provided point.
+            Estimated value of the function in the provided point.
         """
         if not self.is_ready:
             raise NotImplementedError("The surrogate function is not trained!")

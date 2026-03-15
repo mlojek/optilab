@@ -23,9 +23,9 @@ class Optimizer:
         Class constructor.
 
         Args:
-            name (str): Name of this optimizer.
-            population_size (int): Size of the population.
-            hyperparameters (Dict[str, Any]): Dictionary with the hyperparameters of the optimizer.
+            name: Name of this optimizer.
+            population_size: Size of the population.
+            hyperparameters: Dictionary with the hyperparameters of the optimizer.
         """
         self.metadata = OptimizerMetadata(name, population_size, hyperparameters)
 
@@ -40,12 +40,12 @@ class Optimizer:
         Check if the call budget will allow for another algorithm generation.
 
         Args:
-            log (PointList): Log with all points evaluated so far.
-            population_size (int): Number of points in a single generation.
-            call_budget (int): Number of allowed point evaluations.
+            log: Log with all points evaluated so far.
+            population_size: Number of points in a single generation.
+            call_budget: Number of allowed point evaluations.
 
         Returns:
-            bool: If true, the call budget has been expended and another generation
+            If true, the call budget has been expended and another generation
                 cannot be evaluated.
         """
         return len(log) + population_size > call_budget
@@ -60,12 +60,12 @@ class Optimizer:
         Check if the optimal function value has been found.
 
         Args:
-            log (PointList): Log with all points evaluated so far.
-            target (float): Global optimum value of the optimized function.
-            tolerance (float): Allowed error value from global optimum value.
+            log: Log with all points evaluated so far.
+            target: Global optimum value of the optimized function.
+            tolerance: Allowed error value from global optimum value.
 
         Returns:
-            bool: If true, the global optimum has been found.
+            If true, the global optimum has been found.
         """
         return log.best_y() < target + tolerance
 
@@ -82,14 +82,14 @@ class Optimizer:
         or the the global optimum has been found.
 
         Args:
-            log (PointList): Log with all points evaluated so far.
-            population_size (int): Number of points in a single generation.
-            call_budget (int): Number of allowed point evaluations.
-            target (float): Global optimum value of the optimized function.
-            tolerance (float): Allowed error value from global optimum value.
+            log: Log with all points evaluated so far.
+            population_size: Number of points in a single generation.
+            call_budget: Number of allowed point evaluations.
+            target: Global optimum value of the optimized function.
+            tolerance: Allowed error value from global optimum value.
 
         Returns:
-            bool: If true, the external stop criteria has been met and the optimization
+            If true, the external stop criteria has been met and the optimization
                 should be stopped.
         """
         return self._stop_budget(
@@ -115,14 +115,14 @@ class Optimizer:
         Run a single optimization of provided objective function.
 
         Args:
-            function (ObjectiveFunction): Objective function to optimize.
-            bounds (Bounds): Search space of the function.
-            call_budget (int): Max number of calls to the objective function.
-            tolerance (float): Tolerance of y value to count a solution as acceptable.
-            target (float): Objective function value target, default 0.
+            function: Objective function to optimize.
+            bounds: Search space of the function.
+            call_budget: Max number of calls to the objective function.
+            tolerance: Tolerance of y value to count a solution as acceptable.
+            target: Objective function value target, default 0.
 
         Returns:
-            PointList: Results log from the optimization.
+            Results log from the optimization.
         """
         raise NotImplementedError
 
@@ -141,17 +141,17 @@ class Optimizer:
         Optimize a provided objective function.
 
         Args:
-            num_runs (int): Number of optimization runs to perform.
-            function (ObjectiveFunction): Objective function to optimize.
-            bounds (Bounds): Search space of the function.
-            call_budget (int): Max number of calls to the objective function.
-            tolerance (float): Tolerance of y value to count a solution as acceptable.
-            target (float): Objective function value target, default 0.
+            num_runs: Number of optimization runs to perform.
+            function: Objective function to optimize.
+            bounds: Search space of the function.
+            call_budget: Max number of calls to the objective function.
+            tolerance: Tolerance of y value to count a solution as acceptable.
+            target: Objective function value target, default 0.
             num_processes(int): Number of concurrent processes to use to speed up the
                 optimization. By default only one is used.
 
         Returns:
-            OptimizationRun: Metadata of optimization run.
+            Metadata of optimization run.
         """
         with Pool(num_processes) as pool:
             tasks = [

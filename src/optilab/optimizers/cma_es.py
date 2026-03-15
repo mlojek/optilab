@@ -23,8 +23,8 @@ class CmaEs(Optimizer):
         Class constructor.
 
         Args:
-            population_size (int): Size of the population.
-            sigma0 (float): Starting value of the sigma,
+            population_size: Size of the population.
+            sigma0: Starting value of the sigma,
         """
         super().__init__(
             "cma-es",
@@ -40,10 +40,10 @@ class CmaEs(Optimizer):
         Check an instance of CMA-ES optimizer for internal stop criteria.
 
         Args:
-            es (cma.CMAEvolutionStrategy): An instance of CMA-ES optimizer.
+            es: An instance of CMA-ES optimizer.
 
         Returns:
-            bool: If true, the internal stop criteria of CMA-ES have been reached and optimization
+            If true, the internal stop criteria of CMA-ES have been reached and optimization
                 should be ended.
         """
         return es.stop()
@@ -59,11 +59,11 @@ class CmaEs(Optimizer):
         Create a new instance of cma optimizer.
 
         Args:
-            bounds (Bounds): The bounds of the search area.
-            dim (int): The dimensionality of the search area.
+            bounds: The bounds of the search area.
+            dim: The dimensionality of the search area.
 
         Returns:
-            cma.CMAEvolutionStrategy: A new cma optimizer instance.
+            A new cma optimizer instance.
         """
         return cma.CMAEvolutionStrategy(
             bounds.random_point(dim).x,
@@ -88,15 +88,15 @@ class CmaEs(Optimizer):
         Decide if the optimization should be stopped.
 
         Args:
-            es (cma.CMAEvolutionStrategy): CMA-ES instance.
-            log (PointList): Results log.
-            population_size (int): The size of the population in one generation.
-            call_budget (int): Maximum number of optimized function calls.
-            target (float): Global minimum value of the optimized function.
-            tolerance (float): Tolerated error value of the optimization.
+            es: CMA-ES instance.
+            log: Results log.
+            population_size: The size of the population in one generation.
+            call_budget: Maximum number of optimized function calls.
+            target: Global minimum value of the optimized function.
+            tolerance: Tolerated error value of the optimization.
 
         Returns:
-            bool: True if the optimization should be stopped.
+            True if the optimization should be stopped.
         """
         return self._stop_internal(es) or self._stop_external(
             log,
@@ -118,14 +118,14 @@ class CmaEs(Optimizer):
         Run a single optimization of provided objective function.
 
         Args:
-            function (ObjectiveFunction): Objective function to optimize.
-            bounds (Bounds): Search space of the function.
-            call_budget (int): Max number of calls to the objective function.
-            tolerance (float): Tolerance of y value to count a solution as acceptable.
-            target (float): Objective function value target, default 0.
+            function: Objective function to optimize.
+            bounds: Search space of the function.
+            call_budget: Max number of calls to the objective function.
+            tolerance: Tolerance of y value to count a solution as acceptable.
+            target: Objective function value target, default 0.
 
         Returns:
-            PointList: Results log from the optimization.
+            Results log from the optimization.
         """
         es = self._spawn_cmaes(
             bounds,

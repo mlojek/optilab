@@ -17,14 +17,14 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
     def __init__(
         self,
         num_neighbors: int,
-        train_set: PointList = None,
+        train_set: PointList | None = None,
     ) -> None:
         """
         Class constructor.
 
         Args:
-            num_neighbors (int): Number of closest neighbors to use in regression.
-            train_set (PointList): Training data for the model.
+            num_neighbors: Number of closest neighbors to use in regression.
+            train_set: Training data for the model.
         """
         self.num_neighbors = num_neighbors
 
@@ -42,16 +42,18 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         Train the FAISS-based KNN Surrogate function with provided data.
 
         Args:
-            train_set (PointList): Training data for the model.
+            train_set: Training data for the model.
         """
         super().train(train_set)
 
         x_train, y_train = self.train_set.pairs()
-        x_train = np.array(x_train, dtype=np.float32)
-        y_train = np.array(y_train, dtype=np.float32)
+        x_train = np.array(x_train, dtype=np.float64)
+        y_train = np.array(y_train, dtype=np.float64)
 
         self.faiss_index = faiss.IndexFlatL2(x_train.shape[1])
-        self.faiss_index.add(x_train)  # pylint: disable=no-value-for-parameter
+        self.faiss_index.add(  # pylint: disable=no-value-for-parameter
+            x_train.astype(np.float32)
+        )
         self.y_train = y_train
 
     def __call__(self, point: Point) -> Point:
@@ -59,23 +61,24 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         Estimate the function value at a given point using kNN regression.
 
         Args:
-            point (Point): Point to estimate.
+            point: Point to estimate.
 
         Returns:
-            Point: Estimated value of the function at the given point.
+            Estimated value of the function at the given point.
         """
         super().__call__(point)
 
         if len(self.train_set) < self.num_neighbors:
             raise ValueError("Train set length is below number of neighbors.")
 
-        x_query = np.array([point.x], dtype=np.float32)
+        x_query = np.array([point.x], dtype=np.float64)
         distances, indices = (
             self.faiss_index.search(  # pylint: disable=no-value-for-parameter
-                x_query,
+                x_query.astype(np.float32),
                 self.num_neighbors,
             )
         )
+        distances = distances.astype(np.float64)
 
         weights = 1 / (np.sqrt(distances) + 1e-8)  # avoid division by zero
         y_pred = np.sum(self.y_train[indices] * weights, axis=1)[0] / weights.sum()

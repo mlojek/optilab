@@ -14,10 +14,10 @@ def convergence_curve(log: PointList) -> List[float]:
     For a given log return a convergence curve - the lowest value achieved so far.
 
     Args:
-        log (List[float]): Results log - the values of errors of the optimized function.
+        log: Results log - the values of errors of the optimized function.
 
     Returns:
-        List[float]: y values of the convergence curve.
+        y values of the convergence curve.
     """
     min_so_far = float("inf")
     new_log = []
@@ -31,20 +31,20 @@ def convergence_curve(log: PointList) -> List[float]:
 
 def plot_convergence_curve(
     data: Dict[str, List[PointList]],
-    savepath: str = None,
+    savepath: str | None = None,
     *,
     show: bool = True,
-    function_name: str = None,
+    function_name: str | None = None,
 ) -> None:
     """
     Plot the convergence curves of a few methods using pyplot.
 
     Args:
-        data (Dict[str, List[Pointlist]]): Lists of error logs of a few methods
+        data: Lists of error logs of a few methods
             expressed as {method name: [log]}.
-        savepath (str): Path to save the plot, optional.
-        show (bool): Wheather to show the plot, default True.
-        function_name (str): Name of the optimized function, used in title.
+        savepath: Path to save the plot, optional.
+        show: Wheather to show the plot, default True.
+        function_name: Name of the optimized function, used in title.
     """
     plt.clf()
 

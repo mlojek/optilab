@@ -2,6 +2,8 @@
 Unit tests for Bounds.wrap method.
 """
 
+import numpy as np
+
 
 class TestBoundswrap:
     """
@@ -62,7 +64,7 @@ class TestBoundswrap:
         Test if wrapping works as expected for a multidimensional point.
         """
         handled_point = example_bounds.wrap(point_multidimensional)
-        assert handled_point.x == [14, 10, 20, 12, 13, 16, 12]
+        assert np.array_equal(handled_point.x, [14, 10, 20, 12, 13, 16, 12])
 
     def test_evaluated_point(self, example_bounds, evaluated_point):
         """

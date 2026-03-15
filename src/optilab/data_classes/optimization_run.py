@@ -41,11 +41,11 @@ class OptimizationRun:
         Get a list of best y values from each log.
 
         Args:
-            raw_values (bool): If false, values below tolerance values are set to tolerance, else
+            raw_values: If false, values below tolerance values are set to tolerance, else
                 return real y values. Default is false.
 
         Returns:
-            List[float]: List of the best values from each log.
+            List of the best values from each log.
         """
         tolerance = -np.inf if raw_values else self.tolerance
         return [max(log.best_y(), tolerance) for log in self.logs]
@@ -55,7 +55,7 @@ class OptimizationRun:
         Get a list of log lengths.
 
         Returns:
-            List[float]: List of the lengths of logs.
+            List of the lengths of logs.
         """
         return [len(log) for log in self.logs]
 
@@ -64,7 +64,7 @@ class OptimizationRun:
         Make a summary of the run.
 
         Args:
-            raw_values (bool): If false, values below tolerance values are set to tolerance, else
+            raw_values: If false, values below tolerance values are set to tolerance, else
                 return real y values. Default is false.
 
         :Returns:

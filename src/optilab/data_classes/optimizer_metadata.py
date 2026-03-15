@@ -18,5 +18,5 @@ class OptimizerMetadata:
     population_size: int
     "Number of points generated in each generation."
 
-    hyperparameters: Dict[str, Any] = None
+    hyperparameters: Dict[str, Any] | None = None
     "Other hyperparameters of the optimizer, optional."

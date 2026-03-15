@@ -18,7 +18,7 @@ class RastriginFunction(ObjectiveFunction):
         Class constructor.
 
         Args:
-            dim (int): Dimensionality of the function.
+            dim: Dimensionality of the function.
         """
         super().__init__("rastrigin", dim)
 
@@ -27,13 +27,13 @@ class RastriginFunction(ObjectiveFunction):
         Evaluate a single point with the objective function.
 
         Args:
-            point (Point): Point to evaluate.
+            point: Point to evaluate.
 
         Raises:
             ValueError: If dimensionality of x doesn't match self.dim.
 
         Returns:
-            Point: Evaluated point.
+            Evaluated point.
         """
         super().__call__(point)
 

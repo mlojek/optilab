@@ -97,8 +97,13 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         super().train(train_set)
 
         x_train, y_train = self.train_set.pairs()
-        x_train = np.array(x_train, dtype=np.float64) @ self.inverse_sqrt_covariance
-        self.y_train = np.array(y_train, dtype=np.float64)
+
+        # ignore warnings about overflows and zero divisions when covariance matrix
+        # is ill-conditioned
+        with np.errstate(divide="ignore", over="ignore", invalid="ignore"):
+            x_train = x_train @ self.inverse_sqrt_covariance
+
+        self.y_train = y_train
 
         self.index = faiss.IndexFlatL2(x_train.shape[1])
         self.index.add(  # pylint: disable=no-value-for-parameter
@@ -121,7 +126,13 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         """
         super().__call__(point)
 
-        x_query = np.array([point.x], dtype=np.float64) @ self.inverse_sqrt_covariance
+        # ignore warnings about overflows and zero divisions when covariance matrix
+        # is ill-conditioned
+        with np.errstate(divide="ignore", over="ignore", invalid="ignore"):
+            x_query = (
+                np.array([point.x], dtype=np.float64) @ self.inverse_sqrt_covariance
+            )
+
         distances, indices = (
             self.index.search(  # pylint: disable=no-value-for-parameter
                 x_query.astype(np.float32),
@@ -135,7 +146,7 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
 
         bandwidth = distances[0][-1]
 
-        if bandwidth < 1e-300:
+        if np.isclose(bandwidth, 0):
             # All neighbors are at the same location — use equal weights.
             weights = np.ones(len(knn_y), dtype=np.float64)
         else:

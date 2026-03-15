@@ -55,8 +55,12 @@ class CECObjectiveFunction(ObjectiveFunction):
             Point: Evaluated point.
         """
         super().__call__(point)
+
+        # silence warnings from opfunu for overflows and zero divisions even when
+        # x is in valid range
         with np.errstate(divide="ignore", invalid="ignore", over="ignore"):
             y = self.function.evaluate(point.x) - self.function.f_global
+
         return Point(
             x=point.x,
             y=y,

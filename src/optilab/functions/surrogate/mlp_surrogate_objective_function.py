@@ -92,7 +92,11 @@ class MLPSurrogateObjectiveFunction(SurrogateObjectiveFunction):
             early_stopping=self.early_stopping,
             random_state=self.random_seed,
         )
-        self.model.fit(x_train, y_train)
+
+        # ignore warnings about overflows and zero divisions when covariance matrix
+        # is ill-conditioned
+        with np.errstate(divide="ignore", over="ignore", invalid="ignore"):
+            self.model.fit(x_train, y_train)
 
     # pylint: disable=duplicate-code
     def __call__(self, point: Point) -> Point:
@@ -108,7 +112,11 @@ class MLPSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         super().__call__(point)
 
         x_query = np.array([point.x], dtype=np.float64)
-        y_pred = self.model.predict(x_query)[0]
+
+        # ignore warnings about overflows and zero divisions when covariance matrix
+        # is ill-conditioned
+        with np.errstate(divide="ignore", over="ignore", invalid="ignore"):
+            y_pred = self.model.predict(x_query)[0]
 
         return Point(
             x=point.x,

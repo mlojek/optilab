@@ -25,7 +25,7 @@ class IEPolationSurrogate(SurrogateObjectiveFunction):
         self,
         interpolation_surrogate: SurrogateObjectiveFunction,
         extrapolation_surrogate: SurrogateObjectiveFunction,
-        train_set: PointList = None,
+        train_set: PointList | None = None,
     ) -> None:
         """
         Class constructor.

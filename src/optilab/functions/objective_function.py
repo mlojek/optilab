@@ -16,7 +16,7 @@ class ObjectiveFunction:
         self,
         name: str,
         dim: int,
-        hyperparameters: Dict[str, Any] = None,
+        hyperparameters: Dict[str, Any] | None = None,
     ) -> None:
         """
         Class constructor.

@@ -3,7 +3,6 @@ Approximate ranking metamodel based on lmm-CMA-ES.
 """
 
 import copy
-from typing import Optional
 
 from ..data_classes import PointList
 from ..functions import ObjectiveFunction
@@ -20,7 +19,7 @@ class ApproximateRankingMetamodel:
         objective_function: ObjectiveFunction,
         surrogate_function: SurrogateObjectiveFunction,
         *,
-        buffer_size: Optional[int] = None,
+        buffer_size: int | None = None,
     ) -> None:
         """
         Class constructor.
@@ -31,7 +30,7 @@ class ApproximateRankingMetamodel:
             objective_function (ObjectiveFunction): The objective function that's being optimized.
             surrogate_function (SurrogateObjectieFunction): Surrogate function used to estimate
                 the optimized function.
-            buffer_size (Optional[int]): Number of last evaluated samples to use for training the
+            buffer_size (int | None): Number of last evaluated samples to use for training the
                 surrogate function. If None, all samples are used.
         """
         self.population_size = population_size

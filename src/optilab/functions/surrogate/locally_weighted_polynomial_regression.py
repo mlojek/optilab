@@ -39,8 +39,8 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         self,
         degree: int,
         num_neighbors: int,
-        train_set: PointList = None,
-        covariance_matrix: np.ndarray = None,
+        train_set: PointList | None = None,
+        covariance_matrix: np.ndarray | None = None,
         kernel_function: Callable[[float], float] = biquadratic_kernel_function,
     ) -> None:
         """

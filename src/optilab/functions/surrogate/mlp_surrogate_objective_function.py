@@ -2,7 +2,7 @@
 Surrogate objective function using sklearn MLPRegressor.
 """
 
-from typing import Optional, Tuple
+from typing import Tuple
 
 import numpy as np
 from sklearn.neural_network import MLPRegressor
@@ -19,7 +19,7 @@ class MLPSurrogateObjectiveFunction(SurrogateObjectiveFunction):
     def __init__(
         self,
         hidden_layer_sizes: Tuple[int] = (32,),
-        train_set: PointList = None,
+        train_set: PointList | None = None,
         *,
         activation: str = "relu",
         solver: str = "adam",
@@ -27,7 +27,7 @@ class MLPSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         l2_alpha: float = 0.0001,
         max_iter: int = 200,
         early_stopping: bool = True,
-        random_seed: Optional[int] = None,
+        random_seed: int | None = None,
     ) -> None:
         """
         Class constructor.
@@ -52,7 +52,7 @@ class MLPSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         self.early_stopping = early_stopping
         self.random_seed = random_seed
 
-        self.model: Optional[MLPRegressor] = None
+        self.model: MLPRegressor | None = None
 
         hidden_layers_repr = "_".join(str(size) for size in hidden_layer_sizes)
 

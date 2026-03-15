@@ -31,10 +31,10 @@ def convergence_curve(log: PointList) -> List[float]:
 
 def plot_convergence_curve(
     data: Dict[str, List[PointList]],
-    savepath: str = None,
+    savepath: str | None = None,
     *,
     show: bool = True,
-    function_name: str = None,
+    function_name: str | None = None,
 ) -> None:
     """
     Plot the convergence curves of a few methods using pyplot.

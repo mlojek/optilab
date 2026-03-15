@@ -5,8 +5,6 @@ evaluates the top mu (typically half) points with the objective function.
 
 # pylint: disable=duplicate-code
 
-from typing import Optional
-
 from ..data_classes import PointList
 from ..functions import ObjectiveFunction
 from ..functions.surrogate import SurrogateObjectiveFunction
@@ -29,7 +27,7 @@ class TopHalfMetamodel:
         objective_function: ObjectiveFunction,
         surrogate_function: SurrogateObjectiveFunction,
         *,
-        buffer_size: Optional[int] = None,
+        buffer_size: int | None = None,
     ) -> None:
         """
         Class constructor.
@@ -52,7 +50,7 @@ class TopHalfMetamodel:
 
         self.buffer_size = buffer_size
 
-        self._adapted_results: Optional[PointList] = None
+        self._adapted_results: PointList | None = None
 
     def __call__(self, points: PointList) -> PointList:
         """
@@ -100,7 +98,7 @@ class TopHalfMetamodel:
         evaluated.rank()
 
         # penalize worst points
-        penalty_y = evaluated[-1].y * 1.1
+        penalty_y = evaluated[-1].y + 1
         not_evaluated = estimated[self.mu :]
 
         for point in not_evaluated:

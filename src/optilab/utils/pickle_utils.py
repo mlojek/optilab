@@ -21,7 +21,7 @@ def dump_to_pickle(
     Args:
         data (Any): Data to save to a pickle file.
         pickle_path (Path): Path to file to save the data.
-        zstd_compression (Optional[int]): Zstandard compression level. If None, then
+        zstd_compression (int | None): Zstandard compression level. If None, then
             no compression is used.
     """
     with open(pickle_path, "wb") as pickle_handle:

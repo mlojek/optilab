@@ -17,7 +17,7 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
     def __init__(
         self,
         num_neighbors: int,
-        train_set: PointList = None,
+        train_set: PointList | None = None,
     ) -> None:
         """
         Class constructor.

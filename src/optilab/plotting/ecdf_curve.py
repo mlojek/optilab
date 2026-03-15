@@ -16,7 +16,7 @@ def _ecdf_thresholding(
     log: List[float],
     thresholds: List[float],
     n_dimensions: int,
-    extend_to_len: int = None,
+    extend_to_len: int | None = None,
 ) -> Tuple[List[float], List[float]]:
     """
     Perform thresholding of a log with a given list of thresholds.
@@ -105,10 +105,10 @@ def plot_ecdf_curves(
     n_dimensions: int,
     allowed_error: float,
     n_thresholds: int = 100,
-    savepath: str = None,
+    savepath: str | None = None,
     *,
     show: bool = True,
-    function_name: str = None,
+    function_name: str | None = None,
 ) -> None:
     """
     Calculate and plot ECDF curves.

@@ -16,8 +16,8 @@ class SurrogateObjectiveFunction(ObjectiveFunction):
     def __init__(
         self,
         name: str,
-        train_set: PointList = None,
-        hyperparameters: Dict[str, Any] = None,
+        train_set: PointList | None = None,
+        hyperparameters: Dict[str, Any] | None = None,
     ) -> None:
         """
         Class constructor. The dimensionality is deduced from the training points.

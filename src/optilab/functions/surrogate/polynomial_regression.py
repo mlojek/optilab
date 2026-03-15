@@ -19,7 +19,7 @@ class PolynomialRegression(SurrogateObjectiveFunction):
     def __init__(
         self,
         degree: int,
-        train_set: PointList = None,
+        train_set: PointList | None = None,
     ) -> None:
         """
         Class constructor.

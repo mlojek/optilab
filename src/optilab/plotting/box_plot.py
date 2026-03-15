@@ -9,10 +9,10 @@ from matplotlib import pyplot as plt
 
 def plot_box_plot(
     data: Dict[str, List[float]],
-    savepath: str = None,
+    savepath: str | None = None,
     *,
     show: bool = True,
-    function_name: str = None,
+    function_name: str | None = None,
     hide_outliers: bool = False,
 ) -> None:
     """

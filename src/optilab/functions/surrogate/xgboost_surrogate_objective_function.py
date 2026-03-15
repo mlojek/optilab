@@ -27,7 +27,7 @@ class XGBoostSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         n_estimators: int = 100,
         max_depth: int = 6,
         learning_rate: float = 0.1,
-        train_set: PointList = None,
+        train_set: PointList | None = None,
     ) -> None:
         """
         Class constructor.

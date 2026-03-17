@@ -45,7 +45,9 @@ class PolynomialRegression(SurrogateObjectiveFunction):
         """
         super().train(train_set)
         x, y = self.train_set.pairs()
-        self.weights = np.linalg.lstsq(self.preprocessor.fit_transform(x), y)[0]
+        self.weights = np.linalg.lstsq(
+            self.preprocessor.fit_transform(x), y, rcond=None
+        )[0]
 
     def __call__(self, point: Point) -> Point:
         """
@@ -63,6 +65,6 @@ class PolynomialRegression(SurrogateObjectiveFunction):
         super().__call__(point)
         return Point(
             x=point.x,
-            y=sum(self.weights * self.preprocessor.fit_transform([point.x])[0]),
+            y=float(self.preprocessor.transform([point.x])[0] @ self.weights),
             is_evaluated=False,
         )

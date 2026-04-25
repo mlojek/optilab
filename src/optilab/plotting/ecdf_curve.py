@@ -3,6 +3,7 @@ Plotting and calculating ECDF curves.
 """
 
 import math
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -104,7 +105,7 @@ def plot_ecdf_curves(
     n_dimensions: int,
     allowed_error: float,
     n_thresholds: int = 100,
-    savepath: str | None = None,
+    savepath: str | Path | None = None,
     *,
     show: bool = True,
     function_name: str | None = None,

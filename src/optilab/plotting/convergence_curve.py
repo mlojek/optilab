@@ -2,6 +2,8 @@
 Calculating and plotting the convergence curve.
 """
 
+from pathlib import Path
+
 from matplotlib import pyplot as plt
 
 from ..data_classes import PointList
@@ -30,7 +32,7 @@ def convergence_curve(log: PointList) -> list[float]:
 
 def plot_convergence_curve(
     data: dict[str, list[PointList]],
-    savepath: str | None = None,
+    savepath: str | Path | None = None,
     *,
     show: bool = True,
     function_name: str | None = None,

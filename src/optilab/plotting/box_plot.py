@@ -2,12 +2,14 @@
 Plotting optimization results with box plot.
 """
 
+from pathlib import Path
+
 from matplotlib import pyplot as plt
 
 
 def plot_box_plot(
     data: dict[str, list[float]],
-    savepath: str | None = None,
+    savepath: str | Path | None = None,
     *,
     show: bool = True,
     function_name: str | None = None,

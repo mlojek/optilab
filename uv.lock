@@ -1607,71 +1607,69 @@ wheels = [
 
 [[package]]
 name = "optilab"
-version = "28"
-source = { virtual = "." }
+version = "29"
+source = { editable = "." }
 dependencies = [
-    { name = "black" },
     { name = "cma" },
     { name = "faiss-cpu" },
-    { name = "isort" },
-    { name = "jupyter" },
     { name = "matplotlib" },
     { name = "numpy" },
     { name = "opfunu" },
     { name = "pandas" },
-    { name = "pre-commit" },
-    { name = "pylint" },
-    { name = "pyprojectsort" },
-    { name = "pytest" },
     { name = "scikit-learn" },
-    { name = "setuptools" },
     { name = "shapely" },
-    { name = "sphinx", version = "9.0.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
-    { name = "sphinx", version = "9.1.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
-    { name = "sphinx-rtd-theme" },
     { name = "tabulate" },
     { name = "tqdm" },
-    { name = "typing" },
     { name = "xgboost" },
     { name = "zstandard" },
 ]
 
 [package.dev-dependencies]
 dev = [
+    { name = "black" },
+    { name = "isort" },
+    { name = "jupyter" },
+    { name = "pre-commit" },
+    { name = "pylint" },
+    { name = "pyprojectsort" },
+    { name = "pytest" },
     { name = "ruff" },
+    { name = "setuptools" },
+    { name = "sphinx", version = "9.0.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "sphinx", version = "9.1.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "sphinx-rtd-theme" },
     { name = "ty" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "black" },
     { name = "cma", specifier = "==4.0.0" },
     { name = "faiss-cpu" },
-    { name = "isort" },
-    { name = "jupyter" },
     { name = "matplotlib", specifier = "==3.9.2" },
     { name = "numpy", specifier = "==2.1.3" },
     { name = "opfunu", specifier = "==1.0.0" },
     { name = "pandas", specifier = "==2.2.3" },
-    { name = "pre-commit" },
-    { name = "pylint" },
-    { name = "pyprojectsort" },
-    { name = "pytest" },
     { name = "scikit-learn", specifier = "==1.5.2" },
-    { name = "setuptools" },
     { name = "shapely", specifier = "==2.0.6" },
-    { name = "sphinx" },
-    { name = "sphinx-rtd-theme" },
     { name = "tabulate" },
     { name = "tqdm" },
-    { name = "typing" },
     { name = "xgboost" },
     { name = "zstandard" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "black", specifier = ">=26.3.1" },
+    { name = "isort", specifier = ">=8.0.1" },
+    { name = "jupyter", specifier = ">=1.1.1" },
+    { name = "pre-commit", specifier = ">=4.6.0" },
+    { name = "pylint", specifier = ">=4.0.5" },
+    { name = "pyprojectsort", specifier = ">=0.4.0" },
+    { name = "pytest", specifier = ">=9.0.3" },
     { name = "ruff", specifier = ">=0.15.12" },
+    { name = "setuptools", specifier = ">=82.0.1" },
+    { name = "sphinx", specifier = ">=9.0.4" },
+    { name = "sphinx-rtd-theme", specifier = ">=3.1.0" },
     { name = "ty", specifier = ">=0.0.32" },
 ]
 
@@ -2959,15 +2957,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/df/92/be9abf4d3e589ad5023e2ea965b93e204ec856420d46adf73c5c36c04678/ty-0.0.32-py3-none-win32.whl", hash = "sha256:2ff2ebb4986b24aebcf1444db7db5ca41b36086040e95eea9f8fb851c11e805c", size = 10260689, upload-time = "2026-04-20T19:28:56.541Z" },
     { url = "https://files.pythonhosted.org/packages/14/61/dc86acea899349d2579cb8419aecedd83dc504d7d6a10df65eef546c8300/ty-0.0.32-py3-none-win_amd64.whl", hash = "sha256:ba7284a4a954b598c1b31500352b3ec1f89bff533825592b5958848226fdc7ee", size = 11255371, upload-time = "2026-04-20T19:28:39.917Z" },
     { url = "https://files.pythonhosted.org/packages/43/01/beffec56d71ca25b343ede63adb076456b5b3e211f1c066452a44cd120b3/ty-0.0.32-py3-none-win_arm64.whl", hash = "sha256:7e10aadbdbda989a7d567ee6a37f8b98d4d542e31e3b190a2879fd581f75d658", size = 10658087, upload-time = "2026-04-20T19:28:59.286Z" },
-]
-
-[[package]]
-name = "typing"
-version = "3.10.0.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b0/1b/835d4431805939d2996f8772aca1d2313a57e8860fec0e48e8e7dfe3a477/typing-3.10.0.0.tar.gz", hash = "sha256:13b4ad211f54ddbf93e5901a9967b1e07720c1d1b78d596ac6a439641aa1b130", size = 78962, upload-time = "2021-05-01T18:03:58.186Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f2/5d/865e17349564eb1772688d8afc5e3081a5964c640d64d1d2880ebaed002d/typing-3.10.0.0-py3-none-any.whl", hash = "sha256:12fbdfbe7d6cca1a42e485229afcb0b0c8259258cfb919b8a5e2a5c953742f89", size = 26320, upload-time = "2021-05-01T18:03:56.398Z" },
 ]
 
 [[package]]

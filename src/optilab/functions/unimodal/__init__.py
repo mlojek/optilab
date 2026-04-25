@@ -7,3 +7,11 @@ from .cumulative_squared_sums import CumulativeSquaredSums
 from .increasing_weight_cigar import IncreasingWeightCigar
 from .linear_function import LinearFunction
 from .sphere_function import SphereFunction
+
+__all__ = [
+    "BentCigarFunction",
+    "CumulativeSquaredSums",
+    "IncreasingWeightCigar",
+    "LinearFunction",
+    "SphereFunction",
+]

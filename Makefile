@@ -17,14 +17,11 @@ clean:
 	git clean -fdx
 
 format:
-	isort ${all_code} --profile black
-	black ${all_code}
+	ruff format ${all_code}
 	pyprojectsort pyproject.toml
 
 check: format
-	black ${all_code} --check
-	isort ${all_code} --check --profile black
-	pylint ${all_code}
+	ruff check ${all_code}
 	pyprojectsort pyproject.toml --check
 
 test:

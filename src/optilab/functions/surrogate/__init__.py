@@ -8,3 +8,12 @@ from .mlp_surrogate_objective_function import MLPSurrogateObjectiveFunction
 from .polynomial_regression import PolynomialRegression
 from .surrogate_objective_function import SurrogateObjectiveFunction
 from .xgboost_surrogate_objective_function import XGBoostSurrogateObjectiveFunction
+
+__all__ = [
+    "KNNSurrogateObjectiveFunction",
+    "LocallyWeightedPolynomialRegression",
+    "MLPSurrogateObjectiveFunction",
+    "PolynomialRegression",
+    "SurrogateObjectiveFunction",
+    "XGBoostSurrogateObjectiveFunction",
+]

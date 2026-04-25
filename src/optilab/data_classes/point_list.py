@@ -146,7 +146,7 @@ class PointList:
             points=[
                 point_self
                 for point_self in self.points
-                if not point_self in other.points
+                if point_self not in other.points
             ]
         )
 

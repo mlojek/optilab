@@ -6,11 +6,8 @@ requires = [
 
 [dependency-groups]
 dev = [
-    "black>=26.3.1",
-    "isort>=8.0.1",
     "jupyter>=1.1.1",
     "pre-commit>=4.6.0",
-    "pylint>=4.0.5",
     "pyprojectsort>=0.4.0",
     "pytest>=9.0.3",
     "ruff>=0.15.12",
@@ -54,14 +51,3 @@ optilab = "optilab.__main__:main"
 
 [project.urls]
 Homepage = "https://github.com/mlojek/optilab"
-
-[tool.pylint]
-disable = [
-    "too-few-public-methods",
-    "too-many-arguments",
-    "too-many-branches",
-    "too-many-instance-attributes",
-    "too-many-locals",
-    "too-many-positional-arguments",
-    "too-many-statements",
-]

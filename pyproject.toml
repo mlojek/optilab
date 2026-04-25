@@ -1,3 +1,9 @@
+[dependency-groups]
+dev = [
+    "ruff>=0.15.12",
+    "ty>=0.0.32",
+]
+
 [project]
 authors = [
     { email = "marcin.lojek@pw.edu.pl", name = "mlojek" },
@@ -36,7 +42,7 @@ description = "Simple framework for optimization functions and metamodels"
 name = "optilab"
 readme = "README.md"
 requires-python = ">=3.11.9"
-version = "28"
+version = "29"
 
 [project.scripts]
 optilab = "optilab.__main__:main"

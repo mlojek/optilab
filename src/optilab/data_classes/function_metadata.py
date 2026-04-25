@@ -2,12 +2,12 @@
 Metadata of objective function.
 """
 
-from dataclasses import dataclass
 from typing import Any
 
+from pydantic import BaseModel
 
-@dataclass
-class FunctionMetadata:
+
+class FunctionMetadata(BaseModel):
     """
     Metadata of objective function.
     """

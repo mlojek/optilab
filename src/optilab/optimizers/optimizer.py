@@ -27,7 +27,9 @@ class Optimizer:
             population_size: Size of the population.
             hyperparameters: Dictionary with the hyperparameters of the optimizer.
         """
-        self.metadata = OptimizerMetadata(name, population_size, hyperparameters)
+        self.metadata = OptimizerMetadata(
+            name=name, population_size=population_size, hyperparameters=hyperparameters
+        )
 
     # Stop checker methods
 

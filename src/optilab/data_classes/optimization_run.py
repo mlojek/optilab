@@ -2,11 +2,10 @@
 Class containing information about an optimization run.
 """
 
-from dataclasses import dataclass
-
 import numpy as np
 import pandas as pd
 import scipy
+from pydantic import BaseModel
 
 from .bounds import Bounds
 from .function_metadata import FunctionMetadata
@@ -14,8 +13,7 @@ from .optimizer_metadata import OptimizerMetadata
 from .point_list import PointList
 
 
-@dataclass
-class OptimizationRun:
+class OptimizationRun(BaseModel):
     """
     Dataclass containing information about an optimization run.
     """

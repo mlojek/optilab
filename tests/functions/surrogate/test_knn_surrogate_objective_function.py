@@ -21,20 +21,20 @@ class TestKNNSurrogateObjectiveFunction:
         Test if when the KNN surrogate function is provided with an empty train, it raises
         NotImplementedError when called.
         """
-        train_set = PointList([])
+        train_set = PointList(points=[])
         knn_sof = KNNSurrogateObjectiveFunction(3, train_set)
         with pytest.raises(NotImplementedError):
-            knn_sof(Point(np.array([1])))
+            knn_sof(Point(x=np.array([1])))
 
     def test_train_set_below_num_neighbours(self):
         """
         Test if when the KNN surrogate function is provided with a train set that is smaller than
         the number of neighbours it raises a ValueError as expected.
         """
-        train_set = PointList([Point(np.array([0]), 0, True)])
+        train_set = PointList(points=[Point(x=np.array([0]), y=0, is_evaluated=True)])
         knn_sof = KNNSurrogateObjectiveFunction(3, train_set)
         with pytest.raises(ValueError):
-            knn_sof(Point(np.array([2])))
+            knn_sof(Point(x=np.array([2])))
 
     def test_x_dim_zero(self):
         """
@@ -42,10 +42,10 @@ class TestKNNSurrogateObjectiveFunction:
         empty (or have the dimensionality of 0) the model raises a ValueError.
         """
         train_set = PointList(
-            [
-                Point(np.array([]), 0, True),
-                Point(np.array([]), 1, True),
-                Point(np.array([]), 2, True),
+            points=[
+                Point(x=np.array([]), y=0, is_evaluated=True),
+                Point(x=np.array([]), y=1, is_evaluated=True),
+                Point(x=np.array([]), y=2, is_evaluated=True),
             ]
         )
         with pytest.raises(ValueError):
@@ -57,14 +57,14 @@ class TestKNNSurrogateObjectiveFunction:
         has been calculated by hand and checked here if the KNN returns the expected result.
         """
         train_set = PointList(
-            [
-                Point(np.array([-5]), 2, True),
-                Point(np.array([0]), -3, True),
-                Point(np.array([5]), 3, True),
+            points=[
+                Point(x=np.array([-5]), y=2, is_evaluated=True),
+                Point(x=np.array([0]), y=-3, is_evaluated=True),
+                Point(x=np.array([5]), y=3, is_evaluated=True),
             ]
         )
         knn_sof = KNNSurrogateObjectiveFunction(3, train_set)
-        result = knn_sof(Point(np.array([1])))
+        result = knn_sof(Point(x=np.array([1])))
         assert result.y is not None
         assert np.isclose(-1.353, result.y, atol=1e-3)
 
@@ -73,9 +73,11 @@ class TestKNNSurrogateObjectiveFunction:
         Simple test case. All points have the same x and y and the result is expected to be
         the same y.
         """
-        train_set = PointList([Point(np.array([0]), 1, True)] * 100)
+        train_set = PointList(
+            points=[Point(x=np.array([0]), y=1, is_evaluated=True)] * 100
+        )
         knn_sof = KNNSurrogateObjectiveFunction(5, train_set)
-        y = knn_sof(Point(np.array([100]))).y
+        y = knn_sof(Point(x=np.array([100]))).y
         assert y is not None
         assert np.isclose(y, 1)
         assert knn_sof.num_calls == 1
@@ -87,8 +89,8 @@ class TestKNNSurrogateObjectiveFunction:
         The x is the center of the square, so the expected y value is 2.
         """
         knn_sof = KNNSurrogateObjectiveFunction(4, train_set_2d_square)
-        inference_result = knn_sof(Point(np.array([0, 0])))
-        assert inference_result == Point(np.array([0, 0]))
+        inference_result = knn_sof(Point(x=np.array([0, 0])))
+        assert inference_result == Point(x=np.array([0, 0]))
         assert inference_result.y == 0
         assert not inference_result.is_evaluated
         assert knn_sof.num_calls == 1
@@ -99,11 +101,11 @@ class TestKNNSurrogateObjectiveFunction:
         Check if the initalization fails when x-s in train set have different dimensionality.
         """
         train_set = PointList(
-            [
-                Point(np.array([1, 1]), 1, True),
-                Point(np.array([1, -1]), 3, True),
-                Point(np.array([-1, -1]), 1, True),
-                Point(np.array([-1]), 3, True),
+            points=[
+                Point(x=np.array([1, 1]), y=1, is_evaluated=True),
+                Point(x=np.array([1, -1]), y=3, is_evaluated=True),
+                Point(x=np.array([-1, -1]), y=1, is_evaluated=True),
+                Point(x=np.array([-1]), y=3, is_evaluated=True),
             ]
         )
         with pytest.raises(ValueError):
@@ -117,7 +119,7 @@ class TestKNNSurrogateObjectiveFunction:
         knn_sof = KNNSurrogateObjectiveFunction(4)
         assert not knn_sof.is_ready
         with pytest.raises(NotImplementedError):
-            knn_sof(Point(np.array([10])))
+            knn_sof(Point(x=np.array([10])))
 
     def test_train_later(self, train_set_2d_square):
         """
@@ -127,7 +129,7 @@ class TestKNNSurrogateObjectiveFunction:
         knn_sof = KNNSurrogateObjectiveFunction(4)
         assert not knn_sof.is_ready
         knn_sof.train(train_set_2d_square)
-        assert knn_sof(Point(np.array([0, 0]))).y == 0
+        assert knn_sof(Point(x=np.array([0, 0]))).y == 0
         assert knn_sof.num_calls == 1
         assert knn_sof.metadata.dim == 2
 
@@ -136,7 +138,7 @@ class TestKNNSurrogateObjectiveFunction:
         Check if when knn is provided with item from training set the surrogate returns its value.
         """
         knn_sof = KNNSurrogateObjectiveFunction(3, train_set_2d_square)
-        result = knn_sof(Point(np.array([1, -1])))
+        result = knn_sof(Point(x=np.array([1, -1])))
         assert result.y is not None
         assert np.isclose(result.y, -3)
 
@@ -145,17 +147,17 @@ class TestKNNSurrogateObjectiveFunction:
         Check if when the KNN accepts duplicates in it's training set. It's expected to do so.
         """
         train_set = PointList(
-            [
-                Point(np.array([1, 1]), 1, True),
-                Point(np.array([1, -1]), 2, True),
-                Point(np.array([1, -1]), 2, True),
-                Point(np.array([-1, -1]), 3, True),
-                Point(np.array([-1, 1]), 4, True),
-                Point(np.array([0, 0]), 5, True),
+            points=[
+                Point(x=np.array([1, 1]), y=1, is_evaluated=True),
+                Point(x=np.array([1, -1]), y=2, is_evaluated=True),
+                Point(x=np.array([1, -1]), y=2, is_evaluated=True),
+                Point(x=np.array([-1, -1]), y=3, is_evaluated=True),
+                Point(x=np.array([-1, 1]), y=4, is_evaluated=True),
+                Point(x=np.array([0, 0]), y=5, is_evaluated=True),
             ]
         )
         knn_sof = KNNSurrogateObjectiveFunction(3, train_set)
-        result = knn_sof(Point(np.array([3, -3])))
+        result = knn_sof(Point(x=np.array([3, -3])))
         assert result.y is not None
         assert np.isclose(result.y, 2.75)
 
@@ -164,16 +166,16 @@ class TestKNNSurrogateObjectiveFunction:
         Check if when KNN is trained on new data, the model forgets the old data.
         """
         train_set = PointList(
-            [
-                Point(np.array([1, 1]), 1, True),
-                Point(np.array([1, -1]), 2, True),
-                Point(np.array([1, -1]), 2, True),
-                Point(np.array([-1, -1]), 3, True),
-                Point(np.array([-1, 1]), 4, True),
-                Point(np.array([0, 0]), 5, True),
+            points=[
+                Point(x=np.array([1, 1]), y=1, is_evaluated=True),
+                Point(x=np.array([1, -1]), y=2, is_evaluated=True),
+                Point(x=np.array([1, -1]), y=2, is_evaluated=True),
+                Point(x=np.array([-1, -1]), y=3, is_evaluated=True),
+                Point(x=np.array([-1, 1]), y=4, is_evaluated=True),
+                Point(x=np.array([0, 0]), y=5, is_evaluated=True),
             ]
         )
         knn_sof = KNNSurrogateObjectiveFunction(4, train_set)
         knn_sof.train(train_set_2d_square)
-        assert knn_sof(Point(np.array([0, 0]))).y == 0
+        assert knn_sof(Point(x=np.array([0, 0]))).y == 0
         assert len(knn_sof.train_set) == len(train_set_2d_square)

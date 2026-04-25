@@ -2,12 +2,12 @@
 Metadata of an optimizer model.
 """
 
-from dataclasses import dataclass, field
 from typing import Any
 
+from pydantic import BaseModel, Field
 
-@dataclass
-class OptimizerMetadata:
+
+class OptimizerMetadata(BaseModel):
     """
     Metadata of an optimizer model.
     """
@@ -18,5 +18,5 @@ class OptimizerMetadata:
     population_size: int
     "Number of points generated in each generation."
 
-    hyperparameters: dict[str, Any] = field(default_factory=dict)
+    hyperparameters: dict[str, Any] = Field(default_factory=dict)
     "Other hyperparameters of the optimizer, optional."

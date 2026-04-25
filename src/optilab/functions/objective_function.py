@@ -28,7 +28,9 @@ class ObjectiveFunction:
         """
         if not hyperparameters:
             hyperparameters = {}
-        self.metadata = FunctionMetadata(name, dim, hyperparameters)
+        self.metadata = FunctionMetadata(
+            name=name, dim=dim, hyperparameters=hyperparameters
+        )
         self.num_calls = 0
 
     def __call__(self, point: Point) -> Point:

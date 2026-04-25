@@ -4,16 +4,15 @@ Class holding a list of points.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Iterator, overload
 
 import numpy as np
+from pydantic import BaseModel
 
 from .point import Point
 
 
-@dataclass
-class PointList:
+class PointList(BaseModel):
     """
     Class holding a list of points. Might be used as optimization run result log
     or as a train set for surrogate function.
@@ -93,10 +92,12 @@ class PointList:
         Returns:
             List containing evaluated points.
         """
-        return PointList(list(filter(lambda point: point.is_evaluated, self.points)))
+        return PointList(
+            points=list(filter(lambda point: point.is_evaluated, self.points))
+        )
 
     # magic methods for list abstraction
-    def __iter__(self) -> Iterator[Point]:
+    def __iter__(self) -> Iterator[Point]:  # type: ignore
         return iter(self.points)
 
     @overload
@@ -115,7 +116,7 @@ class PointList:
                 or a new PointList instance for slicing.
         """
         if isinstance(index, slice):
-            return PointList(self.points[index])
+            return PointList(points=self.points[index])
         return self.points[index]
 
     def __len__(self) -> int:
@@ -139,7 +140,7 @@ class PointList:
             sorted(self.points, key=lambda point: point.y, reverse=reverse)
         )
 
-    def x_difference(self, other) -> PointList:
+    def x_difference(self, other: PointList) -> PointList:
         """
         Return list of points in self that do not appear in other based on their x values.
 

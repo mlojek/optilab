@@ -13,7 +13,7 @@ def example_bounds() -> Bounds:
     """
     Example bounds used in bounds handling unit tests.
     """
-    return Bounds(10, 20)
+    return Bounds(lower=10, upper=20)
 
 
 @pytest.fixture()
@@ -22,7 +22,7 @@ def point_in_bounds() -> Point:
     Point that lies within the example_bounds fixture.
     Expected values for bounds handlers is the same as the point.
     """
-    return Point(np.array([14]))
+    return Point(x=np.array([14]))
 
 
 @pytest.fixture()
@@ -31,7 +31,7 @@ def point_equal_lower_bound() -> Point:
     Point that lies on the lower bound of example_bounds fixture.
     Expected values for all bounds handlers are equal to the point.
     """
-    return Point(np.array([10]))
+    return Point(x=np.array([10]))
 
 
 @pytest.fixture()
@@ -40,7 +40,7 @@ def point_equal_upper_bound() -> Point:
     Point that lies on the upper bound of example_bounds fixture.
     Expected values for all bounds handlers are equal to the point.
     """
-    return Point(np.array([20]))
+    return Point(x=np.array([20]))
 
 
 @pytest.fixture()
@@ -52,7 +52,7 @@ def point_below_bounds() -> Point:
     - wrap: 12
     - project: 10
     """
-    return Point(np.array([2]))
+    return Point(x=np.array([2]))
 
 
 @pytest.fixture()
@@ -64,7 +64,7 @@ def point_above_bounds() -> Point:
     - wrap: 13
     - project: 20
     """
-    return Point(np.array([23]))
+    return Point(x=np.array([23]))
 
 
 @pytest.fixture
@@ -77,7 +77,7 @@ def point_twice_below_bounds() -> Point:
     - wrap: 16
     - project: 10
     """
-    return Point(np.array([-4]))
+    return Point(x=np.array([-4]))
 
 
 @pytest.fixture
@@ -90,7 +90,7 @@ def point_twice_above_bounds() -> Point:
     - wrap: 12
     - project: 20
     """
-    return Point(np.array([32]))
+    return Point(x=np.array([32]))
 
 
 @pytest.fixture
@@ -102,7 +102,7 @@ def point_multidimensional() -> Point:
     - wrap: [14, 10, 20, 12, 13, 16, 12]
     - project: [14, 10, 20, 10, 20, 10, 20]
     """
-    return Point(np.array([14, 10, 20, 2, 23, -4, 32]))
+    return Point(x=np.array([14, 10, 20, 2, 23, -4, 32]))
 
 
 @pytest.fixture

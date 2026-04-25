@@ -3,16 +3,15 @@ Class representing bounds of the search space.
 """
 
 from copy import deepcopy
-from dataclasses import dataclass
 
 import numpy as np
+from pydantic import BaseModel
 
 from .point import Point
 from .point_list import PointList
 
 
-@dataclass
-class Bounds:
+class Bounds(BaseModel):
     """
     Class representing bounds of the search space.
     """
@@ -79,7 +78,7 @@ class Bounds:
         Returns:
             Randomly sampled point from the search space.
         """
-        return Point(np.random.uniform(low=self.lower, high=self.upper, size=dim))
+        return Point(x=np.random.uniform(low=self.lower, high=self.upper, size=dim))
 
     def random_point_list(self, num_points: int, dim: int) -> PointList:
         """
@@ -92,7 +91,7 @@ class Bounds:
         Returns:
             List of randomly sampled points from the search space.
         """
-        return PointList([self.random_point(dim) for _ in range(num_points)])
+        return PointList(points=[self.random_point(dim) for _ in range(num_points)])
 
     # search space bounds handling methods
     def reflect(self, point: Point) -> Point:

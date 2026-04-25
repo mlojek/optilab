@@ -3,7 +3,6 @@ Plotting and calculating ECDF curves.
 """
 
 import math
-from typing import Dict, List, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,11 +12,11 @@ from .convergence_curve import convergence_curve
 
 
 def _ecdf_thresholding(
-    log: List[float],
-    thresholds: List[float],
+    log: list[float],
+    thresholds: np.ndarray,
     n_dimensions: int,
     extend_to_len: int | None = None,
-) -> Tuple[List[float], List[float]]:
+) -> tuple[list[float], list[float]]:
     """
     Perform thresholding of a log with a given list of thresholds.
     The resulting y is the number of thresholds achieved by the log items.
@@ -30,7 +29,7 @@ def _ecdf_thresholding(
     Returns:
         x and y values for the curve.
     """
-    y = [np.sum(thresholds >= item) / len(thresholds) for item in log]
+    y = [float(np.sum(thresholds >= item)) / len(thresholds) for item in log]
 
     if extend_to_len:
         if extend_to_len < len(y):
@@ -45,11 +44,11 @@ def _ecdf_thresholding(
 
 
 def ecdf_curve(
-    data: Dict[str, List[PointList]],
+    data: dict[str, list[PointList]],
     n_dimensions: int,
     allowed_error: float,
     n_thresholds: int = 100,
-) -> Dict[str, Tuple[List[float], List[float]]]:
+) -> dict[str, tuple[list[float], list[float]]]:
     """
     Calculate ECDF curves.
 
@@ -101,7 +100,7 @@ def ecdf_curve(
 
 
 def plot_ecdf_curves(
-    data: Dict[str, PointList],
+    data: dict[str, list[PointList]],
     n_dimensions: int,
     allowed_error: float,
     n_thresholds: int = 100,

@@ -155,10 +155,12 @@ class TestPointList:
         Test if x getter method works correctly.
         """
         assert np.all(
-            np.all(x, expected)
-            for x, expected in zip(
-                example_2d_pointlist.x(), [[0, 0], [1, 0], [0, 1], [-1, 0], [1, -1]]
-            )
+            [
+                np.all(x == expected)
+                for x, expected in zip(
+                    example_2d_pointlist.x(), [[0, 0], [1, 0], [0, 1], [-1, 0], [1, -1]]
+                )
+            ]
         )
 
     def test_get_x_empty(self):

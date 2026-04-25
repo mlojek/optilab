@@ -25,7 +25,6 @@ class TopHalfPolyregIpopCmaEs(CmaEs):
     that CMA-ES updates its state exclusively from real evaluations.
     """
 
-    # pylint: disable=super-init-not-called, non-parent-init-called
     def __init__(
         self,
         population_size: int,
@@ -46,7 +45,6 @@ class TopHalfPolyregIpopCmaEs(CmaEs):
             {"buffer_size": buffer_size},
         )
 
-    # pylint: disable=duplicate-code
     def optimize(
         self,
         function: ObjectiveFunction,

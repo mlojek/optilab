@@ -2,6 +2,7 @@
 Pytest fixtures used in Bounds handling unit tests.
 """
 
+import numpy as np
 import pytest
 
 from optilab.data_classes import Bounds, Point
@@ -21,7 +22,7 @@ def point_in_bounds() -> Point:
     Point that lies within the example_bounds fixture.
     Expected values for bounds handlers is the same as the point.
     """
-    return Point([14])
+    return Point(np.array([14]))
 
 
 @pytest.fixture()
@@ -30,7 +31,7 @@ def point_equal_lower_bound() -> Point:
     Point that lies on the lower bound of example_bounds fixture.
     Expected values for all bounds handlers are equal to the point.
     """
-    return Point([10])
+    return Point(np.array([10]))
 
 
 @pytest.fixture()
@@ -39,7 +40,7 @@ def point_equal_upper_bound() -> Point:
     Point that lies on the upper bound of example_bounds fixture.
     Expected values for all bounds handlers are equal to the point.
     """
-    return Point([20])
+    return Point(np.array([20]))
 
 
 @pytest.fixture()
@@ -51,7 +52,7 @@ def point_below_bounds() -> Point:
     - wrap: 12
     - project: 10
     """
-    return Point([2])
+    return Point(np.array([2]))
 
 
 @pytest.fixture()
@@ -63,7 +64,7 @@ def point_above_bounds() -> Point:
     - wrap: 13
     - project: 20
     """
-    return Point([23])
+    return Point(np.array([23]))
 
 
 @pytest.fixture
@@ -76,7 +77,7 @@ def point_twice_below_bounds() -> Point:
     - wrap: 16
     - project: 10
     """
-    return Point([-4])
+    return Point(np.array([-4]))
 
 
 @pytest.fixture
@@ -89,7 +90,7 @@ def point_twice_above_bounds() -> Point:
     - wrap: 12
     - project: 20
     """
-    return Point([32])
+    return Point(np.array([32]))
 
 
 @pytest.fixture
@@ -101,7 +102,7 @@ def point_multidimensional() -> Point:
     - wrap: [14, 10, 20, 12, 13, 16, 12]
     - project: [14, 10, 20, 10, 20, 10, 20]
     """
-    return Point([14, 10, 20, 2, 23, -4, 32])
+    return Point(np.array([14, 10, 20, 2, 23, -4, 32]))
 
 
 @pytest.fixture
@@ -110,4 +111,4 @@ def evaluated_point() -> Point:
     An evaluated point, with y value and is_evaluated set to True.
     Used to check if the handled point has the same y and is_evaluated values.
     """
-    return Point(x=[14, 10, 20, -4], y=10.1, is_evaluated=True)
+    return Point(x=np.array([14, 10, 20, -4]), y=10.1, is_evaluated=True)

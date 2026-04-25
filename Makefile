@@ -21,6 +21,7 @@ format:
 
 check: format
 	uvx ruff check ${all_code}
+	uvx ty check ${all_code}
 	uvx pyprojectsort pyproject.toml --check
 
 test:

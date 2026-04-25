@@ -28,8 +28,8 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         """
         self.num_neighbors = num_neighbors
 
-        self.faiss_index = None
-        self.y_train = None
+        self.faiss_index: faiss.IndexFlatL2 | None = None
+        self.y_train: np.ndarray | None = None
 
         super().__init__(
             f"FastKNN{num_neighbors}",
@@ -51,7 +51,7 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         y_train = np.array(y_train, dtype=np.float64)
 
         self.faiss_index = faiss.IndexFlatL2(x_train.shape[1])
-        self.faiss_index.add(  # pylint: disable=no-value-for-parameter
+        self.faiss_index.add(  # type: ignore
             x_train.astype(np.float32)
         )
         self.y_train = y_train
@@ -67,12 +67,15 @@ class KNNSurrogateObjectiveFunction(SurrogateObjectiveFunction):
             Estimated value of the function at the given point.
         """
         super().__call__(point)
+        assert point.x is not None
+        assert self.faiss_index is not None
+        assert self.y_train is not None
 
         if len(self.train_set) < self.num_neighbors:
             raise ValueError("Train set length is below number of neighbors.")
 
         x_query = np.array([point.x], dtype=np.float64)
-        distances, indices = self.faiss_index.search(  # pylint: disable=no-value-for-parameter
+        distances, indices = self.faiss_index.search(  # type: ignore
             x_query.astype(np.float32),
             self.num_neighbors,
         )

@@ -36,6 +36,7 @@ class AckleyFunction(ObjectiveFunction):
             Evaluated point.
         """
         super().__call__(point)
+        assert point.x is not None
         function_value = (
             20
             - 20

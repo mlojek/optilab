@@ -30,7 +30,6 @@ class LmmIpopCmaEs(CmaEs):
             polynomial_dim: Dimension of the polynomial regression.
         """
         # Skipping super().__init__ and calling grandparent init instead.
-        # pylint: disable=super-init-not-called, non-parent-init-called
         Optimizer.__init__(
             self,
             "lmm-ipop-cma-es",
@@ -40,7 +39,6 @@ class LmmIpopCmaEs(CmaEs):
             },
         )
 
-    # pylint: disable=duplicate-code
     def optimize(
         self,
         function: ObjectiveFunction,
@@ -98,6 +96,9 @@ class LmmIpopCmaEs(CmaEs):
                 tolerance,
             ):
                 solutions = PointList.from_list(es.ask())
+                assert isinstance(
+                    metamodel.surrogate_function, LocallyWeightedPolynomialRegression
+                )
                 metamodel.surrogate_function.set_covariance_matrix(es.C)
                 metamodel.adapt(solutions)
                 xy_pairs = metamodel(solutions)

@@ -87,14 +87,14 @@ def main():
     args = parser.parse_args()
 
     stats_to_aggregate_df = pd.DataFrame(
-        columns=["model", "function", "y_median", "y_iqr"]
+        columns=["model", "function", "y_median", "y_iqr"]  # type: ignore
     )
 
     y_pvalues_to_aggregate_df = pd.DataFrame(
-        columns=["model", "function", "alternative", "pvalue"]
+        columns=["model", "function", "alternative", "pvalue"]  # type: ignore
     )
     evals_pvalues_to_aggregate_df = pd.DataFrame(
-        columns=["model", "function", "alternative", "pvalue"]
+        columns=["model", "function", "alternative", "pvalue"]  # type: ignore
     )
 
     file_path_list = list_all_pickles(args.pickle_path)
@@ -215,7 +215,8 @@ def main():
 
             if not args.no_save:
                 pvalues_y_df = pd.DataFrame(
-                    columns=list(range(len(data))), data=pvalues_y
+                    columns=list(range(len(data))),  # type: ignore
+                    data=pvalues_y,
                 )
                 pvalues_y_df.to_csv(args.save_path / f"{filename_stem}.pvalues_y.csv")
 
@@ -268,7 +269,8 @@ def main():
 
             if not args.no_save:
                 pvalues_evals_df = pd.DataFrame(
-                    columns=list(range(len(data))), data=pvalues_evals
+                    columns=list(range(len(data))),  # type: ignore
+                    data=pvalues_evals,
                 )
                 pvalues_evals_df.to_csv(
                     args.save_path / f"{filename_stem}.pvalues_evals.csv"

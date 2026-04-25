@@ -34,6 +34,7 @@ class BentCigarFunction(ObjectiveFunction):
             Evaluated point.
         """
         super().__call__(point)
+        assert point.x is not None
         return Point(
             x=point.x,
             y=point.x[0] ** 2 + sum(point.x[1:] ** 2) * (10**6),

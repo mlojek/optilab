@@ -2,8 +2,8 @@
 Metadata of an optimizer model.
 """
 
-from dataclasses import dataclass
-from typing import Any, Dict
+from dataclasses import dataclass, field
+from typing import Any
 
 
 @dataclass
@@ -18,5 +18,5 @@ class OptimizerMetadata:
     population_size: int
     "Number of points generated in each generation."
 
-    hyperparameters: Dict[str, Any] | None = None
+    hyperparameters: dict[str, Any] = field(default_factory=dict)
     "Other hyperparameters of the optimizer, optional."

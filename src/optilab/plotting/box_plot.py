@@ -2,13 +2,11 @@
 Plotting optimization results with box plot.
 """
 
-from typing import Dict, List
-
 from matplotlib import pyplot as plt
 
 
 def plot_box_plot(
-    data: Dict[str, List[float]],
+    data: dict[str, list[float]],
     savepath: str | None = None,
     *,
     show: bool = True,

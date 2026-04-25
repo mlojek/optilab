@@ -64,7 +64,9 @@ class TestKNNSurrogateObjectiveFunction:
             ]
         )
         knn_sof = KNNSurrogateObjectiveFunction(3, train_set)
-        assert np.isclose(-1.353, knn_sof(Point(np.array([1]))).y, atol=1e-3)
+        result = knn_sof(Point(np.array([1])))
+        assert result.y is not None
+        assert np.isclose(-1.353, result.y, atol=1e-3)
 
     def test_all_same(self):
         """
@@ -74,6 +76,7 @@ class TestKNNSurrogateObjectiveFunction:
         train_set = PointList([Point(np.array([0]), 1, True)] * 100)
         knn_sof = KNNSurrogateObjectiveFunction(5, train_set)
         y = knn_sof(Point(np.array([100]))).y
+        assert y is not None
         assert np.isclose(y, 1)
         assert knn_sof.num_calls == 1
         assert knn_sof.metadata.dim == 1
@@ -133,7 +136,9 @@ class TestKNNSurrogateObjectiveFunction:
         Check if when knn is provided with item from training set the surrogate returns its value.
         """
         knn_sof = KNNSurrogateObjectiveFunction(3, train_set_2d_square)
-        assert np.isclose(knn_sof(Point(np.array([1, -1]))).y, -3)
+        result = knn_sof(Point(np.array([1, -1])))
+        assert result.y is not None
+        assert np.isclose(result.y, -3)
 
     def test_knn_duplicates_in_training_set(self):
         """
@@ -150,7 +155,9 @@ class TestKNNSurrogateObjectiveFunction:
             ]
         )
         knn_sof = KNNSurrogateObjectiveFunction(3, train_set)
-        assert np.isclose(knn_sof(Point(np.array([3, -3]))).y, 2.75)
+        result = knn_sof(Point(np.array([3, -3])))
+        assert result.y is not None
+        assert np.isclose(result.y, 2.75)
 
     def test_retrain_on_new_train_set(self, train_set_2d_square):
         """

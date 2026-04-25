@@ -5,7 +5,7 @@ Class holding a list of points.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import Iterator, overload
 
 import numpy as np
 
@@ -19,12 +19,12 @@ class PointList:
     or as a train set for surrogate function.
     """
 
-    points: List[Point]
+    points: list[Point]
     "The list of points"
 
     # alternative constructors
     @classmethod
-    def from_list(cls, xs: List[np.ndarray]) -> PointList:
+    def from_list(cls, xs: list[np.ndarray]) -> PointList:
         """
         Alternative constructor that takes a list of x values.
 
@@ -76,7 +76,7 @@ class PointList:
         """
         return np.array([point.y for point in self.points], dtype=np.float64)
 
-    def pairs(self) -> Tuple[np.ndarray, np.ndarray]:
+    def pairs(self) -> tuple[np.ndarray, np.ndarray]:
         """
         Return the contents of this point list as list of x and list of y values.
         This is potentially useful for quickly accesing point values for training surrofates.
@@ -96,6 +96,13 @@ class PointList:
         return PointList(list(filter(lambda point: point.is_evaluated, self.points)))
 
     # magic methods for list abstraction
+    def __iter__(self) -> Iterator[Point]:
+        return iter(self.points)
+
+    @overload
+    def __getitem__(self, index: int) -> Point: ...
+    @overload
+    def __getitem__(self, index: slice) -> PointList: ...
     def __getitem__(self, index: int | slice) -> Point | PointList:
         """
         Allows indexing and slicing this object like a list.

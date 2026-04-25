@@ -26,8 +26,8 @@ class NoisyFunction(ObjectiveFunction):
             noise: Noise value of the function.
         """
         super().__init__(
-            f"noisy_{function.name}_{noise}",
-            function.dim,
+            f"noisy_{function.metadata.name}_{noise}",
+            function.metadata.dim,
             {"noise": noise},
         )
         self.function = function

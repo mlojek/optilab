@@ -84,9 +84,7 @@ class ApproximateRankingMetamodel:
         Retrain the surrogate function with samples from the training set.
         """
         if self.buffer_size:
-            self.surrogate_function.train(
-                PointList(self.train_set[-self.buffer_size :])
-            )
+            self.surrogate_function.train(self.train_set[-self.buffer_size :])
         else:
             self.surrogate_function.train(self.train_set)
 

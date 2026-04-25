@@ -3,8 +3,6 @@ Inter-extra-polation surrogate metamodel.
 It uses different surrogate functions for interpolation and extrapolation.
 """
 
-# pylint: disable=no-name-in-module
-
 from scipy.spatial import ConvexHull
 from shapely.geometry import Point as ShapelyPoint
 from shapely.geometry import Polygon
@@ -80,6 +78,7 @@ class IEPolationSurrogate(SurrogateObjectiveFunction):
         Returns:
             True if the given point lies inside the convex hull, False otherwise.
         """
+        assert self.convex_hull is not None
         return self.convex_hull.contains(ShapelyPoint(point.x))
 
     def __call__(self, point: Point) -> Point:

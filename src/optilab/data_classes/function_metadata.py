@@ -3,7 +3,7 @@ Metadata of objective function.
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
 
 
 @dataclass
@@ -18,5 +18,5 @@ class FunctionMetadata:
     dim: int
     "Dimensionality of the function."
 
-    hyperparameters: Dict[str, Any]
+    hyperparameters: dict[str, Any]
     "Other hyperparameters of the function."

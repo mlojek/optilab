@@ -17,7 +17,6 @@ class KnnIpopCmaEs(CmaEs):
     metamodel similar to LMM-CMA-ES.
     """
 
-    # pylint: disable=super-init-not-called, non-parent-init-called
     def __init__(
         self,
         population_size: int,
@@ -43,7 +42,6 @@ class KnnIpopCmaEs(CmaEs):
             {"num_neighbors": num_neighbors, "buffer_size": buffer_size},
         )
 
-    # pylint: disable=duplicate-code
     def optimize(
         self,
         function: ObjectiveFunction,

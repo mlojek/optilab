@@ -36,6 +36,7 @@ class Point:
         Returns:
             Dimensionality of the point, equal to length of x.
         """
+        assert self.x is not None
         return len(self.x)
 
     def remove_x(self) -> None:
@@ -55,4 +56,5 @@ class Point:
         Returns:
             True if x values of self and other are equal, False otherwise.
         """
+        assert self.x is not None
         return np.array_equal(self.x, other.x)

@@ -23,7 +23,7 @@ def test_polynomial_regression():
         features = poly.fit_transform([x.x])[0]
         return Point(x=x.x, y=sum(coeffs * features), is_evaluated=True)
 
-    x = PointList.from_list(np.random.random((1000, 2)))
+    x = PointList.from_list(list(np.random.random((1000, 2))))
     train_set = PointList([polynomial(i) for i in x])
     p = PolynomialRegression(2, train_set)
     t = np.isclose(p.weights, np.array([1, 2, 3, 4, 5, 6]))

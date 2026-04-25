@@ -4,7 +4,7 @@ Functions related to loading and dumping optimization results to pickle files.
 
 import pickle
 from pathlib import Path
-from typing import Any, List
+from typing import Any
 
 import zstandard as zstd
 
@@ -55,7 +55,7 @@ def load_from_pickle(pickle_path: Path) -> Any:
     return data
 
 
-def list_all_pickles(path: Path) -> List[Path]:
+def list_all_pickles(path: Path) -> list[Path]:
     """
     Given a path to either a file or directory return a list of all pickle files present there.
 

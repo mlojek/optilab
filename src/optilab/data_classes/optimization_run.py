@@ -3,7 +3,6 @@ Class containing information about an optimization run.
 """
 
 from dataclasses import dataclass
-from typing import List
 
 import numpy as np
 import pandas as pd
@@ -33,10 +32,10 @@ class OptimizationRun:
     tolerance: float
     "Tolerated error value to stop the search."
 
-    logs: List[PointList]
+    logs: list[PointList]
     "Logs of points from the optimization runs."
 
-    def bests_y(self, raw_values: bool = False) -> List[float]:
+    def bests_y(self, raw_values: bool = False) -> list[float]:
         """
         Get a list of best y values from each log.
 
@@ -50,7 +49,7 @@ class OptimizationRun:
         tolerance = -np.inf if raw_values else self.tolerance
         return [max(log.best_y(), tolerance) for log in self.logs]
 
-    def log_lengths(self) -> List[float]:
+    def log_lengths(self) -> list[float]:
         """
         Get a list of log lengths.
 

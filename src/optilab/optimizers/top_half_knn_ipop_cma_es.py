@@ -25,7 +25,6 @@ class TopHalfKnnIpopCmaEs(CmaEs):
     state exclusively from real evaluations.
     """
 
-    # pylint: disable=super-init-not-called, non-parent-init-called
     def __init__(
         self,
         population_size: int,
@@ -50,7 +49,6 @@ class TopHalfKnnIpopCmaEs(CmaEs):
             {"num_neighbors": num_neighbors, "buffer_size": buffer_size},
         )
 
-    # pylint: disable=duplicate-code
     def optimize(
         self,
         function: ObjectiveFunction,

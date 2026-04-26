@@ -1,9 +1,11 @@
-FROM python:3.13
+FROM python:3.13-slim
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /optilab
 
 COPY . .
 
-RUN make install
+RUN uv sync --frozen
 
-ENTRYPOINT /bin/bash
+ENTRYPOINT ["/bin/bash"]

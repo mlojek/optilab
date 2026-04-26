@@ -40,13 +40,13 @@ class OptilabCLI:
         self.test_y: bool = args.test_y
 
         self.stats_to_aggregate_df = pd.DataFrame(
-            columns=["model", "function", "y_median", "y_iqr"]  # type: ignore
+            columns=["model", "function", "y_median", "y_iqr"]
         )
         self.y_pvalues_to_aggregate_df = pd.DataFrame(
-            columns=["model", "function", "alternative", "pvalue"]  # type: ignore
+            columns=["model", "function", "alternative", "pvalue"]
         )
         self.evals_pvalues_to_aggregate_df = pd.DataFrame(
-            columns=["model", "function", "alternative", "pvalue"]  # type: ignore
+            columns=["model", "function", "alternative", "pvalue"]
         )
 
     def run(self) -> None:
@@ -217,7 +217,7 @@ class OptilabCLI:
 
         if not self.no_save:
             pvalues_y_df = pd.DataFrame(
-                columns=list(range(len(data))),  # type: ignore
+                columns=list(range(len(data))),
                 data=pvalues_y,
             )
             pvalues_y_df.to_csv(self.save_path / f"{filename_stem}.pvalues_y.csv")
@@ -279,7 +279,7 @@ class OptilabCLI:
 
         if not self.no_save:
             pvalues_evals_df = pd.DataFrame(
-                columns=list(range(len(data))),  # type: ignore
+                columns=list(range(len(data))),
                 data=pvalues_evals,
             )
             pvalues_evals_df.to_csv(

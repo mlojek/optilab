@@ -24,7 +24,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: dependencies installation
-        run: make install clean
+        run: make install
 
       - name: static code analysis
         run: make check

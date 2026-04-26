@@ -1564,7 +1564,7 @@ requires-dist = [
     { name = "pandas", specifier = "==2.2.3" },
     { name = "pydantic", specifier = ">=2.0" },
     { name = "scikit-learn", specifier = "==1.5.2" },
-    { name = "shapely", specifier = "==2.0.6" },
+    { name = "shapely", specifier = ">=2.0.6" },
     { name = "tabulate" },
     { name = "tqdm" },
     { name = "xgboost" },

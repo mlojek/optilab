@@ -28,12 +28,8 @@ def aggregate_pvalues(pvalues_df: pd.DataFrame, significance: float) -> pd.DataF
 
     aggregated_data = []
 
-    sum_better_row = {"function": "total", "alternative": "better"} | {
-        model: 0 for model in model_list
-    }
-    sum_worse_row = {"function": "total", "alternative": "worse"} | {
-        model: 0 for model in model_list
-    }
+    better_counts: dict[str, int] = {model: 0 for model in model_list}
+    worse_counts: dict[str, int] = {model: 0 for model in model_list}
 
     for function, alternative in func_dir_list:
         row = {"function": function, "alternative": alternative}
@@ -51,14 +47,19 @@ def aggregate_pvalues(pvalues_df: pd.DataFrame, significance: float) -> pd.DataF
 
                 if value.values[0] < significance:
                     if alternative == "better":
-                        sum_better_row[model] += 1
+                        better_counts[model] += 1
                     elif alternative == "worse":
-                        sum_worse_row[model] += 1
+                        worse_counts[model] += 1
             else:
                 row[model] = None
 
         aggregated_data.append(row)
 
-    aggregated_data.extend([sum_better_row, sum_worse_row])
+    aggregated_data.extend(
+        [
+            {"function": "total", "alternative": "better"} | better_counts,
+            {"function": "total", "alternative": "worse"} | worse_counts,
+        ]
+    )
 
     return pd.DataFrame(aggregated_data)

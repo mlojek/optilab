@@ -3,8 +3,6 @@ Top half metamodel. Estimates all points using the surrogate function, then
 evaluates the top mu (typically half) points with the objective function.
 """
 
-# pylint: disable=duplicate-code
-
 from ..data_classes import PointList
 from ..functions import ObjectiveFunction
 from ..functions.surrogate import SurrogateObjectiveFunction
@@ -98,6 +96,7 @@ class TopHalfMetamodel:
         evaluated.rank()
 
         # penalize worst points
+        assert evaluated[-1].y is not None
         penalty_y = evaluated[-1].y + 1
         not_evaluated = estimated[self.mu :]
 

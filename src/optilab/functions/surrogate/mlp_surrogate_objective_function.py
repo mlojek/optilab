@@ -2,8 +2,6 @@
 Surrogate objective function using sklearn MLPRegressor.
 """
 
-from typing import Tuple
-
 import numpy as np
 from sklearn.neural_network import MLPRegressor
 
@@ -18,7 +16,7 @@ class MLPSurrogateObjectiveFunction(SurrogateObjectiveFunction):
 
     def __init__(
         self,
-        hidden_layer_sizes: Tuple[int] = (32,),
+        hidden_layer_sizes: tuple[int, ...] = (32,),
         train_set: PointList | None = None,
         *,
         activation: str = "relu",
@@ -98,7 +96,6 @@ class MLPSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         with np.errstate(divide="ignore", over="ignore", invalid="ignore"):
             self.model.fit(x_train, y_train)
 
-    # pylint: disable=duplicate-code
     def __call__(self, point: Point) -> Point:
         """
         Estimate the function value at a given point using MLP regression.
@@ -115,6 +112,7 @@ class MLPSurrogateObjectiveFunction(SurrogateObjectiveFunction):
 
         # ignore warnings about overflows and zero divisions when covariance matrix
         # is ill-conditioned
+        assert self.model is not None
         with np.errstate(divide="ignore", over="ignore", invalid="ignore"):
             y_pred = self.model.predict(x_query)[0]
 

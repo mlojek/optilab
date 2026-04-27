@@ -6,7 +6,6 @@ import os
 
 # Prevent OpenMP segfault when both FAISS and XGBoost are loaded in the same process
 # (known conflict on macOS with duplicate libomp).
-# pylint: disable=C0413
 if "OMP_NUM_THREADS" not in os.environ:
     os.environ["OMP_NUM_THREADS"] = "1"
 
@@ -41,7 +40,7 @@ class XGBoostSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         self.n_estimators = n_estimators
         self.max_depth = max_depth
         self.learning_rate = learning_rate
-        self.model = None
+        self.model: xgb.XGBRegressor | None = None
 
         super().__init__(
             f"XGBoost_n{n_estimators}_d{max_depth}",
@@ -84,6 +83,7 @@ class XGBoostSurrogateObjectiveFunction(SurrogateObjectiveFunction):
         """
         super().__call__(point)
 
+        assert self.model is not None
         x_query = np.array([point.x], dtype=np.float64)
         y_pred = self.model.predict(x_query)[0]
 

@@ -15,7 +15,6 @@ class IpopCmaEs(CmaEs):
 
     def __init__(self, population_size: int):
         # Skipping super().__init__ and calling grandparent init instead.
-        # pylint: disable=super-init-not-called, non-parent-init-called
         Optimizer.__init__(
             self,
             "ipop-cma-es",
@@ -23,7 +22,6 @@ class IpopCmaEs(CmaEs):
             {},
         )
 
-    # pylint: disable=duplicate-code
     def optimize(
         self,
         function: ObjectiveFunction,

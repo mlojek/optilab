@@ -2,7 +2,7 @@
 Base class representing a callable objective function.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from ..data_classes import FunctionMetadata, Point
 
@@ -16,7 +16,7 @@ class ObjectiveFunction:
         self,
         name: str,
         dim: int,
-        hyperparameters: Dict[str, Any] | None = None,
+        hyperparameters: dict[str, Any] | None = None,
     ) -> None:
         """
         Class constructor.
@@ -28,12 +28,14 @@ class ObjectiveFunction:
         """
         if not hyperparameters:
             hyperparameters = {}
-        self.metadata = FunctionMetadata(name, dim, hyperparameters)
+        self.metadata = FunctionMetadata(
+            name=name, dim=dim, hyperparameters=hyperparameters
+        )
         self.num_calls = 0
 
     def __call__(self, point: Point) -> Point:
         """
-        Evaluate a single point with the objective function.
+        Validate point dimensionality and increment call counter.
 
         Args:
             point: Point to evaluate.
@@ -42,11 +44,13 @@ class ObjectiveFunction:
             ValueError: If dimensionality of x doesn't match self.dim
 
         Returns:
-            Evaluated point.
+            The validated point (subclasses return a new evaluated Point).
         """
+        assert point.x is not None
         if not len(point.x) == self.metadata.dim:
             raise ValueError(
                 f"The dimensionality of the provided point is not matching the dimensionality"
                 f"of the function. Expected {self.metadata.dim}, got {len(point.x)}"
             )
         self.num_calls += 1
+        return point

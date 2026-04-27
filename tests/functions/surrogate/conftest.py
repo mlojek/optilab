@@ -15,10 +15,10 @@ def fixture_train_set_2d_square() -> PointList:
     The expected value for point [0, 0] is 0.
     """
     return PointList(
-        [
-            Point(np.array([1, 1]), 3, True),
-            Point(np.array([1, -1]), -3, True),
-            Point(np.array([-1, -1]), 3, True),
-            Point(np.array([-1, 1]), -3, True),
+        points=[
+            Point(x=np.array([1, 1]), y=3, is_evaluated=True),
+            Point(x=np.array([1, -1]), y=-3, is_evaluated=True),
+            Point(x=np.array([-1, -1]), y=3, is_evaluated=True),
+            Point(x=np.array([-1, 1]), y=-3, is_evaluated=True),
         ]
     )

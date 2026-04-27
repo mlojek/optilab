@@ -2,6 +2,8 @@
 Sphere function. y is the sum of squares of elements of x vector.
 """
 
+import numpy as np
+
 from ...data_classes import Point
 from ..objective_function import ObjectiveFunction
 
@@ -34,8 +36,9 @@ class SphereFunction(ObjectiveFunction):
             Evaluated point.
         """
         super().__call__(point)
+        assert point.x is not None
         return Point(
             x=point.x,
-            y=sum(point.x**2),
+            y=float(np.sum(point.x**2)),
             is_evaluated=True,
         )

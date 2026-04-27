@@ -36,6 +36,7 @@ class RastriginFunction(ObjectiveFunction):
             Evaluated point.
         """
         super().__call__(point)
+        assert point.x is not None
 
         return Point(
             x=point.x,

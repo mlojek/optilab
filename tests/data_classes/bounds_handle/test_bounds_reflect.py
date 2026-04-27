@@ -3,7 +3,6 @@ Unit tests for Bounds.reflect method.
 """
 
 import numpy as np
-import pytest
 
 
 class TestBoundsReflect:

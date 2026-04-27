@@ -34,6 +34,7 @@ class IncreasingWeightCigar(ObjectiveFunction):
             Evaluated point.
         """
         super().__call__(point)
+        assert point.x is not None
         return Point(
             x=point.x,
             y=sum(10**i * x_i**2 for i, x_i in enumerate(point.x)),

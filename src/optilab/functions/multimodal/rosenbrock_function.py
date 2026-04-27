@@ -34,6 +34,7 @@ class RosenbrockFunction(ObjectiveFunction):
             Evaluated point.
         """
         super().__call__(point)
+        assert point.x is not None
 
         function_value = sum(
             100 * (x_i**2 - x_i_next) ** 2 + (x_i - 1) ** 2

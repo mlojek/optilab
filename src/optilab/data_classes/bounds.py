@@ -3,17 +3,15 @@ Class representing bounds of the search space.
 """
 
 from copy import deepcopy
-from dataclasses import dataclass
-from typing import List
 
 import numpy as np
+from pydantic import BaseModel
 
 from .point import Point
 from .point_list import PointList
 
 
-@dataclass
-class Bounds:
+class Bounds(BaseModel):
     """
     Class representing bounds of the search space.
     """
@@ -24,7 +22,7 @@ class Bounds:
     upper: float
     "The upper bound of search space."
 
-    def to_list(self) -> List[float]:
+    def to_list(self) -> list[float]:
         """
         Return the bounds as a list of two floats.
 
@@ -33,14 +31,14 @@ class Bounds:
         """
         return [self.lower, self.upper]
 
-    def __len__(self) -> float:
+    def __len__(self) -> int:
         """
         Returns the width of the search space - the distance between the lower and upper bound.
 
         Returns:
             The width of the search space.
         """
-        return self.upper - self.lower
+        return int(self.upper - self.lower)
 
     def __str__(self) -> str:
         """
@@ -67,7 +65,8 @@ class Bounds:
         Returns:
             True if point lies in the bounds.
         """
-        return np.all((point.x >= self.lower) & (point.x <= self.upper))
+        assert point.x is not None
+        return bool(np.all((point.x >= self.lower) & (point.x <= self.upper)))
 
     def random_point(self, dim: int) -> Point:
         """
@@ -79,7 +78,7 @@ class Bounds:
         Returns:
             Randomly sampled point from the search space.
         """
-        return Point(np.random.uniform(low=self.lower, high=self.upper, size=dim))
+        return Point(x=np.random.uniform(low=self.lower, high=self.upper, size=dim))
 
     def random_point_list(self, num_points: int, dim: int) -> PointList:
         """
@@ -92,7 +91,7 @@ class Bounds:
         Returns:
             List of randomly sampled points from the search space.
         """
-        return PointList([self.random_point(dim) for _ in range(num_points)])
+        return PointList(points=[self.random_point(dim) for _ in range(num_points)])
 
     # search space bounds handling methods
     def reflect(self, point: Point) -> Point:
@@ -106,6 +105,7 @@ class Bounds:
         Returns:
             Reflected point.
         """
+        assert point.x is not None
         new_x = []
 
         for val in point.x:
@@ -136,6 +136,7 @@ class Bounds:
         Returns:
             Wrapped point.
         """
+        assert point.x is not None
         new_x = []
 
         for val in point.x:
@@ -162,6 +163,7 @@ class Bounds:
         Returns:
             Projected point.
         """
+        assert point.x is not None
         new_point = deepcopy(point)
         new_point.x = np.clip(point.x, self.lower, self.upper)
         return new_point

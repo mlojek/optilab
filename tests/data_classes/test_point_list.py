@@ -14,12 +14,12 @@ def fixture_example_2d_pointlist():
     An example PointList containing 2d points.
     """
     return PointList(
-        [
-            Point(np.array([0, 0]), 10, True),
-            Point(np.array([1, 0]), 8, True),
-            Point(np.array([0, 1]), 5, False),
-            Point(np.array([-1, 0]), 1, False),
-            Point(np.array([1, -1]), 2, True),
+        points=[
+            Point(x=np.array([0, 0]), y=10, is_evaluated=True),
+            Point(x=np.array([1, 0]), y=8, is_evaluated=True),
+            Point(x=np.array([0, 1]), y=5, is_evaluated=False),
+            Point(x=np.array([-1, 0]), y=1, is_evaluated=False),
+            Point(x=np.array([1, -1]), y=2, is_evaluated=True),
         ]
     )
 
@@ -30,11 +30,11 @@ def fixture_overlapping_2d_pointlist():
     An example PointList that overlaps with example_2d_pointlist fixture.
     """
     return PointList(
-        [
-            Point(np.array([0, 0]), 10, True),
-            Point(np.array([0, 1]), -5, False),
-            Point(np.array([1, -1]), 2, False),
-            Point(np.array([2, 1]), 1, True),
+        points=[
+            Point(x=np.array([0, 0]), y=10, is_evaluated=True),
+            Point(x=np.array([0, 1]), y=-5, is_evaluated=False),
+            Point(x=np.array([1, -1]), y=2, is_evaluated=False),
+            Point(x=np.array([2, 1]), y=1, is_evaluated=True),
         ]
     )
 
@@ -45,10 +45,10 @@ def fixture_example_3d_pointlist():
     An example PointList containing 3d points.
     """
     return PointList(
-        [
-            Point(np.array([0, 0, 0]), 10, True),
-            Point(np.array([1, 0, 1]), 8, True),
-            Point(np.array([0, 1, 2]), 5, False),
+        points=[
+            Point(x=np.array([0, 0, 0]), y=10, is_evaluated=True),
+            Point(x=np.array([1, 0, 1]), y=8, is_evaluated=True),
+            Point(x=np.array([0, 1, 2]), y=5, is_evaluated=False),
         ]
     )
 
@@ -63,20 +63,20 @@ class TestPointList:
         """
         Test if a point with the same x value is correctly classified to be in the PointList.
         """
-        assert Point(np.array([0, 0])) in example_2d_pointlist
+        assert Point(x=np.array([0, 0])) in example_2d_pointlist
 
     def test_point_in_pointlist_different_y(self, example_2d_pointlist):
         """
         Test if a point with the same x value but different y value is correctly
         classified as belonging to a PointList.
         """
-        assert Point(np.array([0, 0]), 19) in example_2d_pointlist
+        assert Point(x=np.array([0, 0]), y=19) in example_2d_pointlist
 
     def test_point_not_in_pointlist_different_y(self, example_2d_pointlist):
         """
         Test if a point is correctly classified as not belonging to a PointList.
         """
-        assert Point(np.array([5, 0])) not in example_2d_pointlist
+        assert Point(x=np.array([5, 0])) not in example_2d_pointlist
 
     # from_list
     def test_from_list(self):
@@ -106,15 +106,15 @@ class TestPointList:
         """
         Test if append() method works as expected.
         """
-        example_2d_pointlist.append(Point(np.array([2, 2])))
+        example_2d_pointlist.append(Point(x=np.array([2, 2])))
         assert len(example_2d_pointlist) == 6
 
     def test_append_to_empty(self):
         """
         Test if append() method works as expected on an empty pointlist.
         """
-        empty_pointlist = PointList([])
-        empty_pointlist.append(Point(np.array([2, 2])))
+        empty_pointlist = PointList(points=[])
+        empty_pointlist.append(Point(x=np.array([2, 2])))
         assert len(empty_pointlist) == 1
 
     # extend
@@ -129,14 +129,14 @@ class TestPointList:
         """
         Test if extend() method works as expected when extending with an empty pointlist.
         """
-        example_2d_pointlist.extend(PointList([]))
+        example_2d_pointlist.extend(PointList(points=[]))
         assert len(example_2d_pointlist) == 5
 
     def test_extend_empty(self, example_2d_pointlist):
         """
         Test if extend() method works as expected on an empty pointlist.
         """
-        empty_pointlist = PointList([])
+        empty_pointlist = PointList(points=[])
         empty_pointlist.extend(example_2d_pointlist)
         assert len(empty_pointlist) == 5
 
@@ -145,8 +145,8 @@ class TestPointList:
         Test if extend() method works as expected when extending an empty pointlist with
         another empty pointlist.
         """
-        empty_pointlist = PointList([])
-        empty_pointlist.extend(PointList([]))
+        empty_pointlist = PointList(points=[])
+        empty_pointlist.extend(PointList(points=[]))
         assert len(empty_pointlist) == 0
 
     # x
@@ -155,17 +155,19 @@ class TestPointList:
         Test if x getter method works correctly.
         """
         assert np.all(
-            np.all(x, expected)
-            for x, expected in zip(
-                example_2d_pointlist.x(), [[0, 0], [1, 0], [0, 1], [-1, 0], [1, -1]]
-            )
+            [
+                np.all(x == expected)
+                for x, expected in zip(
+                    example_2d_pointlist.x(), [[0, 0], [1, 0], [0, 1], [-1, 0], [1, -1]]
+                )
+            ]
         )
 
     def test_get_x_empty(self):
         """
         Test if x getter method works correctly on an empty PointList.
         """
-        assert np.array_equal(PointList([]).x(), [])
+        assert np.array_equal(PointList(points=[]).x(), [])
 
     # y
     def test_get_y(self, example_2d_pointlist):
@@ -178,7 +180,7 @@ class TestPointList:
         """
         Test if y getter method works correctly on an empty PointList.
         """
-        assert np.array_equal(PointList([]).y(), [])
+        assert np.array_equal(PointList(points=[]).y(), [])
 
     # only_evaluated
     def test_only_evaluated(self, example_2d_pointlist):
@@ -193,7 +195,7 @@ class TestPointList:
         """
         Test if only_evaluated() method works as expected on an empty PointList.
         """
-        only_evaluated_empty = PointList([]).only_evaluated()
+        only_evaluated_empty = PointList(points=[]).only_evaluated()
         assert isinstance(only_evaluated_empty, PointList)
         assert len(only_evaluated_empty) == 0
 
@@ -216,7 +218,7 @@ class TestPointList:
         """
         Test if no error is raised when trying to rank an empty PointList.
         """
-        empty_point_list = PointList([])
+        empty_point_list = PointList(points=[])
         empty_point_list.rank()
         assert len(empty_point_list) == 0
 
@@ -239,21 +241,21 @@ class TestPointList:
         """
         Test if x_difference() method works correctly on an empty pointlist.
         """
-        difference = PointList([]).x_difference(example_2d_pointlist)
+        difference = PointList(points=[]).x_difference(example_2d_pointlist)
         assert len(difference) == 0
 
     def test_x_difference_with_empty(self, example_2d_pointlist):
         """
         Test if x_difference() method works correctly when provided with an empty pointlist.
         """
-        difference = example_2d_pointlist.x_difference(PointList([]))
+        difference = example_2d_pointlist.x_difference(PointList(points=[]))
         assert len(difference) == len(example_2d_pointlist)
 
     def test_x_difference_both_empty(self):
         """
         Test if x_difference() method works correctly with two empty pointlists.
         """
-        difference = PointList([]).x_difference(PointList([]))
+        difference = PointList(points=[]).x_difference(PointList(points=[]))
         assert len(difference) == 0
 
     def test_x_difference_different_dim(
@@ -280,7 +282,7 @@ class TestPointList:
         Test if best() method works as expected on an empty PointList.
         """
         with pytest.raises(ValueError):
-            PointList([]).best()
+            PointList(points=[]).best()
 
     # best_index
     def test_best_index(self, example_2d_pointlist):
@@ -294,7 +296,7 @@ class TestPointList:
         Test if best_index() method works as expected on an empty PointList.
         """
         with pytest.raises(ValueError):
-            PointList([]).best_index()
+            PointList(points=[]).best_index()
 
     # best_y
     def test_best_y(self, example_2d_pointlist):
@@ -307,7 +309,7 @@ class TestPointList:
         """
         Test if best_y() method works correctly on an empty PointList.
         """
-        assert PointList([]).best_y() == np.inf
+        assert PointList(points=[]).best_y() == np.inf
 
     # slice to best
     def test_slice_to_best(self, example_2d_pointlist):
@@ -323,4 +325,4 @@ class TestPointList:
         Test if slice_to_best() method works as expected on an empty PointList.
         """
         with pytest.raises(ValueError):
-            PointList([]).slice_to_best()
+            PointList(points=[]).slice_to_best()

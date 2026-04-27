@@ -2,12 +2,12 @@
 Metadata of objective function.
 """
 
-from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
+
+from pydantic import BaseModel
 
 
-@dataclass
-class FunctionMetadata:
+class FunctionMetadata(BaseModel):
     """
     Metadata of objective function.
     """
@@ -18,5 +18,5 @@ class FunctionMetadata:
     dim: int
     "Dimensionality of the function."
 
-    hyperparameters: Dict[str, Any]
+    hyperparameters: dict[str, Any]
     "Other hyperparameters of the function."

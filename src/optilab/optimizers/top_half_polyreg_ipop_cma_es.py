@@ -1,26 +1,33 @@
 """
-KNN-IPOP-CMA-ES optimizer. IPOP-CMA-ES is enhanced with a KNN metamodel
-similar to the one from LMM-CMA-ES.
+Top-half PolyReg-IPOP-CMA-ES optimizer.
+
+IPOP-CMA-ES enhanced with a polynomial-regression-based top-half metamodel:
+each generation, the surrogate estimates all candidates and only the best half
+is evaluated with the real objective function.
 """
 
 from ..data_classes import Bounds, PointList
 from ..functions import ObjectiveFunction
-from ..functions.surrogate import KNNSurrogateObjectiveFunction
-from ..metamodels import ApproximateRankingMetamodel
+from ..functions.surrogate import PolynomialRegression
+from ..metamodels import TopHalfMetamodel
 from .cma_es import CmaEs
 from .optimizer import Optimizer
 
 
-class KnnIpopCmaEs(CmaEs):
+class TopHalfPolyregIpopCmaEs(CmaEs):
     """
-    KNN-IPOP-CMA-ES optimizer: CMA-ES with increasing population restarts and with KNN
-    metamodel similar to LMM-CMA-ES.
+    Top-half PolyReg-IPOP-CMA-ES optimizer.
+
+    Uses the :class:`TopHalfMetamodel` with a degree-2 polynomial regression
+    surrogate: every generation the surrogate pre-screens all *lambda*
+    candidates and only the best *mu* = *lambda* / 2 are evaluated with the
+    real objective.  Penalised values for the remaining candidates guarantee
+    that CMA-ES updates its state exclusively from real evaluations.
     """
 
     def __init__(
         self,
         population_size: int,
-        num_neighbors: int,
         buffer_size: int,
     ):
         """
@@ -28,18 +35,14 @@ class KnnIpopCmaEs(CmaEs):
 
         Args:
             population_size: Starting size of the population.
-            num_neighbors: Number of neighbors used by KNN metamodel.
-            buffer_size: Number of last evaluated points provided to KNN metamodel.
+            buffer_size: Number of last evaluated points provided to the
+                polynomial regression surrogate for training.
         """
-        # buffer cannot be smaller than the number of neighbors
-        buffer_size = max(buffer_size, num_neighbors)
-
-        # Skipping super().__init__ and calling grandparent init instead.
         Optimizer.__init__(
             self,
-            f"knn{num_neighbors}b{buffer_size}-ipop-cma-es",
+            f"th-polyreg2b{buffer_size}-ipop-cma-es",
             population_size,
-            {"num_neighbors": num_neighbors, "buffer_size": buffer_size},
+            {"buffer_size": buffer_size},
         )
 
     def optimize(
@@ -50,17 +53,31 @@ class KnnIpopCmaEs(CmaEs):
         tolerance: float,
         target: float = 0.0,
     ) -> PointList:
+        """
+        Run a single optimisation of the provided objective function.
+
+        Args:
+            function: Objective function to optimise.
+            bounds: Search space of the function.
+            call_budget: Max number of calls to the objective function.
+            tolerance: Tolerance of y value to accept a solution.
+            target: Objective function value target, default 0.
+
+        Returns:
+            Results log from the optimisation.
+        """
         current_population_size = self.metadata.population_size
 
-        metamodel = ApproximateRankingMetamodel(
+        metamodel = TopHalfMetamodel(
             self.metadata.population_size,
             self.metadata.population_size // 2,
             function,
-            KNNSurrogateObjectiveFunction(
-                self.metadata.hyperparameters["num_neighbors"]
-            ),
+            PolynomialRegression(degree=2),
             buffer_size=self.metadata.hyperparameters["buffer_size"],
         )
+
+        dim = function.metadata.dim
+        min_train = (dim + 1) * (dim + 2) // 2
 
         while not self._stop_external(
             metamodel.get_log(),
@@ -86,10 +103,7 @@ class KnnIpopCmaEs(CmaEs):
             ):
                 solutions = PointList.from_list(es.ask())
 
-                if (
-                    len(metamodel.train_set)
-                    < self.metadata.hyperparameters["num_neighbors"]
-                ):
+                if len(metamodel.train_set) < min_train:
                     xy_pairs = metamodel.evaluate(solutions)
                 else:
                     metamodel.adapt(solutions)
@@ -101,6 +115,5 @@ class KnnIpopCmaEs(CmaEs):
             current_population_size *= 2
             metamodel.population_size *= 2
             metamodel.mu *= 2
-            metamodel.init_n()
 
         return metamodel.get_log()

@@ -3,7 +3,7 @@ Base class for optimizers.
 """
 
 from multiprocessing.pool import Pool
-from typing import Any, Dict
+from typing import Any
 
 from tqdm import tqdm
 
@@ -17,7 +17,7 @@ class Optimizer:
     """
 
     def __init__(
-        self, name: str, population_size: int, hyperparameters: Dict[str, Any]
+        self, name: str, population_size: int, hyperparameters: dict[str, Any]
     ) -> None:
         """
         Class constructor.
@@ -27,9 +27,12 @@ class Optimizer:
             population_size: Size of the population.
             hyperparameters: Dictionary with the hyperparameters of the optimizer.
         """
-        self.metadata = OptimizerMetadata(name, population_size, hyperparameters)
+        self.metadata = OptimizerMetadata(
+            name=name, population_size=population_size, hyperparameters=hyperparameters
+        )
 
     # Stop checker methods
+
     @staticmethod
     def _stop_budget(
         log: PointList,

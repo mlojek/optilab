@@ -3,7 +3,7 @@ Surrogate function which estimates the objective function with polynomial regres
 Points are weighted based on mahalanobis distance from query points.
 """
 
-from typing import Callable
+from collections.abc import Callable
 
 import faiss
 import numpy as np
@@ -72,8 +72,8 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         self.kernel_function = kernel_function
         self.preprocessor = PolynomialFeatures(degree=degree)
 
-        self.weights = None
-        self.index = None
+        self.weights: np.ndarray | None = None
+        self.index: faiss.IndexFlatL2 | None = None
 
     def set_covariance_matrix(self, new_covariance_matrix: np.ndarray) -> None:
         """
@@ -106,7 +106,7 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
         self.y_train = y_train
 
         self.index = faiss.IndexFlatL2(x_train.shape[1])
-        self.index.add(  # pylint: disable=no-value-for-parameter
+        self.index.add(  # type: ignore
             x_train.astype(np.float32)
         )
 
@@ -125,6 +125,8 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
             Point: Estimated point.
         """
         super().__call__(point)
+        assert point.x is not None
+        assert self.index is not None
 
         # ignore warnings about overflows and zero divisions when covariance matrix
         # is ill-conditioned
@@ -133,16 +135,18 @@ class LocallyWeightedPolynomialRegression(SurrogateObjectiveFunction):
                 np.array([point.x], dtype=np.float64) @ self.inverse_sqrt_covariance
             )
 
-        distances, indices = (
-            self.index.search(  # pylint: disable=no-value-for-parameter
-                x_query.astype(np.float32),
-                self.metadata.hyperparameters["num_neighbors"],
-            )
+        distances, indices = self.index.search(  # type: ignore
+            x_query.astype(np.float32),
+            self.metadata.hyperparameters["num_neighbors"],
         )
         distances = np.sqrt(distances.astype(np.float64))
 
-        knn_x = np.array([self.train_set[i].x for i in indices[0]], dtype=np.float64)
-        knn_y = np.array([self.train_set[i].y for i in indices[0]], dtype=np.float64)
+        knn_x = np.array(
+            [self.train_set.points[i].x for i in indices[0]], dtype=np.float64
+        )
+        knn_y = np.array(
+            [self.train_set.points[i].y for i in indices[0]], dtype=np.float64
+        )
 
         bandwidth = distances[0][-1]
 

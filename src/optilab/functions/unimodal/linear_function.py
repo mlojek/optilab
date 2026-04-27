@@ -2,6 +2,8 @@
 Linear function. y is the sum of elements of x vector.
 """
 
+import numpy as np
+
 from ...data_classes import Point
 from ..objective_function import ObjectiveFunction
 
@@ -34,8 +36,9 @@ class LinearFunction(ObjectiveFunction):
             Evaluated point.
         """
         super().__call__(point)
+        assert point.x is not None
         return Point(
             x=point.x,
-            y=sum(point.x),
+            y=float(np.sum(point.x)),
             is_evaluated=True,
         )

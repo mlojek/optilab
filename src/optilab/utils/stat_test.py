@@ -2,13 +2,11 @@
 Functions related to statistical testing.
 """
 
-from typing import List
-
 from scipy.stats import mannwhitneyu
 from tabulate import tabulate
 
 
-def mann_whitney_u_test_grid(data_lists: List[List[float]]) -> List[List[float]]:
+def mann_whitney_u_test_grid(data_lists: list[list[float]]) -> list[list[float | None]]:
     """
     Perform a grid run of Mann-Whitney U test on given list of data values and return
     a 2d array with results.
@@ -35,7 +33,7 @@ def mann_whitney_u_test_grid(data_lists: List[List[float]]) -> List[List[float]]
     return results_table
 
 
-def display_test_grid(test_results: List[List[float]]) -> str:
+def display_test_grid(test_results: list[list[float | None]]) -> str:
     """
     Given a grid of statistical test results, display them in a printable table.
 

@@ -2,14 +2,14 @@
 Calculating and plotting the convergence curve.
 """
 
-from typing import Dict, List
+from pathlib import Path
 
 from matplotlib import pyplot as plt
 
 from ..data_classes import PointList
 
 
-def convergence_curve(log: PointList) -> List[float]:
+def convergence_curve(log: PointList) -> list[float]:
     """
     For a given log return a convergence curve - the lowest value achieved so far.
 
@@ -22,16 +22,17 @@ def convergence_curve(log: PointList) -> List[float]:
     min_so_far = float("inf")
     new_log = []
 
-    for value in log:
-        min_so_far = min(min_so_far, value.y)
+    for value in log.points:
+        if value.y is not None:
+            min_so_far = min(min_so_far, value.y)
         new_log.append(min_so_far)
 
     return new_log
 
 
 def plot_convergence_curve(
-    data: Dict[str, List[PointList]],
-    savepath: str | None = None,
+    data: dict[str, list[PointList]],
+    savepath: str | Path | None = None,
     *,
     show: bool = True,
     function_name: str | None = None,

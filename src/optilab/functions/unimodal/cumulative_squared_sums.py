@@ -34,6 +34,7 @@ class CumulativeSquaredSums(ObjectiveFunction):
             Evaluated point.
         """
         super().__call__(point)
+        assert point.x is not None
         return Point(
             x=point.x,
             y=sum(sum(point.x[:i]) ** 2 for i in range(point.dim())),

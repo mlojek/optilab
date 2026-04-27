@@ -16,7 +16,6 @@ class KnnCmaEs(CmaEs):
     to the one from LMM-CMA-ES.
     """
 
-    # pylint: disable=super-init-not-called, non-parent-init-called
     def __init__(
         self,
         population_size: int,
@@ -48,7 +47,6 @@ class KnnCmaEs(CmaEs):
             },
         )
 
-    # pylint: disable=duplicate-code
     def optimize(
         self,
         function: ObjectiveFunction,
